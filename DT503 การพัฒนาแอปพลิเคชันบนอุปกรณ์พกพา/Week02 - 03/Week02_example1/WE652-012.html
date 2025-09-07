@@ -1,0 +1,77 @@
+<html>
+<head> 
+    <title> ตัวอย่างการใช้กริดใน RWD </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { 
+            box-sizing: border-box; 
+        }
+        .row::after {
+            content:"";
+            clear: both;
+            display: table;
+        }
+        [class*="col-"]{
+            float: left;
+            padding: 15px;
+        }
+        .menu { width: 25%; float: left; }
+        .main { width: 75%; float: left; }
+        .header { background-color: aqua; color: blueviolet; padding: 15px; }
+        .footer { background-color: aqua; color: blueviolet; padding: 15px; }
+        @media only screen and (mid-width:600px) {
+            .header {background-color: orange;}
+            /* For Tablets */
+            .col-s-1 {width: 8.33%;} 
+            .col-s-2 {width: 16.66%;} 
+            .col-s-3 {width: 25%;} 
+            .col-s-4 {width: 33.33%;} 
+            .col-s-5 {width: 41.66%;} 
+            .col-s-6 {width: 50%;} 
+            .col-s-7 {width: 58.33%;} 
+            .col-s-8 {width: 66.66%;} 
+            .col-s-9 {width: 75%;} 
+            .col-s-10 {width: 83.33%;} 
+            .col-s-11 {width: 91.66%;} 
+            .col-s-12 {width: 100%;} 
+        }
+        @media only screen and (mid-width:768px) {
+            .header {background-color: green;}
+            /* For Desktop */
+            .col-1 {width: 8.33%;} 
+            .col-2 {width: 16.66%;} 
+            .col-3 {width: 25%;} 
+            .col-4 {width: 33.33%;} 
+            .col-5 {width: 41.66%;} 
+            .col-6 {width: 50%;} 
+            .col-7 {width: 58.33%;} 
+            .col-8 {width: 66.66%;} 
+            .col-9 {width: 75%;} 
+            .col-10 {width: 83.33%;} 
+            .col-11 {width: 91.66%;} 
+            .col-12 {width: 100%;} 
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2> ตัวอย่างการใช้กริดใน RWD </h2>
+    </div>
+    <div class="row">
+        <div class="col-s-3 col-3">
+            <h4> พื้นที่ ส่วนที่ 1 25%</h4>
+        </div>
+        <div class="col-s-9 col-6" style="background-color: bisque;">
+            <h4> พื้นที่ ส่วนที่ 2 </h4>
+            <b> ถ้าเป็น Desktop จะกว้าง 50% </b>
+            <b> ถ้าเป็น Tablets จะกว้าง 75% </b>
+        </div>
+        <div class="col-s-12 col-3">
+            <h4> พื้นที่ส่วนที่ 3 25% </h4>
+        </div>
+    </div>
+    <div class="footer">
+        <h2> ตรงนี้คือ footer </h2>
+    </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+h3{
+    color: pink;
+}
+
+p.right{
+    text-align: right;
+}
+
+.center{
+    text-align: center;
+}
+
+#header{
+    color: #a83868ff;
+}
+h1#header{
+    color: #9d5252ff;
+}
