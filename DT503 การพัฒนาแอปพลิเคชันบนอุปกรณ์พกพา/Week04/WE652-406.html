@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title> ตัวอย่างการใช้เหตุการณ์ onClick </title>
+</head>
+<body>
+    <script>
+        function sayHello() {
+            window.alert("Hello " + myform.yourname.value);
+        }
+    </script>
+
+    <form name="myform">
+        <input type="text" name="yourname">
+        <input type="button" value="Hello" onclick="sayHello()">
+    </form>
+</body>
+</html>

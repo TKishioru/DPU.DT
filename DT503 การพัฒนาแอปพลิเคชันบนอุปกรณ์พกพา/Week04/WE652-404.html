@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title> ตัวอย่างการใช้งานฟังก์ชัน </title>
+</head>
+<body>
+    <h4> ตัวอย่างการใช้งานฟังก์ชันสำเร็จรูปของ JavaScript </h4>
+    <script>
+        function calc(myform) {
+            var result = parseInt(myform.number1.value) + parseInt(myform.number2.value);
+            window.alert(result);
+        }
+    </script>
+    <form>
+        ตัวเลข#1 = <input type="text" name="number1"> <br>
+        ตัวเลข#2 = <input type="text" name="number2"> <br>
+        <input type="button" onclick="calc(this.form)" value="click me">
+    </form>
+    <h4> ตัวอย่างการใช้งานฟังก์ชันที่สร้างขึ้นเอง </h4>
+    <script>
+        function repeatHello() {
+            document.write("Hello World <br> ");
+        }
+        repeatHello();
+        repeatHello();
+        repeatHello();
+    </script>
+</body>
+</html>

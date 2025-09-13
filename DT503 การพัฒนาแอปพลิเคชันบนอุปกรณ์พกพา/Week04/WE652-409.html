@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title> ตัวอย่างการใช้เหตุการณ์ onblur </title>
+    <script>
+        function validForm(form){
+            var input1=0;
+            input1 = document.myform.number1.value;
+            input2 = document.myform.number2.value;
+            if (input1<5) {
+                alert("Please enter the number that is greater than 5");
+            } else if (input2 < 5) {
+                alert("Please enter the number that is greater than 5");
+            }
+        }
+    </script>
+</head>
+<body>
+    <form name="myform">
+        <input type="text" name="number1" onblur="validForm(this.form)"><br>
+        <input type="text" name="number2" onblur="validForm(this.form)" value="5"><br>
+    </form> 
+
+    <table with = 50% border="1" cellspacing="0">
+        <tr onmouseover="this.bgColor = 'red'" onmouseout="this.bgColor = ''">
+            <td> test data </td> <td> test data </td>
+        </tr>
+    </table>
+</body>
+</html>

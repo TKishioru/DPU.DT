@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title> ตัวอย่างการคืนค่าฟังก์ชัน </title>
+</head>
+<body>
+    <script>
+        function cutString(t, n) {
+            var textReturn = t.substring(t, n);
+            return textReturn;
+        }
+
+        var result = cutString("Hello World", 4); //ตัดข้อความตามจำนวนที่กำหนด (ซ้ายไปขวา)
+        window.alert(result);
+        document.write(result);
+    </script>
+</body>
+</html>

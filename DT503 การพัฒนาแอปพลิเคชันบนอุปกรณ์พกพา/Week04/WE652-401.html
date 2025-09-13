@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>ตัวอย่างการใช้งาน Java Script เบื้องต้น </title>
+    <script language="JavaScript">
+        window.document.write("Hello World#1"); //นิยมใช้ไว้ที่ header
+    </script>
+    <!-- แทรกสคริปต์ไว้ในส่วน head -->
+</head>
+<body>
+    <h4>ตัวอย่างการใช้งาน Java Script เบื้องต้น</h4>
+    <script>
+        //ใส่หมายเหตุแบบบรรทัดเดี่ยว
+        /*
+            ใส่หมายเหตุหลายบรรทัด
+        */
+        document.write("Hello World#2");
+        document.write("<br />"); //แทรกแท็ก HTML เข้ามาใน script
+    </script>
+    <!-- แทรกสคริปต์ไว้ในส่วน body -->
+    <script language="JavaScript" src="myScript.js">
+    </script>
+    <!-- แทรกสคริปต์โดยเอามาจากไฟล์ภายนอก myScript.js -->
+</body>
+</html>
