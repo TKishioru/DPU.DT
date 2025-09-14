@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <title> ตรวจสอบความข้อมูลว่าถูกต้องไหม </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 16px;
+        }
+
+        .container {
+            padding: 4px;
+            border: 1px solid red;
+            width: fit-content;
+        }
+
+        span {
+            color: red;
+        }
+
+        .row {
+            display: inline-flex;
+            flex-direction: row;
+            margin-bottom: 8px;
+        }
+
+        .row>p {
+            width: 200px;
+        }
+
+        .center {
+            display: inline-flex;
+            flex-direction: row;
+            justify-content: center;
+            width: 100%;
+        }
+    </style>
+    <script>
+        function valiadation(myform) {
+            var username = myform.username.value;
+            var password = myform.password.value;
+            var confirmpassword = myform.confirmpassword.value;
+            var email = myform.email.value;
+            var age = myform.age.value;
+            var gender = myform.gender.value;
+
+            console.log(username.length);
+            if (username.length > 10) {
+                alert('username: max 10 characters');
+            }
+            if (username.length <= 0) {
+                alert('Forget to fill username');
+            }
+            if (password.length > 8 || password.length < 4) {
+                alert('password: max 4 to 8 characters');
+            }
+            if (password.length <= 0) {
+                alert('Forget to fill password');
+            }
+            if (confirmpassword.length > 8 || confirmpassword.length < 4) {
+                alert('confirmpassword: max 4 to 8 characters');
+            }
+            if (confirmpassword.length <= 0) {
+                alert('Forget to fill confirmpassword');
+            }
+            if (password == confirmpassword) {
+                alert('confirmpassword is wrong');
+            }
+            if (gender.length < 1 || gender.length > 100) {
+                alert('gender: 1 - 100 characters');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h4>Welcome to LoveBook.com</h4>
+        <br>
+        <form>
+            <p style="margin-bottom: 8px;">Join for Free</p>
+            <div class="row">
+                <p>User Name:</p>
+                <input type="text" name="username" required> @lovebook.com (max 10 characters)<span>*</span>
+            </div>
+            <br>
+            <div class="row">
+                <p>Password:</p><input type="password" name="password" required> (from 4 to 8 characters)<span>*</span>
+            </div>
+            <br>
+            <div class="row">
+                <p>Confirm Password:</p><input type="password" name="confirmpassword" required><span>*</span>
+            </div>
+            <br>
+            <div class="row">
+                <p>Email Address:</p><input type="email" name="email" required><span>*</span>
+            </div>
+            <br>
+            <div class="row">
+                <p>Age:</p><input type="number" name="age"> (from 1 to 100)
+            </div>
+            <br>
+            <div class="row">
+                <p>Gender:</p>
+                <input type="radio" name="gender" value="male" checked>Male
+                <input type="radio" name="gender" value="female"> Female
+            </div>
+            <br>
+            <div class="center">
+                <input type="button" onclick="valiadation(this.form)" value="register">
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

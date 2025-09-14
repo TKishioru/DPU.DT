@@ -12,25 +12,56 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <style>
-        h2{
+        @font-face {
+            font-family: 'CustomFont';
+            /* ตั้งชื่อฟอนต์ที่จะเรียกใช้ */
+            src: url('fonts/Athiti-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'CustomFont';
+        }
+
+        h3 {
             font-family: "Roboto";
             color: #333333;
         }
-        p{
+
+        p, a {
             font-family: "Roboto";
             font-size: 14px;
             color: #858585;
         }
-        @media screen and (max-width: 768px){
-                    h2{
-            font-family: "Roboto";
-            color: #333333;
+
+        .dropcap {
+            font-size: larger;
+            initial-letter: 1;
+            font-weight: 700;
         }
-        p{
-            font-family: "Roboto";
-            font-size: 14px;
-            color: #858585;
+
+        footer {
+            background: #167cde;
         }
+
+        svg {
+            height: 36px;
+            margin-bottom: 12px;
+        }
+
+        @media screen and (min-width: 1200px) {
+            .detail {
+                font-family: 'CustomFont';
+            }
+
+            a {
+                color: #4c4c4c;
+            }
+
+            footer {
+                background: linear-gradient(to right, #1a82f7, #2F2727);
+            }
         }
     </style>
 </head>
@@ -46,8 +77,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"style="width: fit-content;" >
-                        <a class="nav-link active text-primary" style="width: fit-content;" aria-current="page" href="#">เกี่ยวกับเรา</a>
+                    <li class="nav-item" style="width: fit-content;">
+                        <a class="nav-link active" style="color: #167cde;" aria-current="page"
+                            href="#">เกี่ยวกับเรา</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true" href="#">โครงการ</a>
@@ -66,45 +98,66 @@
         </div>
     </nav>
     <div class="content p-3">
-        <div class="w-100">
-            <img class="shadow-sm" src="banner.png">
+        <div class="w-100 mb-3">
+            <img src="image/banner_big.jpg" class="w-100 img-fluid d-none d-md-block" style="height: 400px;" alt="รูปใหญ่">
+            <img src="image/banner_small.jpg" class="w-100 img-fluid d-block d-md-none shadow-sm" alt="รูปเล็ก">
         </div>
-        <div>
-            <h1 class="text-uppercase">the reward beast deal</h1>
-            <p>sdf</p>
+        <div class="text-center">
+            <h1 class="text-uppercase"><span class="dropcap">t</span>he <span class="dropcap">r</span>eward <span
+                    class="dropcap">b</span>east <span class="dropcap">d</span>eal</h1>
+            <p class="detail">ที่สุดของรางวัลแห่งความภูมิใจ กับบ้านริมทะเลสาบกว่า 100 ไร่ ใกล้ชิดธรรมชาติ
+                และมีความสมดุลระหว่างที่พักอาศัยและการพักผ่อน</p>
         </div>
         <div class="row">
             <div class="col-md-6 col-lg-3  p-1">
-                <div class="border rounded p-3">
-                    <img src="icon.png">
-                    <h2>to</h2>
-                    <p>sdf</p>
+                <div class="border rounded p-3 border-primary text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path
+                            d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" />
+                    </svg>
+                    <h3>เกี่ยวกับโครงการ</h3>
+                    <p>สร้างบรรยากาศในโครงการให้มีความร่มรื่นใกล้ชิดธรรมชาติ</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3  p-1">
-                <div class="border rounded p-3">
-                    <img src="icon.png">
-                    <h2>to</h2>
-                    <p>sdf</p>
+                <div class="border rounded p-3 border-primary text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path
+                            d="M568.4 37.7C578.2 34.2 589 36.7 596.4 44C603.8 51.3 606.2 62.2 602.7 72L424.7 568.9C419.7 582.8 406.6 592 391.9 592C377.7 592 364.9 583.4 359.6 570.3L295.4 412.3C290.9 401.3 292.9 388.7 300.6 379.7L395.1 267.3C400.2 261.2 399.8 252.3 394.2 246.7C388.6 241.1 379.6 240.7 373.6 245.8L261.2 340.1C252.1 347.7 239.6 349.7 228.6 345.3L70.1 280.8C57 275.5 48.4 262.7 48.4 248.5C48.4 233.8 57.6 220.7 71.5 215.7L568.4 37.7z" />
+                    </svg>
+                    <h3>ระบบคมนาคม</h3>
+                    <p>ขนาดและจำนวนถนนเพียงพอกับปริมาณของจำนวนประชากรในโครงการ</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3  p-1">
-                <div class="border rounded p-3">
-                    <img src="icon.png">
-                    <h2>to</h2>
-                    <p>sdf</p>
+                <div class="border rounded p-3 border-primary text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path
+                            d="M514.2 330.8C530 337.3 548.3 331.1 556.8 316.2L559.2 312C587.1 263.1 582.8 193.2 527.9 157.5C401.9 75.5 238.3 75.5 112.3 157.5C57.4 193.2 53 263.2 81 312L83.4 316.2C91.9 331.1 110.1 337.3 126 330.8L207.9 297.1C221.8 291.4 230.3 277.2 228.8 262.2L223.7 211.2C286.2 190.2 354.5 191.3 416.3 214.5L411.5 262.2C410 277.2 418.5 291.4 432.4 297.1L514.3 330.8zM96 416C96 433.7 110.3 448 128 448C145.7 448 160 433.7 160 416C160 398.3 145.7 384 128 384C110.3 384 96 398.3 96 416zM192 416C192 433.7 206.3 448 224 448C241.7 448 256 433.7 256 416C256 398.3 241.7 384 224 384C206.3 384 192 398.3 192 416zM128 480C110.3 480 96 494.3 96 512C96 529.7 110.3 544 128 544C145.7 544 160 529.7 160 512C160 494.3 145.7 480 128 480zM480 512C480 529.7 494.3 544 512 544C529.7 544 544 529.7 544 512C544 494.3 529.7 480 512 480C494.3 480 480 494.3 480 512zM320 384C302.3 384 288 398.3 288 416C288 433.7 302.3 448 320 448C337.7 448 352 433.7 352 416C352 398.3 337.7 384 320 384zM384 416C384 433.7 398.3 448 416 448C433.7 448 448 433.7 448 416C448 398.3 433.7 384 416 384C398.3 384 384 398.3 384 416zM512 384C494.3 384 480 398.3 480 416C480 433.7 494.3 448 512 448C529.7 448 544 433.7 544 416C544 398.3 529.7 384 512 384zM192 512C192 529.7 206.3 544 224 544L416 544C433.7 544 448 529.7 448 512C448 494.3 433.7 480 416 480L224 480C206.3 480 192 494.3 192 512z" />
+                    </svg>
+                    <h3>สาธารณูปโภค</h3>
+                    <p>ระบบสาธารณูปโภคได้ถูกจัดวางให้เพียงพอกับความต้องการ</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3  p-1">
-                <div class="border rounded p-3">
-                    <img src="icon.png">
-                    <h2>to</h2>
-                    <p>sdf</p>
+                <div class="border rounded p-3 border-primary text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path
+                            d="M320 32C327 32 333.7 35.1 338.3 40.5L474.3 200.5C480.4 207.6 481.7 217.6 477.8 226.1C473.9 234.6 465.4 240 456 240L431.1 240L506.3 328.5C512.4 335.6 513.7 345.6 509.8 354.1C505.9 362.6 497.4 368 488 368L449.5 368L538.3 472.5C544.4 479.6 545.7 489.6 541.8 498.1C537.9 506.6 529.4 512 520 512L352 512L352 576C352 593.7 337.7 608 320 608C302.3 608 288 593.7 288 576L288 512L120 512C110.6 512 102.1 506.6 98.2 498.1C94.3 489.6 95.6 479.6 101.7 472.5L190.5 368L152 368C142.6 368 134.1 362.6 130.2 354.1C126.3 345.6 127.6 335.6 133.7 328.5L208.9 240L184 240C174.6 240 166.1 234.6 162.2 226.1C158.3 217.6 159.6 207.6 165.7 200.5L301.7 40.5C306.3 35.1 313 32 320 32z" />
+                    </svg>
+                    <h3>สันทนาการ</h3>
+                    <p>จัดวางให้มีสภาพแวดล้อมที่เป็นธรรมชาติ พร้อมทะเลสาบรวมกว่า 200 ไร่</p>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
+<footer class="w-100 text-end text-white px-2 py-3">
+    Copyright of Lake Village
+</footer>
 
 </html>
