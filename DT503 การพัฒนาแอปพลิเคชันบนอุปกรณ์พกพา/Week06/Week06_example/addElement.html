@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	 <script>
+	 	 $(function(){
+	 	 	 var txt = "<b>I love jQuery!</b>"; 	
+	 	 	 $("#btn1").click(function(){ 	 $(".hello").append(txt); 	 	 });
+	 	 	 $("#btn2").click(function(){	  $(".hello").after(txt);	 	 	 });
+	 	 });
+	 </script>
+</head>
+<body>
+	 <div class="container">
+	 	 <div class="hello">Hello</div>
+	 	 <button id="btn1">Append text</button>
+	 	 <button id="btn2">Insert after</button>
+	 </div>
+</body></html>

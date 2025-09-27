@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script>
+    function add(btn){
+        var x = $(btn).parent().clone().find("input:text").val("").end();
+        $("#main").append(x);
+        $(btn).prev().show();
+        $(btn).hide();
+    } 
+    function del(btn){
+      $(btn).parent().remove();
+    }
+  </script>
+</head>
+<body>
+  <form id="form">
+    <div id="main">
+      <div id="input">
+        <input type="text" name="name" placeholder="ชื่อ-สกุล" value="" />
+        <input type="text" name="id" placeholder="รหัสบัตรประชาชน" value="" />
+        <input hidden type="button" onclick="del(this)" value="-" >
+        <input type="button" onclick="add(this)" value="+">
+        <br>
+      </div>
+    </div>
+    <input type="button" id= "btn1" onclick="" value="บันทึกการจอง" />
+  </form>
+</body>
+</html>

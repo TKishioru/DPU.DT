@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+     $("tr:even").css("background-color", "#48C9B0");
+     $("tr:odd").css("background-color", "pink");
+     $("tr:first").css("background-color", "blue");
+  });
+</script>
+</head>
+<body>
+    <table border="1">
+        <tr> <th>Company</th>  <th>Country</th>    </tr>
+        <tr> <td>Alfreds Futterkiste</td>   <td>Germany</td> </tr>
+        <tr> <td>Berglunds snabbkop</td> <td>Sweden</td>    </tr>
+        <tr> <td>Centro comercial Moctezuma</td> <td>Mexico</td>    </tr>
+    </table>
+</body>
+</html>

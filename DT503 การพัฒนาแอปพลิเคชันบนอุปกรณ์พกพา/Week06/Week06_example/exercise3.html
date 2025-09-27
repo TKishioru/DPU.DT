@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise 3</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(function(){
+      $("#userId1").click(function(){
+        $("#passportId").removeAttr('disabled');
+        $("#cardId").attr('disabled', 'disabled');
+      });
+      $("#userId2").click(function(){
+        $("#cardId").removeAttr('disabled');
+        $("#passportId").attr('disabled', 'disabled');        
+      });
+    });
+  </script>
+</head>
+<body>
+  <form id="form">
+    <div>
+      รหัสประจำตัว: <br>
+      <input type="radio" name="userId" id="userId1" checked="checked"> หมายเลขหนังสือเดินทาง
+      <input type="text" name="passportId" id="passportId" placeholder="หมายเลขหนังสือเดินทาง" >
+      <br>
+      <input type="radio" name="userId" id="userId2"> หมายเลขบัตรประชาชน
+      <input type="text" name="cardId" id="cardId" placeholder="ตัวเลข 13 หลัก" disabled="disabled">     
+    </div>
+  </form>
+</body>
+</html>

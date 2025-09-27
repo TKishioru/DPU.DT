@@ -1,0 +1,17 @@
+<html>
+<head>
+<title>jQuery Testing</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#hidetext").click(function(){ $("#text").hide(); });
+            $("#showtext").click(function(){ $("#text").show(); });
+        });
+    </script> 
+</head>
+<body>
+    <button id="hidetext">Hide Text</button>
+    <button id="showtext">Show Text</button>
+    <div id="text"> This is text line!!</div>
+</body>
+</html>

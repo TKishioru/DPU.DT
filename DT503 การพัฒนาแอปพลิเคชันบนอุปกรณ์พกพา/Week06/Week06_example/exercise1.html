@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style type="text/css">
+    #div1{
+      height: 100px;
+      background-color: aqua;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script>
+    $(function(){
+      $("#btn").click(function(){
+        let bgcolor = $("#bgcolor").val();
+        $("#div1").css({"background-color": bgcolor});
+        // $("#div1").css({"background-color": $("#bgcolor").val() });
+
+        $("h1").css({ 
+          "color": $("#txtcolor").val(),
+          "font-size": $("#txtsize").val() + "px"
+        })
+      });
+    });
+  </script>
+</head>
+<body>
+  <div id="div1"><h1>jQuery is easy.</h1></div>
+  <form>
+    Set Background Color: <input type="color" id="bgcolor" /><br>
+    Set Text Color: <input type="color" id="txtcolor" /><br>
+    Set Text Size: <input type="number" id="txtsize" value="32" />px<br>
+    <input type="button" value="Set Style" id="btn" />
+  </form>
+</body>
+</html>

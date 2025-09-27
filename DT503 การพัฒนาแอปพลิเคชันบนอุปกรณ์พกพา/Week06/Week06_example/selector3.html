@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>jQuery Testing</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#toggletext").click(function(){ 
+                $(this).toggle(); 
+                //this คือ หน้า document ทั้งหมด
+                //สามารถเขียน $("div").toggle(); 
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="toggletext">Toggle between hide() and show() </button>
+    <div> This is text line#1!!</div>
+    <div> This is text line#2!!</div>
+</body>
+</html>
