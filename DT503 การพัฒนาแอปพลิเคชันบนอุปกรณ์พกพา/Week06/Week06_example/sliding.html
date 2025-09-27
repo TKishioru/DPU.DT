@@ -3,17 +3,33 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+        #panel {
+            display: none;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
     <script>
         $(document).ready(function () {
+            let isOpen = false; // สถานะ panel
             $("#flip").click(function () {
-                $("#panel").slideDown("slow");
+                if (!isOpen) {
+                    $("#panel").slideDown("slow");
+                } else {
+                    $("#panel").slideUp("slow");
+                }
+                isOpen = !isOpen; // สลับสถานะ
+                //ถ้าง่ายๆ ก็ใช้ Toggle
             });
         });
     </script>
 </head>
 
 <body>
-    <button id="flip">Click to slide down panel</button>
+    <button id="flip">Click to slide panel</button>
     <div id="panel">Hello world!</div>
 </body>
 
