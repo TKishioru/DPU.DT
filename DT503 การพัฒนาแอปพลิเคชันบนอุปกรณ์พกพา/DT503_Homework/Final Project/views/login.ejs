@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NJTK Bookstore - Member Access</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Config (Theme Consistent) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        njtk: {
+                            bg: '#F0EFEA',       /* Cream Background */
+                            dark: '#2C382E',     /* Dark Green Text */
+                            sage: '#839D76',     /* Sage Green Accent */
+                            sage_hover: '#6E8562',
+                            card: '#FFFFFF',     
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(44, 56, 46, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth Fade Animation */
+        .form-transition {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hidden-form {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateX(20px);
+        }
+
+        .active-form {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+            transform: translateX(0);
+        }
+
+        /* Custom Input Styling */
+        .custom-input {
+            background-color: #F9F9F7;
+            border: 1px solid #E5E5E5;
+            transition: all 0.3s;
+        }
+        .custom-input:focus {
+            background-color: #FFFFFF;
+            border-color: #839D76;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(131, 157, 118, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-njtk-bg text-njtk-dark font-sans h-screen flex flex-col overflow-hidden">
+
+    <!-- Navbar (Simplified for Login Page) -->
+    <nav class="absolute top-0 w-full z-20 p-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="/" class="flex items-center gap-2 group cursor-pointer">
+                <i class="fa-solid fa-arrow-left text-njtk-dark group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm tracking-wide">Back to Store</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-book-open text-njtk-sage text-xl"></i>
+                <span class="font-serif font-bold text-lg tracking-wide">NJTK</span>
+            </div>
+        </div>
+    </nav>
+
+            <!-- Error message -->
+        <% if (error) { %>
+            <p class="text-red-600 text-center mb-4"><%= error %></p>
+        <% } %>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center p-4 sm:p-8 relative">
+        
+        <!-- Background Decor (Green Blob) -->
+        <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-njtk-sage/10 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-njtk-dark/5 rounded-full blur-3xl -z-10"></div>
+
+        <!-- Card Container -->
+        <div class="bg-white w-full max-w-5xl h-[600px] md:h-[700px] px-6 md:px-12 py-10  rounded-3xl shadow-glass overflow-hidden flex relative">            
+                <!-- 1. LOGIN FORM -->
+                <div id="loginForm" class="active-form form-transition w-full max-w-sm mx-auto">
+                    <div class="mb-10">
+                        <h1 class="font-serif text-4xl font-bold text-njtk-dark mb-2">Sign In</h1>
+                        <p class="text-gray-500 text-sm">Welcome back to the community of readers.</p>
+                    </div>
+
+                    <form method="POST" action="/login" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Email Address</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="email" placeholder="name@example.com" class="custom-input w-full pl-11 pr-4 py-3 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Password</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="password" placeholder="••••••••" class="custom-input w-full pl-11 pr-4 py-3 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer text-gray-600">
+                                <input type="checkbox" class="accent-njtk-sage w-4 h-4 rounded">
+                                Remember me
+                            </label>
+                            <a href="#" class="text-njtk-sage font-bold hover:text-njtk-dark transition-colors">Forgot Password?</a>
+                        </div>
+
+                        <button type="button" onclick="window.location.href='index.html'" class="w-full bg-njtk-dark text-white font-bold py-3.5 rounded-xl hover:bg-njtk-sage transition-colors shadow-lg active:scale-95 duration-200">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-500 text-sm">
+                            Don't have an account? 
+                            <button onclick="toggleForms('register')" class="text-njtk-sage font-bold hover:underline">Create Account</button>
+                        </p>
+                    </div>
+
+                </div>
+                <!-- 2. REGISTER FORM (Hidden by default) -->
+                <div id="registerForm" class="hidden-form form-transition w-full max-w-sm mx-auto">
+                    <div class="mb-8">
+                        <h1 class="font-serif text-4xl font-bold text-njtk-dark mb-2">Join Us</h1>
+                        <p class="text-gray-500 text-sm">Create an account to start your journey.</p>
+                    </div>
+
+                    <form method="POST" action="/register" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Full Name</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" placeholder="John Doe" class="custom-input w-full pl-11 pr-4 py-3 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Email Address</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="email" placeholder="name@example.com" class="custom-input w-full pl-11 pr-4 py-3 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Password</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="password" placeholder="Create a password" class="custom-input w-full pl-11 pr-4 py-3 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Confirm Password</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-check-double absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="password" placeholder="Confirm password" class="custom-input w-full pl-11 pr-4 py-3 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <button type="button" class="w-full bg-njtk-sage text-white font-bold py-3.5 rounded-xl hover:bg-njtk-dark transition-colors shadow-lg mt-2 active:scale-95 duration-200">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-gray-500 text-sm">
+                            Already have an account? 
+                            <button onclick="toggleForms('login')" class="text-njtk-dark font-bold hover:underline">Sign In</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleForms(target) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (target === 'register') {
+                // Hide Login, Show Register
+                loginForm.classList.remove('active-form');
+                loginForm.classList.add('hidden-form');
+                loginForm.style.transform = "translateX(-20px)"; // Login moves left
+
+                setTimeout(() => {
+                    registerForm.classList.remove('hidden-form');
+                    registerForm.classList.add('active-form');
+                    registerForm.style.transform = "translateX(0)";
+                }, 50); // Small delay for smooth transition
+
+            } else {
+                // Hide Register, Show Login
+                registerForm.classList.remove('active-form');
+                registerForm.classList.add('hidden-form');
+                registerForm.style.transform = "translateX(20px)"; // Register moves right
+
+                setTimeout(() => {
+                    loginForm.classList.remove('hidden-form');
+                    loginForm.classList.add('active-form');
+                    loginForm.style.transform = "translateX(0)";
+                }, 50);
+            }
+        }
+    </script>
+</body>
+</html>
+---
+fetch("/api/users/register", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+        username: "dear",
+        password: "1234",
+        fullname: "Supaluck"
+    })
+})
+------
+fetch("/api/users/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+        username: "dear",
+        password: "1234"
+    })
+})

@@ -1,0 +1,300 @@
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 40px;
+}
+
+/* --- 3D Card Styling --- */
+.book-card {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  filter: drop-shadow(var(--shadow));
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 1;
+  /* สำหรับ Animation */
+  transform: scale(1);
+}
+
+/* Animation: Hide/Show */
+.book-card.hidden {
+  display: none;
+}
+
+.book-card.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.book-card:hover {
+  transform: translateY(-10px);
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+}
+
+/* ส่วนรูปภาพที่มี 3D Perspective */
+.img-container {
+  width: 180px;
+  height: 270px;
+  perspective: 800px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.book-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+  filter: drop-shadow(-5px 5px 15px rgba(0, 0, 0, 0.3));
+  transition: transform 0.5s ease;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* เอฟเฟกต์หมุนปกเมื่อ Hover */
+.book-card:hover .book-img {
+  transform: rotateY(-20deg) rotateX(5deg) scale(1.05);
+  filter: drop-shadow(-15px 20px 25px rgba(0, 0, 0, 0.4));
+}
+
+/* Badge (New/Hot) */
+.badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--accent);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.info {
+  text-align: center;
+  width: 100%;
+}
+
+.author {
+  font-size: 0.85rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0 0 10px 0;
+  height: 3rem;
+  /* จำกัดความสูง */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+/* Interactive Button */
+.add-btn {
+  background: white;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.add-btn:hover {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* ปุ่มขยายเมื่อกด */
+.add-btn:active {
+  transform: scale(0.9);
+}
+
+/* Floating Actions (ซ่อนอยู่ จะโผล่มาเมื่อ hover) */
+.actions {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 10px;
+  opacity: 0;
+  transition: 0.3s;
+  pointer-events: none;
+  /* ป้องกันการกดโดนตอนไม่เห็น */
+  z-index: 5;
+}
+
+.book-card:hover .actions {
+  opacity: 1;
+  pointer-events: auto;
+  top: 40%;
+  /* เลื่อนขึ้นนิดนึง */
+}
+
+.action-icon {
+  width: 45px;
+  height: 45px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  color: var(--primary);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.action-icon:hover {
+  background: var(--accent);
+  color: white;
+}
+.smart-info {
+  padding: 1.5rem;
+  background: linear-gradient(to bottom, transparent, #fff 20%);
+}
+
+.pill-container {
+  background: #f9f8f6; /* สีพื้นหลังครีมอ่อนๆ */
+  border-radius: 50px;
+  padding: 5px 8px 5px 20px; /* จัดระยะห่างภายใน */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
+/* เมื่อเอาเมาส์ชี้ที่การ์ด (class group) ให้เปลี่ยนสีกรอบและเงา */
+.group:hover .pill-container {
+  background: white;
+  border-color: #809671; /* สีเขียวธีม */
+  filter: drop-shadow(0 4px 15px rgba(128, 150, 113, 0.2));
+}
+
+/* 2. ปุ่มวงกลม (Smart Button) */
+.circle-btn {
+  width: 38px;
+  height: 38px;
+  background: #2c3327; /* สีเข้มปกติ */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animation เด้งดึ๋ง */
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* เมื่อ Hover: ยืดปุ่มออกและเปลี่ยนสี */
+.group:hover .circle-btn {
+  width: 100px;
+  border-radius: 25px;
+  background: #809671; /* เปลี่ยนเป็นสีเขียว */
+}
+
+/* 3. ข้อความในปุ่ม (Buy) */
+.btn-text {
+  max-width: 0;
+  opacity: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-right: 0;
+}
+
+/* เมื่อ Hover: โชว์ข้อความ */
+.group:hover .btn-text {
+  max-width: 50px;
+  opacity: 1;
+  margin-right: 8px;
+}
+
+.btn-add-to-cart {
+  flex: 1;
+
+  /* background */
+  background-color: #809671; /* bg-theme-sage */
+  color: white;
+
+  /* padding */
+  padding: 16px 32px; /* px-8 py-4 */
+
+  /* rounded-full */
+  border-radius: 9999px;
+
+  /* font styles */
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15em; /* tracking-widest */
+
+  /* flexbox */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  /* shadow */
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+
+  /* transition */
+  transition: all 0.3s ease;
+}
+
+.btn-add-to-cart:hover {
+  background-color: #2a3328; /* text-njtk-dark */
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25); /* hover:shadow-xl */
+}

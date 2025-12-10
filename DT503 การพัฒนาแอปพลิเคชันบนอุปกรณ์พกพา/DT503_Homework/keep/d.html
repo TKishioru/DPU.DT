@@ -1,0 +1,71 @@
+<!-- Action Buttons Area -->
+<div class="flex flex-col sm:flex-row gap-4 pt-8 mt-4 border-t border-njtk-dark/5">
+    
+    <!-- 1. Quantity Selector (ปุ่มบวกลบ) -->
+    <div class="flex items-center justify-between border border-gray-300 rounded-full w-full sm:w-36 h-14 px-1 bg-white shadow-lg hover:shadow-xl">
+        <button onclick="adjustQty(-1)" class="w-10 h-full flex items-center justify-center text-gray-400 hover:text-njtk-sage transition-colors text-lg active:scale-90">
+            <i class="fa-solid fa-minus text-xs"></i>
+        </button>
+        
+        <span id="qtyDisplay" class="font-bold text-lg text-njtk-dark select-none w-8 text-center">1</span>
+        
+        <button onclick="adjustQty(1)" class="w-10 h-full flex items-center justify-center text-gray-400 hover:text-njtk-sage transition-colors text-lg active:scale-90">
+            <i class="fa-solid fa-plus text-xs"></i>
+        </button>
+    </div>
+
+    <!-- 2. Add to Cart Button -->
+    <button onclick="addToCart(this)" class="btn-add-to-cart">
+        <span class="relative z-10 transition-opacity duration-300">Add to Cart</span>
+        <i class="fa-solid fa-arrow-right relative z-10 group-hover:translate-x-1 transition-transform"></i>
+        
+        <!-- Background Animation Effect -->
+        <div class="absolute inset-0 bg-njtk-dark transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+    </button>
+    
+    <!-- 3. Wishlist Button -->
+    <button class="w-14 h-14 border border-gray-300 rounded-full flex-shrink-0 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors text-xl bg-white shadow-sm">
+        <i class="fa-regular fa-heart"></i>
+    </button>
+</div>
+
+<!-- Script สำหรับคำนวณจำนวน -->
+<script>
+    // ฟังก์ชันเพิ่ม-ลดจำนวน
+    function adjustQty(change) {
+        const display = document.getElementById('qtyDisplay');
+        let currentQty = parseInt(display.innerText);
+        let newQty = currentQty + change;
+
+        // ห้ามลดต่ำกว่า 1
+        if (newQty >= 1) {
+            display.innerText = newQty;
+            
+            // เพิ่ม Animation เล็กน้อยตอนตัวเลขเปลี่ยน
+            display.style.transform = "scale(1.2)";
+            setTimeout(() => display.style.transform = "scale(1)", 150);
+        }
+    }
+
+    // ฟังก์ชัน Add to Cart (อัปเดตจากเดิมให้รับจำนวนไปด้วย)
+    function addToCart(btn) {
+        const span = btn.querySelector('span');
+        const icon = btn.querySelector('i');
+        const qty = document.getElementById('qtyDisplay').innerText; // เอาจำนวนปัจจุบันมา
+        const originalContent = "Add to Cart";
+
+        // เปลี่ยนปุ่มเป็นสถานะสำเร็จ
+        span.innerText = `Added ${qty} item(s)`; // โชว์จำนวนที่หยิบใส่
+        icon.className = "fa-solid fa-check relative z-10";
+        btn.classList.remove('bg-njtk-sage');
+        btn.classList.add('bg-njtk-dark'); // เปลี่ยนสีปุ่มชั่วคราว
+
+        // คืนค่าเดิมหลังจาก 2 วินาที
+        setTimeout(() => {
+            span.innerText = originalContent;
+            icon.className = "fa-solid fa-arrow-right relative z-10 group-hover:translate-x-1 transition-transform";
+            btn.classList.add('bg-njtk-sage');
+            btn.classList.remove('bg-njtk-dark');
+        }, 2000);
+    }
+</script>

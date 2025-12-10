@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brown Bird Reader - Dashboard</title>
+    
+    <!-- Fonts: Playfair Display (หัวข้อ) & Inter (เนื้อหา) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Icons: Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        :root {
+            --bg-color: #F2F0E9; /* สีครีมพื้นหลังตามรูป */
+            --sidebar-bg: #F2F0E9;
+            --card-bg: #FFFFFF; /* สีพื้นหลังการ์ด (ถ้ามี) */
+            --text-main: #2C2C2C;
+            --text-muted: #888888;
+            --accent-red: #E86A6A; /* สีแดงตรงไอคอน Home */
+            --btn-dark: #2B2B38;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+            --shadow-book: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden; /* ซ่อน Scrollbar หลัก */
+            display: flex;
+        }
+
+        /* --- 1. Left Sidebar (Menu) --- */
+        .sidebar {
+            width: 80px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 2rem;
+            border-right: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+        }
+
+        .menu-item {
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+        }
+
+        .menu-item:hover {
+            color: var(--text-main);
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .menu-item.active {
+            background-color: var(--accent-red);
+            color: white;
+            box-shadow: 0 5px 15px rgba(232, 106, 106, 0.4);
+        }
+
+        .material-symbols-outlined {
+            font-size: 1.5rem;
+        }
+
+        /* --- 2. Main Content (Center) --- */
+        .main-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto; /* Scroll ได้เฉพาะตรงกลาง */
+        }
+
+        /* Header Search */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: transparent;
+            border-bottom: 1px solid #ddd;
+            padding: 0.5rem;
+            width: 300px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            margin-left: 10px;
+            outline: none;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Hero Section (ที่แนะนำหนังสือ) */
+        .hero-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-text {
+            max-width: 50%;
+        }
+
+        .hero-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 500;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-read {
+            background-color: var(--btn-dark);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        .btn-read:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* จำลองรูปหนังสือเปิด (ใช้รูป Placeholder) */
+        .hero-image img {
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-soft);
+            transform: perspective(1000px) rotateY(-5deg);
+        }
+
+        /* Popular Books Grid */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-cover {
+            width: 100%;
+            aspect-ratio: 2/3;
+            background-color: #ddd;
+            border-radius: 5px;
+            box-shadow: var(--shadow-book);
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .book-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-author {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* --- 3. Right Panel (Sidebar ขวา) --- */
+        .right-panel {
+            width: 320px;
+            background-color: var(--bg-color); /* หรือทำให้สีอ่อนลงนิดหน่อย */
+            padding: 2rem;
+            border-left: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 3rem;
+            justify-content: flex-end;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Reading Schedule (Calendar) */
+        .schedule-box {
+            margin-bottom: 3rem;
+        }
+        
+        .schedule-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-strip {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .cal-day {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        
+        .cal-date {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .cal-item.active .cal-date {
+            background-color: var(--text-main);
+            color: white;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        /* Reader Friends */
+        .friends-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .friend-item {
+            display: flex;
+            gap: 12px;
+        }
+
+        .friend-text {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .friend-name {
+            font-weight: bold;
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .reading-now {
+            color: var(--accent-red);
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .right-panel { display: none; } /* ซ่อนแถบขวาเมื่อจอเล็ก */
+            .hero-section { flex-direction: column; text-align: center; }
+            .hero-text { max-width: 100%; margin-bottom: 2rem; }
+            .hero-image img { width: 100%; max-width: 300px; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; height: auto; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 1rem; border-right: none; border-bottom: 1px solid #ddd; }
+            .brand-icon { margin: 0; font-size: 1.5rem; }
+            .menu-item { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Sidebar (เมนูซ้าย) -->
+    <aside class="sidebar">
+        <div class="brand-icon">Bb.</div> <!-- Brown Bird Logo -->
+        
+        <div class="menu-item active">
+            <span class="material-symbols-outlined">home</span>
+        </div>
+        <div class="menu-item">
+            <span class="material-symbols-outlined">menu_book</span>
+        </div>
+        <div class="menu-item">
+            <span class="material-symbols-outlined">timer</span>
+        </div>
+        <div class="menu-item">
+            <span class="material-symbols-outlined">bookmark</span>
+        </div>
+        <div class="menu-item" style="margin-top: auto;">
+            <span class="material-symbols-outlined">settings</span>
+        </div>
+    </aside>
+
+    <!-- 2. Main Content (ตรงกลาง) -->
+    <main class="main-content">
+        <!-- Search Bar -->
+        <header class="top-bar">
+            <span class="material-symbols-outlined">search</span>
+            <div class="search-box">
+                <input type="text" placeholder="ค้นหาชื่อหนังสือ, นักเขียน...">
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-text">
+                <h1>Happy reading,<br>Harvey</h1>
+                <p>
+                    คุณได้ดำดิ่งสู่โลกแห่งเวทมนตร์แล้ว! พ่อแม่ของแฮร์รี่เสียชีวิตไปแล้วเหรอ? 
+                    โอ๊ะ ดูเหมือนคุณยังอ่านไม่ถึงนะ รีบอ่านต่อเลย!
+                </p>
+                <a href="#" class="btn-read">
+                    อ่านต่อ (Start reading) <span class="material-symbols-outlined" style="font-size:1rem;">north_east</span>
+                </a>
+            </div>
+            <div class="hero-image">
+                <!-- รูปหนังสือเปิด (ใช้ Placeholder) -->
+                <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Open Book">
+            </div>
+        </section>
+
+        <!-- Popular Books Grid -->
+        <section>
+            <div class="section-header">
+                <h2>Popular Now</h2>
+                <span class="material-symbols-outlined" style="cursor:pointer;">more_horiz</span>
+            </div>
+
+            <div class="book-grid">
+                <!-- Book 1 -->
+                <div class="book-card">
+                    <img src="https://images.unsplash.com/photo-1629196911514-cfd8d6316fa0?auto=format&fit=crop&w=300&q=80" class="book-cover" alt="Book Cover">
+                    <div class="book-title">The World of Ice</div>
+                    <div class="book-author">George R.R. Martin</div>
+                </div>
+
+                <!-- Book 2 -->
+                <div class="book-card">
+                    <img src="https://images.unsplash.com/photo-1598556882252-09c004d4206e?auto=format&fit=crop&w=300&q=80" class="book-cover" alt="Book Cover">
+                    <div class="book-title">Fantastic Beasts</div>
+                    <div class="book-author">J.K. Rowling</div>
+                </div>
+
+                <!-- Book 3 -->
+                <div class="book-card">
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80" class="book-cover" alt="Book Cover">
+                    <div class="book-title">Game of Thrones</div>
+                    <div class="book-author">George R.R. Martin</div>
+                </div>
+
+                <!-- Book 4 -->
+                <div class="book-card">
+                    <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=300&q=80" class="book-cover" alt="Book Cover">
+                    <div class="book-title">The Wise Man's Fear</div>
+                    <div class="book-author">Patrick Rothfuss</div>
+                </div>
+            </div>
+        </section>
+        
+        <br><br>
+        
+        <!-- New Series Section -->
+        <section>
+             <div class="section-header">
+                <h2>New Series Collection</h2>
+                <span style="font-size:0.9rem; color:#888;">2 vol</span>
+            </div>
+            <div style="background:#fff; padding:1rem; border-radius:10px; display:flex; gap:1rem; align-items:center;">
+                 <img src="https://images.unsplash.com/photo-1610882648335-ced8fc8fa6b6?auto=format&fit=crop&w=200&q=80" style="width:60px; height:80px; object-fit:cover; border-radius:4px;">
+                 <div>
+                     <div style="font-weight:600;">A Legend of Ice and Fire</div>
+                     <div style="font-size:0.8rem; color:#888;">8 chapters each vol</div>
+                 </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 3. Right Panel (ข้อมูลขวา) -->
+    <aside class="right-panel">
+        <!-- User Profile -->
+        <div class="user-profile">
+            <div class="user-name">Alexander Mark</div>
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" class="avatar" alt="User">
+            <span class="material-symbols-outlined">notifications</span>
+        </div>
+
+        <!-- Featured / Info -->
+        <div style="margin-bottom:2rem;">
+            <h3 style="font-family:'Playfair Display'; margin-bottom:0.5rem;">The Chamber of Secrets</h3>
+            <div style="color:var(--accent-red); font-size:0.9rem; margin-bottom:1rem;">154 / 300 pages</div>
+            <p style="font-size:0.85rem; color:#666;">
+                แฮร์รี่กลับมาที่ฮอกวอตส์เพื่อเรียนเวทมนตร์ปี 2 แต่กลับพบว่า...
+            </p>
+            <div style="text-align:right; font-size:0.8rem; font-style:italic;">- J.K. Rowling</div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="schedule-box">
+            <div class="schedule-header">Schedule Reading</div>
+            <div class="calendar-strip">
+                <div class="cal-item">
+                    <div class="cal-day">Sun</div>
+                    <div class="cal-date">11</div>
+                </div>
+                <div class="cal-item active">
+                    <div class="cal-day">Mon</div>
+                    <div class="cal-date">12</div>
+                </div>
+                <div class="cal-item">
+                    <div class="cal-day">Tue</div>
+                    <div class="cal-date">13</div>
+                </div>
+                <div class="cal-item">
+                    <div class="cal-day">Wed</div>
+                    <div class="cal-date">14</div>
+                </div>
+                 <div class="cal-item">
+                    <div class="cal-day">Thu</div>
+                    <div class="cal-date">15</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reader Friends -->
+        <div>
+            <div class="schedule-header">Reader Friends</div>
+            <div class="friends-list">
+                <div class="friend-item">
+                    <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=100&q=80" class="avatar">
+                    <div class="friend-text">
+                        <span class="friend-name">Roberto Jordan</span>
+                        ช่างเป็นบทที่มหัศจรรย์อะไรเช่นนี้! พาผู้อ่านเข้าสู่โลกเวทมนตร์จริงๆ
+                        <span class="reading-now">✓ Chapter Five: Diagon Alley</span>
+                    </div>
+                </div>
+                
+                 <div class="friend-item">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" class="avatar">
+                    <div class="friend-text">
+                        <span class="friend-name">Anna Henry</span>
+                        ฉันเพิ่งอ่านบทที่แล้วจบเมื่อคืนนี้เอง สนุกมาก
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+</body>
+</html>

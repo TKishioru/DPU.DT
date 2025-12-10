@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - BestBook</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-cream: #F9F4EC;
+            --primary-green: #5D7A60;
+            --accent-gold: #A69168;
+            --text-dark: #1D1D1D;
+            --text-gray: #777;
+            --white: #FFFFFF;
+            --success: #27ae60;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-cream);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden; /* Prevent horizontal scroll from confetti */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        /* --- Header Section --- */
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px auto;
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-green);
+        }
+
+        .sub-text {
+            color: #666; 
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+        }
+
+        .order-ref {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            transition: 0.3s;
+            background-color: rgba(255,255,255,0.5);
+        }
+
+        .order-ref:hover {
+            background-color: rgba(0,0,0,0.05);
+            color: var(--text-dark);
+        }
+
+        /* --- Animated Map Section (Gimmick) --- */
+        .map-container {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .route-visual {
+            position: relative;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 40px;
+        }
+
+        /* Dashed Line */
+        .route-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(to right, #ddd 0, #ddd 10px, transparent 10px, transparent 20px);
+            z-index: 1;
+        }
+
+        /* Start/End Points */
+        .point {
+            width: 15px;
+            height: 15px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .point::after {
+            content: attr(data-label);
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--text-gray);
+            white-space: nowrap;
+        }
+
+        /* Moving Truck */
+        .delivery-truck {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            z-index: 3;
+            background: var(--white);
+            padding: 5px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: driveTruck 4s ease-in-out infinite;
+        }
+
+        @keyframes driveTruck {
+            0% { left: 0%; }
+            50% { left: 50%; }
+            100% { left: 100%; } 
+        }
+
+        /* --- Timeline Tracker --- */
+        .tracker {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            flex: 1;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #eee;
+            color: #bbb;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+
+        .step.active .step-icon {
+            background-color: var(--primary-green);
+            color: white;
+            box-shadow: 0 0 0 5px rgba(93, 122, 96, 0.2);
+        }
+
+        .step-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #bbb;
+        }
+
+        .step.active .step-text {
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        /* Connection Line */
+        .progress-bar {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #eee;
+            z-index: 1;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-green);
+            width: 35%; /* Progress status */
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+
+        /* --- Order Details Grid --- */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .detail-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        h3 {
+            font-family: 'Playfair Display', serif;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .item-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .item-list li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .shipping-info p {
+            margin: 5px 0;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+        }
+        
+        .shipping-info strong { color: var(--text-dark); }
+
+        .btn-home {
+            margin-top: 40px;
+            background-color: var(--text-dark);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover {
+            background-color: var(--primary-green);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(93, 122, 96, 0.3);
+        }
+
+        /* --- Confetti CSS --- */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+            top: -10px;
+            z-index: 100;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .details-grid { grid-template-columns: 1fr; }
+            .tracker { font-size: 0.8rem; }
+            .step-icon { width: 30px; height: 30px; }
+            .progress-bar { top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- 1. Header & Success Icon -->
+        <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h1>Thank you for your order!</h1>
+        <p class="sub-text">Your order has been received. We are getting your books ready.</p>
+        
+        <!-- Click to copy ID -->
+        <div class="order-ref" onclick="copyOrderId()" title="Click to copy">
+            Order ID: <span id="orderId">#BB-84920</span> <i class="fa-regular fa-copy" style="margin-left:5px;"></i>
+        </div>
+
+        <!-- 2. Animated Map & Tracking -->
+        <div class="map-container">
+            <div class="route-visual">
+                <div class="route-line"></div>
+                <div class="point" data-label="Warehouse"></div>
+                
+                <!-- Gimmick: Moving Truck -->
+                <div class="delivery-truck">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                
+                <div class="point" data-label="Home"></div>
+            </div>
+
+            <div class="tracker">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 33%;"></div>
+                </div>
+                
+                <div class="step active">
+                    <div class="step-icon"><i class="fa-solid fa-receipt"></i></div>
+                    <div class="step-text">Confirmed</div>
+                </div>
+                <div class="step active">
+                    <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="step-text">Processing</div>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
+                    <div class="step-text">On Delivery</div>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                    <div class="step-text">Delivered</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 15px; background: #fcfcfc; border-radius: 10px; border: 1px dashed #ddd; font-size: 0.9rem;">
+                <i class="fa-regular fa-clock"></i> Estimated Delivery: <strong>Dec 8 - 10, 2025</strong>
+            </div>
+        </div>
+
+        <!-- 3. Order Details Grid -->
+        <div class="details-grid">
+            <!-- Items -->
+            <div class="detail-card">
+                <h3>Order Items</h3>
+                <ul class="item-list">
+                    <li>
+                        <span>Renoir - 40th Anniv. x 1</span>
+                        <strong>2,846 ฿</strong>
+                    </li>
+                    <li>
+                        <span>The Poppy War x 1</span>
+                        <strong>1,099 ฿</strong>
+                    </li>
+                    <li style="border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px;">
+                        <span>Shipping Fee</span>
+                        <span>50 ฿</span>
+                    </li>
+                    <li style="font-size: 1.1rem; color: var(--primary-green); margin-top: 5px;">
+                        <strong>Total Amount</strong>
+                        <strong>3,995 ฿</strong>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Shipping Info -->
+            <div class="detail-card">
+                <h3>Shipping Address</h3>
+                <div class="shipping-info">
+                    <p><strong>Harvey Specter</strong></p>
+                    <p>123 Sukhumvit Road</p>
+                    <p>Watthana, Bangkok 10110</p>
+                    <p>Thailand</p>
+                    <p style="margin-top: 15px;"><i class="fa-solid fa-phone"></i> +66 81-234-5678</p>
+                    <p><i class="fa-solid fa-credit-card"></i> Visa **** 4242</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="#" class="btn-home">Back to Home</a>
+    </div>
+
+    <!-- Scripts: Confetti & Copy -->
+    <script>
+        // 1. Confetti Effect Function
+        function createConfetti() {
+            const colors = ['#5D7A60', '#A69168', '#E74C3C', '#F1C40F', '#3498DB'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // Random properties
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's'; // 2-5s fall time
+                confetti.style.opacity = Math.random();
+                
+                document.body.appendChild(confetti);
+
+                // Remove after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Trigger on load
+        window.onload = createConfetti;
+
+        // 2. Copy Order ID Function
+        function copyOrderId() {
+            const orderId = document.getElementById('orderId').innerText;
+            navigator.clipboard.writeText(orderId).then(() => {
+                const refDiv = document.querySelector('.order-ref');
+                const originalHtml = refDiv.innerHTML;
+                
+                // Changed text to English
+                refDiv.innerHTML = 'Copied! <i class="fa-solid fa-check"></i>';
+                refDiv.style.color = 'var(--success)';
+                
+                setTimeout(() => {
+                    refDiv.innerHTML = originalHtml;
+                    refDiv.style.color = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

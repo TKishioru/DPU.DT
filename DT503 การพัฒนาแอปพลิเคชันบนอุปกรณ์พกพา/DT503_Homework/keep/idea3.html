@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renoir - Product Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-outer: #5D7A60; /* สีเขียวขอบนอก */
+            --bg-inner: #FFFFFF;
+            --text-main: #1D1D1D;
+            --text-light: #666;
+            --accent-green: #B9E6C0; /* ป้าย New */
+            --star-color: #89BFA0;
+            --btn-border: #1D1D1D;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-outer);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--bg-inner);
+            width: 100%;
+            max-width: 1200px;
+            min-height: 700px;
+            display: flex;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden; /* บังส่วนที่ภาพซูมเกิน */
+        }
+
+        /* --- LEFT SIDE: Art Zoom Gimmick --- */
+        .left-panel {
+            flex: 1.2; /* กว้างกว่านิดหน่อย */
+            position: relative;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .art-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.1s ease-out; /* Smooth movement */
+            display: block;
+        }
+
+        /* --- RIGHT SIDE: Product Info --- */
+        .right-panel {
+            flex: 1;
+            padding: 3rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .breadcrumb {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tag-new {
+            background-color: var(--accent-green);
+            color: #333;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .author {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin: 0 0 1.5rem 0;
+            line-height: 1.2;
+        }
+
+        /* Price & Rating */
+        .price-rating {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .stars {
+            color: #ddd; /* สีพื้นฐานดาว */
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .stars .fa-star.checked, 
+        .stars .fa-star:hover,
+        .stars .fa-star:hover ~ .fa-star {
+            color: var(--star-color);
+        }
+        
+        /* เทคนิค CSS เลือกดาว: hover ตัวไหน ตัวก่อนหน้าติดสีด้วย */
+        .stars {
+            display: flex;
+            flex-direction: row-reverse; /* เรียงกลับด้านเพื่อให้เทคนิค hover ทำงาน */
+            justify-content: flex-end;
+        }
+
+        /* Tabs Gimmick */
+        .tabs-container {
+            margin-bottom: 2.5rem;
+        }
+
+        .tab-headers {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1rem;
+        }
+
+        .tab-link {
+            padding-bottom: 10px;
+            cursor: pointer;
+            color: #999;
+            font-weight: 500;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .tab-link.active {
+            color: var(--text-main);
+        }
+
+        .tab-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--text-main);
+        }
+
+        .tab-content {
+            display: none;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Action Area */
+        .actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-cart {
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid var(--btn-border);
+            color: var(--text-main);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-cart:hover {
+            background: var(--btn-border);
+            color: white;
+        }
+
+        /* Bookmark Icon */
+        .btn-bookmark {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+            color: #ccc;
+        }
+
+        .btn-bookmark:hover, .btn-bookmark.active {
+            color: var(--text-main);
+            border-color: var(--text-main);
+        }
+
+        /* Mini Book Thumbnail (Floating like in reference) */
+        .mini-book {
+            width: 80px;
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: rotate(5deg);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .mini-book:hover {
+            transform: rotate(0deg) scale(1.1);
+            z-index: 10;
+        }
+
+        /* Navigation Arrows (Bottom Right) */
+        .nav-arrows {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 20px;
+        }
+        .arrow {
+            width: 40px;
+            height: 20px;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+        .arrow:hover { opacity: 1; transform: scale(1.1); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container { flex-direction: column; height: auto; }
+            .left-panel { height: 400px; }
+            .right-panel { padding: 2rem; }
+            .mini-book { display: none; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 1. Left Panel: Art Zoom -->
+        <div class="left-panel" id="artPanel">
+            <!-- ใช้ภาพวาดแนว Impressionist -->
+            <img src="https://images.unsplash.com/photo-1578301978693-85ea400056e4?auto=format&fit=crop&w=1000&q=80" alt="Impressionist Art" class="art-image" id="artImage">
+        </div>
+
+        <!-- 2. Right Panel: Info -->
+        <div class="right-panel">
+            
+            <!-- Floating Thumbnail (เหมือนในรูปต้นฉบับตรงกลาง) -->
+            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=200&q=80" class="mini-book" title="ดูรูปปก">
+
+            <div class="breadcrumb">Shop / Art / Impressionism</div>
+            
+            <div>
+                <span class="tag-new">New</span>
+            </div>
+
+            <div class="author">Neret G.</div>
+            <h1>Renoir - 40th Anniversary<br>Edition</h1>
+
+            <div class="price-rating">
+                <div class="price">2,846 ฿</div>
+                <div class="stars">
+                    <!-- Note: flex-direction: row-reverse ทำให้ต้องเรียง 5->1 -->
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star checked"></i>
+                    <i class="fa-solid fa-star checked"></i>
+                    <i class="fa-solid fa-star checked"></i>
+                    <i class="fa-solid fa-star checked"></i>
+                </div>
+            </div>
+
+            <!-- Interactive Tabs -->
+            <div class="tabs-container">
+                <div class="tab-headers">
+                    <span class="tab-link active" onclick="openTab('desc')">เรื่องย่อ</span>
+                    <span class="tab-link" onclick="openTab('detail')">รายละเอียด</span>
+                    <span class="tab-link" onclick="openTab('review')">รีวิว (12)</span>
+                </div>
+                
+                <div id="desc" class="tab-content active">
+                    หนังสือเล่มนี้รวบรวมผลงานชิ้นเอกของ Renoir ศิลปินผู้เปี่ยมไปด้วยความสุขแห่งยุค Impressionism 
+                    ฉบับครบรอบ 40 ปี พิมพ์ด้วยกระดาษอาร์ตคุณภาพสูง พร้อมบทวิเคราะห์เจาะลึก
+                </div>
+                <div id="detail" class="tab-content">
+                    <ul>
+                        <li>ปกแข็ง: 450 หน้า</li>
+                        <li>ภาษา: English</li>
+                        <li>ขนาด: 25 x 30 cm</li>
+                        <li>น้ำหนัก: 2.5 kg</li>
+                    </ul>
+                </div>
+                <div id="review" class="tab-content">
+                    "ภาพสวยมาก คุ้มค่าราคาที่สุด แนะนำสำหรับคนสะสมงานศิลปะ" - <i>Customer A.</i>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <button class="btn-cart" onclick="addToCart(this)">
+                    <span class="btn-text">เพิ่มลงตะกร้า</span>
+                </button>
+                <div class="btn-bookmark" onclick="this.classList.toggle('active')">
+                    <i class="fa-regular fa-bookmark"></i>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div class="nav-arrows">
+                 <!-- ใช้ SVG ลูกศรแบบวาดมือตามสไตล์ -->
+                 <div class="arrow" style="background-image: url('data:image/svg+xml;utf8,<svg width=\'40\' height=\'20\' viewBox=\'0 0 40 20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M10 10H40 M10 10L15 5 M10 10L15 15\' stroke=\'%23333\' fill=\'none\'/></svg>');"></div>
+                 <div class="arrow" style="background-image: url('data:image/svg+xml;utf8,<svg width=\'40\' height=\'20\' viewBox=\'0 0 40 20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M30 10H0 M30 10L25 5 M30 10L25 15\' stroke=\'%23333\' fill=\'none\'/></svg>');"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script: Interactive Logic -->
+    <script>
+        // 1. Zoom Effect Logic
+        const container = document.getElementById("artPanel");
+        const img = document.getElementById("artImage");
+
+        container.addEventListener("mousemove", (e) => {
+            const x = e.clientX - container.offsetLeft;
+            const y = e.clientY - container.offsetTop;
+
+            // คำนวณจุดซูม
+            img.style.transformOrigin = `${x}px ${y}px`;
+            img.style.transform = "scale(1.5)"; // ขยาย 1.5 เท่า
+        });
+
+        container.addEventListener("mouseleave", () => {
+            img.style.transformOrigin = "center center";
+            img.style.transform = "scale(1)"; // กลับสู่ปกติ
+        });
+
+        // 2. Tab Logic
+        function openTab(tabName) {
+            // ซ่อนเนื้อหาทั้งหมด
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            // เอาเส้นใต้ Tab ออกทั้งหมด
+            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+
+            // แสดงเฉพาะอันที่เลือก
+            document.getElementById(tabName).classList.add('active');
+            // เพิ่มเส้นใต้ให้ปุ่มที่กด (ผ่าน event.target ไม่ได้เพราะส่งแต่ชื่อมา เลยใช้ loop ง่ายๆ แทน หรือใช้ this ใน html ก็ได้)
+            // ในที่นี้ใช้ CSS :hover ช่วย แต่ถ้าจะให้ค้างต้องแก้ class
+            event.target.classList.add('active');
+        }
+
+        // 3. Add to Cart Animation
+        function addToCart(btn) {
+            const originalText = '<span class="btn-text">เพิ่มลงตะกร้า</span>';
+            
+            // เปลี่ยนข้อความและสไตล์
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> เรียบร้อย';
+            btn.style.backgroundColor = '#1D1D1D';
+            btn.style.color = '#fff';
+
+            // คืนค่าเดิม
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.backgroundColor = 'transparent';
+                btn.style.color = '#1D1D1D';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

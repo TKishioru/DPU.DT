@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NJTK Bookstore | The Modern Library</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;700&family=Noto+Sans+Thai:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "theme-sage": "#809671",    /* Primary: เขียวใบไม้ */
+                        "theme-olive": "#B3B792",   /* Secondary: เขียวมะกอก/ทอง */
+                        "theme-cream": "#E5E0D8",   /* Background: สีครีมกระดาษ */
+                        "theme-charcoal": "#2A3328", /* Text: สีเทาเข้มอมเขียว */
+                        "theme-paper": "#F5F3EF",    /* Card: สีขาวนวล */
+                    },
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', "serif"],
+                        sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                    }
+                },
+            },
+        };
+    </script>
+
+    <!-- ใส่ไว้ใน <head> -->
+    <style>
+        .info-card {
+            padding: 1.5rem;
+            background: white;
+            position: relative;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        /* เส้นตกแต่งใต้ชื่อเรื่อง */
+        .title-underline {
+            width: 0;
+            height: 1px;
+            background: #809671;
+            /* Sage Green */
+            transition: width 0.4s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .group:hover .title-underline {
+            width: 50px;
+        }
+
+        /* ส่วนราคาและปุ่ม (ซ่อนไว้ก่อน) */
+        .action-row {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .group:hover .action-row {
+            max-height: 60px;
+            /* ความสูงที่ต้องการ */
+            opacity: 1;
+            transform: translateY(0);
+            margin-top: 1rem;
+        }
+
+        /* ปุ่ม Add to Cart แบบพิเศษ */
+        .btn-elegant {
+            background: transparent;
+            border: 1px solid #809671;
+            color: #809671;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s;
+        }
+
+        .btn-elegant::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: #809671;
+            z-index: -1;
+            transition: width 0.3s ease;
+        }
+
+        .btn-elegant:hover {
+            color: white;
+            border-color: #809671;
+        }
+
+        .btn-elegant:hover::before {
+            width: 100%;
+        }
+    </style>
+</head>
+
+
+<!-- Style (ใส่ใน <head> หรือ <style>) -->
+
+
+<!-- HTML Code -->
+<div class="info-card group">
+    <!-- Author -->
+    <div class="text-xs font-bold tracking-widest text-[#B3B792] uppercase mb-2">Mark Manson</div>
+
+    <!-- Title -->
+    <h3 class="text-lg font-playfair font-bold text-[#2A3328] leading-tight mb-1">
+        Everything is F*cked
+    </h3>
+
+    <!-- Decorative Line -->
+    <div class="title-underline"></div>
+
+    <!-- Hidden Action Row (Reveals on Hover) -->
+    <div class="action-row border-t border-gray-100 pt-3 flex items-center justify-between">
+        <div>
+            <div class="flex items-baseline gap-2">
+                <span class="text-xl font-bold text-[#809671]">฿450</span>
+                <span class="text-xs text-gray-400 line-through">฿550</span>
+            </div>
+            <!-- Simple Rating -->
+            <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-1">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+        </div>
+
+        <button
+            class="btn-elegant px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2"
+            onclick="addToCart(this)">
+            <span>Add</span> <i class="fa-solid fa-cart-plus"></i>
+        </button>
+    </div>
+</div>

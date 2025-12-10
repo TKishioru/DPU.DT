@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Homework</title>
+    <style>
+      .bodyframe {
+        padding: 8px;
+        border: solid 1px rgb(201, 201, 201);
+      }
+      input {
+        margin-bottom: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bodyframe">
+      <div
+        id="display"
+        style="background-color: aqua; width: 250px; height: 80px; font-weight: bold;"
+      >jQuery is easy.
+      </div>
+      <br />
+      <div class="">
+        <label>Set Background Color:</label>
+        <input id="background" type="color" />
+        <br />
+        <label>Set Text Color:</label>
+        <input id="text-color" type="color" />
+        <br />
+        <label>Set Text Size:</label>
+        <input id="text-size" type="number" min="0" />
+        <br />
+        <button id="btn_set">Set Style</button>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  $("#btn_set").click(function () {
+    const background = $("#background").val();
+    const color = $("#text-color").val();
+    const size = $("#text-size").val();
+
+    $("#display").css({
+      "background-color": background,
+      "color": color,
+      "font-size": size + "px",
+    });
+  });
+</script>

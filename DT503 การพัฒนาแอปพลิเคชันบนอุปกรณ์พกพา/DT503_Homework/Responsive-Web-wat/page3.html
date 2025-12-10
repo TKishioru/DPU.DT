@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NextHistory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="javascript/navbar.js"></script>
+<script src="javascript/carousel.js"></script>
+<script src="javascript/form.js"></script>
+    <script> //Design System
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Sarabun", "sans-serif"],
+            },
+            colors: {
+              primary: "#f5c51d",
+              secondary: "#1e40af", // blue-800
+              accent: "#f59e0b", // amber-500
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+<body>
+    <!-- Navbar -->
+    <nav
+      class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo -->
+          <div
+            class="flex-shrink-0 flex items-center cursor-pointer"
+            onclick="window.scrollTo(0, 0)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"
+              />
+              <path
+                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"
+              />
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.1 5-1 5-1" />
+            </svg>
+            <span class="ml-2 text-xl font-bold text-gray-900 tracking-tight"
+              >NextHistory</span
+            >
+          </div>
+
+          <!-- Desktop Menu -->
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a
+                href="#home"
+                class="text-gray-600 hover:text-primary hover:bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                >หน้าแรก</a
+              >
+              <a
+                href="#services"
+                class="text-gray-600 hover:text-primary hover:bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                >วัดใหญ่ชัยมงคล</a
+              >
+              <a
+                href="#about"
+                class="text-gray-600 hover:text-primary hover:bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                >วัดมหาธาตุ</a
+              >
+              <a
+                href="#contact"
+                class="text-gray-600 hover:text-primary hover:bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                >วัดราชบูรณะ</a
+              >
+              <a
+                href="#contact"
+                class="text-gray-600 hover:text-primary hover:bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                >วัดพระศรีสรรเพชญ์</a
+              >
+            </div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <div class="-mr-2 flex md:hidden">
+            <button
+              id="mobile-menu-btn"
+              type="button"
+              class="bg-gray-50 inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-primary hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              <span class="sr-only">Open main menu</span>
+              <!-- Menu Icon -->
+              <svg
+                id="menu-icon"
+                class="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <!-- Close Icon -->
+              <svg
+                id="close-icon"
+                class="hidden h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Panel -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white shadow-lg overflow-hidden transition-all duration-300"
+      >
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <a
+            href="#home"
+            class="mobile-link text-gray-600 hover:text-primary hover:bg-blue-50 block px-3 py-2 rounded-md text-base font-medium"
+            >หน้าแรก</a
+          >
+          <a
+            href="#about"
+            class="mobile-link text-gray-600 hover:text-primary hover:bg-blue-50 block px-3 py-2 rounded-md text-base font-medium"
+            >เกี่ยวกับเรา</a
+          >
+          <a
+            href="#services"
+            class="mobile-link text-gray-600 hover:text-primary hover:bg-blue-50 block px-3 py-2 rounded-md text-base font-medium"
+            >บริการของเรา</a
+          >
+          <a
+            href="#contact"
+            class="mobile-link text-gray-600 hover:text-primary hover:bg-blue-50 block px-3 py-2 rounded-md text-base font-medium"
+            >ติดต่อเรา</a
+          >
+        </div>
+      </div>
+    </nav>
+    <main class="flex-grow pt-16">
+<div class="text-center mt-8 mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              วัดสำคัญในอุทยานประวัติศาสตร์พระนครศรีอยุธยา
+            </h2>
+            <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+              วัดในประเทศไทยจำนวนมากมีประวัติศาสตร์ยาวนานและมีความเชื่อมโยงอย่างลึกซึ้งกับเหตุการณ์สำคัญของชาติ โดยเฉพาะวัดในสมัยอยุธยาซึ่งเป็นมรดกโลก
+            </p>
+          </div>
+    </main>
+</body>
+</html>

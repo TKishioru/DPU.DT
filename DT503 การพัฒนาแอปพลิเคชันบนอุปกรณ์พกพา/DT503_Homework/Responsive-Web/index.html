@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Harry Potter</title>
+  <link rel="icon" type="image/png" href="image/logo_small.png" />
+  <link rel="stylesheet" href="styles/style.css" />
+
+  <!-- ใช้ไอคอนจาก Web แทน -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/135/135869.png" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+Thai" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "magic-dark": "#0B101B" /* พื้นหลังดำอมน้ำเงิน */,
+            "magic-navy": "#152238" /* น้ำเงินเข้ม */,
+            "magic-blue": "#2C4E80" /* น้ำเงินกลาง */,
+            "magic-ice": "#A5C9CA" /* สีฟ้าเย็น (Accent) */,
+            "magic-silver": "#E7F6F2" /* สีเงิน/ขาว */,
+          },
+          fontFamily: {
+            cinzel: ['"Cinzel"', "serif"],
+            lato: ['"Lato"', "sans-serif"],
+            noto: ['"Noto Sans Thai"', 'sans-serif'],
+          },
+          backgroundImage: {
+            "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+          },
+          dropShadow: {
+            glow: "0 0 10px rgba(165, 201, 202, 0.5)",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-magic-dark text-gray-300 font-lato overflow-x-hidden selection:bg-magic-ice selection:text-magic-navy">
+  <!-- Navbar -->
+  <nav id="navbar"
+    class="fixed w-full z-50 transition-all duration-300 bg-magic-dark backdrop-blur-sm md:bg-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="window.scrollTo(0, 0)">
+          <!-- Icon -->
+          <img src="image/logo_small.png" alt="Logo" class="h-10 w-10 group-hover:animate-spin-slow transition-all" />
+          <!--    <span
+            class="ml-3 text-2xl font-cinzel font-bold text-magic-silver tracking-widest group-hover:text-magic-ice transition-colors">Hogwarts</span>
+-->
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-baseline space-x-8">
+            <a href="index.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Home
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full box-shadow-[0_0_8px_#A5C9CA]"></span>
+            </a>
+            <a href="character.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Character
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="movie.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Movie
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="spell.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Spell
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="-mr-2 flex md:hidden">
+          <button id="mobile-menu-btn" type="button"
+            class="inline-flex items-center justify-center p-2 rounded-md text-magic-ice hover:text-white hover:bg-white/10 focus:outline-none">
+            <span class="sr-only">Open main menu</span>
+            <svg id="menu-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-menu" class="hidden md:hidden bg-magic-dark/95 border-b border-white/10 backdrop-blur-xl">
+      <div class="px-4 pt-2 pb-6 space-y-2">
+        <a href="index.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Home</a>
+        <a href="character.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Character</a>
+        <a href="movie.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Movie</a>
+        <a href="house.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">House</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Carousel Section (Hero) -->
+  <div id="home" class="relative h-screen min-h-[600px] w-full group overflow-hidden">
+    <!-- Overlay Gradient (Blue Tone) -->
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-magic-dark/30 via-transparent to-magic-dark z-10 pointer-events-none">
+    </div>
+
+    <!-- Slides Container -->
+    <div id="slides-container" class="relative h-full w-full">
+      <!-- JS will populate slides here -->
+    </div>
+
+    <!-- Text Content (Static over slides) -->
+    <div
+      class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 z-20 pointer-events-none">
+      <h2
+        class="text-5xl md:text-7xl lg:text-8xl font-cinzel font-bold mb-6 drop-shadow-glow text-glow animate-fade-in-up">
+        Harry Potter
+      </h2>
+      <p class="text-lg md:text-2xl max-w-2xl font-lato font-light tracking-wide text-gray-200 drop-shadow-md mb-8">
+        "Happiness can be found, even in the darkest of times, if one only
+        remembers to turn on the light."
+      </p>
+      <a href="#Character"
+        class="pointer-events-auto px-8 py-3 border border-magic-ice text-magic-ice hover:bg-magic-ice hover:text-magic-dark transition-all duration-300 font-cinzel tracking-widest text-sm uppercase">
+        Explore the Magic
+      </a>
+    </div>
+
+    <!-- Controls -->
+    <button id="prev-slide"
+      class="hidden group-hover:block absolute top-1/2 left-5 -translate-y-1/2 p-3 rounded-full border border-white/20 hover:bg-white/10 hover:border-magic-ice text-white transition-all z-30">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+    <button id="next-slide"
+      class="hidden group-hover:block absolute top-1/2 right-5 -translate-y-1/2 p-3 rounded-full border border-white/20 hover:bg-white/10 hover:border-magic-ice text-white transition-all z-30">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+
+    <!-- Dots -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 z-20" id="carousel-dots">
+      <!-- JS Generates dots -->
+    </div>
+  </div>
+
+  <!-- Section: Characters -->
+  <section id="Character" class="py-24 bg-magic-dark relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="text-magic-ice font-cinzel tracking-[0.3em] text-sm uppercase">Wizards & Witches</span>
+        <h2 class="text-4xl font-cinzel text-white mt-2">Main Characters</h2>
+        <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-magic-blue to-transparent mx-auto mt-6"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Portrait 1 -->
+        <div
+          class="group relative h-[500px] w-full overflow-hidden rounded-lg cursor-pointer reveal-on-scroll reveal-hidden"
+          style="transition-delay: 100ms">
+          <!-- Image -->
+          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+            style="background-image: url('image/c_HarryPotter.jpeg')"></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500">
+          </div>
+
+          <!-- Border Effect -->
+          <div
+            class="absolute inset-4 border border-white/20 group-hover:border-magic-ice/60 transition-colors duration-500 pointer-events-none">
+          </div>
+
+          <!-- Text Content -->
+          <div
+            class="absolute bottom-0 left-0 w-full p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <span
+              class="text-magic-ice font-cinzel text-xs tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 block mb-2">GRYFFINDOR</span>
+            <h3 class="text-3xl font-cinzel font-bold text-white mb-2">
+              Harry Potter
+            </h3>
+            <p
+              class="text-gray-300 font-lato text-sm opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-500 delay-100">
+              The central character in the series. He is the only known wizard
+              to have survived the Killing Curse.
+            </p>
+          </div>
+        </div>
+
+        <!-- Portrait 2 -->
+        <div
+          class="group relative h-[500px] w-full overflow-hidden rounded-lg cursor-pointer reveal-on-scroll reveal-hidden"
+          style="transition-delay: 200ms">
+          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+            style="background-image: url('image/c_Hermiony.jpeg')"></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500">
+          </div>
+          <div
+            class="absolute inset-4 border border-white/20 group-hover:border-magic-ice/60 transition-colors duration-500 pointer-events-none">
+          </div>
+          <div
+            class="absolute bottom-0 left-0 w-full p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <span
+              class="text-magic-ice font-cinzel text-xs tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 block mb-2">GRYFFINDOR</span>
+            <h3 class="text-3xl font-cinzel font-bold text-white mb-2">
+              Hermione Granger
+            </h3>
+            <p
+              class="text-gray-300 font-lato text-sm opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-500 delay-100">
+              Top of her class and possesses a brilliant academic mind. Her
+              knowledge often saves the trio.
+            </p>
+          </div>
+        </div>
+
+        <!-- Portrait 3 -->
+        <div
+          class="group relative h-[500px] w-full overflow-hidden rounded-lg cursor-pointer reveal-on-scroll reveal-hidden"
+          style="transition-delay: 300ms">
+          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+            style="background-image: url('image/c_ron.webp')"></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500">
+          </div>
+          <div
+            class="absolute inset-4 border border-white/20 group-hover:border-magic-ice/60 transition-colors duration-500 pointer-events-none">
+          </div>
+          <div
+            class="absolute bottom-0 left-0 w-full p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <span
+              class="text-magic-ice font-cinzel text-xs tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 block mb-2">GRYFFINDOR</span>
+            <h3 class="text-3xl font-cinzel font-bold text-white mb-2">
+              Ron Weasley
+            </h3>
+            <p
+              class="text-gray-300 font-lato text-sm opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-500 delay-100">
+              The sixth son of the Weasley family. His loyalty and bravery are
+              his greatest strengths.
+            </p>
+          </div>
+        </div>
+      </div>
+      <a href="#Character"
+        class="pointer-events-auto px-8 py-3 border border-magic-ice text-magic-ice hover:bg-magic-ice hover:text-magic-dark transition-all duration-300 font-cinzel tracking-widest text-sm uppercase">
+        More
+      </a>
+    </div>
+  </section>
+
+  <!-- Section: Houses (Simple Grid) -->
+  <section id="House" class="py-24 bg-magic-navy relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10" style="
+          background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+        "></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center">
+        <span class="text-magic-ice font-cinzel tracking-[0.3em] text-sm uppercase">The Sorting Hat</span>
+        <h2 class="text-4xl font-cinzel text-white mt-2">Hogwarts Houses</h2>
+        <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-magic-blue to-transparent mx-auto mt-6"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- GRYFFINDOR CARD -->
+        <div
+          class="group relative h-96 overflow-hidden hover:border-red-500/50 transition-all duration-500 hover:-translate-y-2">
+          <!-- Hover Glow Background -->
+          <div
+            class="absolute inset-0 bg-gradient-to-b from-red-900/0 via-red-900/0 to-red-900/40 group-hover:via-red-900/20 transition-all duration-500">
+          </div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+            <!-- Crest Circle -->
+            <div
+              class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all duration-500 bg-black/30">
+              <img src="image/logo_gryffindoor.png" alt="Gryffindor Crest" class="w-16 h-16" />
+            </div>
+
+            <h3 class="text-2xl font-cinzel text-white group-hover:text-red-400 transition-colors">
+              Gryffindor
+            </h3>
+            <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">
+              Bravery
+            </p>
+
+            <!-- Hidden Text -->
+            <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+              <p
+                class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                Where dwell the brave at heart.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLYTHERIN CARD -->
+        <div
+          class="group relative h-96 overflow-hidden hover:border-green-500/50 transition-all duration-500 hover:-translate-y-2">
+          <div
+            class="absolute inset-0 bg-gradient-to-b from-green-900/0 via-green-900/0 to-green-900/40 group-hover:via-green-900/20 transition-all duration-500">
+          </div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+            <div
+              class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-green-500 group-hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all duration-500 bg-black/30">
+              <img src="image/logo_slytherin.png" alt="Gryffindor Crest" class="w-16 h-16" />
+            </div>
+            <h3 class="text-2xl font-cinzel text-white group-hover:text-green-400 transition-colors">
+              Slytherin
+            </h3>
+            <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">
+              Ambition
+            </p>
+            <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+              <p
+                class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                Those cunning folk use any means.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RAVENCLAW CARD -->
+        <div
+          class="group relative h-96 overflow-hidden hover:border-blue-500/50 transition-all duration-500 hover:-translate-y-2">
+          <div
+            class="absolute inset-0 bg-gradient-to-b from-blue-900/0 via-blue-900/0 to-blue-900/40 group-hover:via-blue-900/20 transition-all duration-500">
+          </div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+            <div
+              class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all duration-500 bg-black/30">
+              <img src="image/logo_ravenclaw.png" alt="Gryffindor Crest" class="w-16 h-16" />
+            </div>
+            <h3 class="text-2xl font-cinzel text-white group-hover:text-blue-400 transition-colors">
+              Ravenclaw
+            </h3>
+            <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">
+              Wisdom
+            </p>
+            <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+              <p
+                class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                Wit beyond measure is treasure.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- HUFFLEPUFF CARD -->
+        <div
+          class="group relative h-96 overflow-hidden hover:border-yellow-500/50 transition-all duration-500 hover:-translate-y-2">
+          <div
+            class="absolute inset-0 bg-gradient-to-b from-yellow-900/0 via-yellow-900/0 to-yellow-900/40 group-hover:via-yellow-900/20 transition-all duration-500">
+          </div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+            <div
+              class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-yellow-500 group-hover:shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all duration-500 bg-black/30">
+              <img src="image/logo_hufflepuff.png" alt="Gryffindor Crest" class="w-16 h-16" />
+            </div>
+            <h3 class="text-2xl font-cinzel text-white group-hover:text-yellow-400 transition-colors">
+              Hufflepuff
+            </h3>
+            <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">
+              Loyalty
+            </p>
+            <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+              <p
+                class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                Just, loyal, and unafraid of toil.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: About & Support (The Creators & Owl Post) -->
+  <section id="About" class="relative py-24 bg-gradient-to-b from-magic-dark to-[#05080f] overflow-hidden">
+
+    <!-- Background Elements -->
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-magic-ice/50 to-transparent">
+    </div>
+    <div
+      class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none">
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+      <!-- 1. The Creators (Wizard Profiles) -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-cinzel text-white drop-shadow-glow">The Architects</h2>
+        <p class="text-magic-ice font-cinzel text-sm tracking-[0.3em] mt-2 uppercase">Behind the Magic</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+
+        <!-- Card: Writer -->
+        <div
+          class="group relative bg-magic-navy/30 backdrop-blur-md border border-white/10 rounded-xl p-8 hover:border-magic-ice/50 transition-all duration-500 hover:-translate-y-2">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-magic-ice/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl">
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-6 relative z-10">
+            <!-- Avatar Frame -->
+            <div class="relative w-32 h-32 flex-shrink-0">
+              <div class="absolute inset-0 border-2 border-magic-ice/30 rounded-full animate-spin-slow"
+                style="animation-duration: 10s;"></div>
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop"
+                alt="Writer"
+                class="w-full h-full object-cover rounded-full border-4 border-[#0B101B] shadow-lg grayscale group-hover:grayscale-0 transition-all duration-500">
+            </div>
+
+            <!-- Info -->
+            <div class="text-center sm:text-left">
+              <span
+                class="text-xs font-cinzel text-magic-ice border border-magic-ice/30 px-2 py-1 rounded full uppercase tracking-wide">Storyteller</span>
+              <h3 class="text-2xl font-cinzel text-white mt-2 font-bold">J.K. Rolling</h3>
+              <p class="text-gray-400 font-lato text-sm mt-2 leading-relaxed">
+                "ผู้ร้อยเรียงเรื่องราวแห่งโลกเวทมนตร์ ค้นคว้าตำราเก่าแก่เพื่อนำมาเล่าขานให้มักเกิ้ลได้รับรู้"
+              </p>
+              <!-- Social Icons -->
+              <div class="flex items-center justify-center sm:justify-start gap-4 mt-4">
+                <a href="#" class="text-gray-500 hover:text-magic-ice transition-colors"><svg class="w-5 h-5"
+                    fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                  </svg></a>
+                <a href="#" class="text-gray-500 hover:text-magic-ice transition-colors"><svg class="w-5 h-5"
+                    fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Developer -->
+        <div
+          class="group relative bg-magic-navy/30 backdrop-blur-md border border-white/10 rounded-xl p-8 hover:border-magic-ice/50 transition-all duration-500 hover:-translate-y-2">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-magic-ice/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl">
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-6 relative z-10">
+            <!-- Avatar Frame -->
+            <div class="relative w-32 h-32 flex-shrink-0">
+              <div class="absolute inset-0 border-2 border-magic-ice/30 rounded-full animate-spin-slow"
+                style="animation-duration: 15s; animation-direction: reverse;"></div>
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop"
+                alt="Developer"
+                class="w-full h-full object-cover rounded-full border-4 border-[#0B101B] shadow-lg grayscale group-hover:grayscale-0 transition-all duration-500">
+            </div>
+
+            <!-- Info -->
+            <div class="text-center sm:text-left">
+              <span
+                class="text-xs font-cinzel text-magic-ice border border-magic-ice/30 px-2 py-1 rounded full uppercase tracking-wide">Technomancer</span>
+              <h3 class="text-2xl font-cinzel text-white mt-2 font-bold">Khampeerada Phoothong</h3>
+              <p class="text-gray-400 font-lato text-sm mt-2 leading-relaxed">
+                "ผู้พัฒนาเว็บไซต์รหัสนักศึกษา 68130387"
+              </p>
+              <!-- Social Icons -->
+              <div class="flex items-center justify-center sm:justify-start gap-4 mt-4">
+                <a href="#" class="text-gray-500 hover:text-magic-ice transition-colors"><svg class="w-5 h-5"
+                    fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                  </svg></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Magical Contact Form -->
+  <div class="relative max-w-7xl mx-auto px-4 mb-4 sm:px-6 lg:px-8"> 
+    <!-- Glow Effect Behind Form -->
+    <div class="absolute inset-0 bg-magic-ice/10 blur-2xl rounded-xl opacity-50 pointer-events-none"></div>
+
+    <form id="contact-form"
+      class="relative space-y-6 bg-white/5 backdrop-blur-md p-8 rounded-xl border border-white/10 shadow-2xl">
+
+      <!-- Header inside form (Optional) -->
+      <div class="text-center mb-6">
+        <h3 class="text-2xl font-cinzel text-white">Owl Post Service</h3>
+        <p class="text-xs text-gray-400 font-lato tracking-widest uppercase mt-1">Send us a message</p>
+      </div>
+
+      <!-- Name Field -->
+      <div class="group">
+        <label htmlFor="name"
+          class="block text-xs font-cinzel tracking-[0.2em] text-magic-ice mb-2 uppercase group-focus-within:text-white transition-colors">Wizard
+          Name</label>
+        <div class="relative">
+          <input type="text" id="name" name="name" required
+            class="w-full pl-4 pr-4 py-3 bg-[#0B101B]/60 border border-white/10 rounded-lg text-gray-200 placeholder-gray-600 focus:outline-none focus:border-magic-ice/80 focus:ring-1 focus:ring-magic-ice/50 focus:shadow-[0_0_15px_rgba(165,201,202,0.2)] transition-all duration-300 font-lato"
+            placeholder="e.g. Harry Potter" />
+          <!-- Magic Sparkle Icon (Optional) -->
+          <div
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-magic-ice transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+              </path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      <div class="group">
+        <label htmlFor="email"
+          class="block text-xs font-cinzel tracking-[0.2em] text-magic-ice mb-2 uppercase group-focus-within:text-white transition-colors">Owl
+          Address (Email)</label>
+        <input type="email" id="email" name="email" required
+          class="w-full px-4 py-3 bg-[#0B101B]/60 border border-white/10 rounded-lg text-gray-200 placeholder-gray-600 focus:outline-none focus:border-magic-ice/80 focus:ring-1 focus:ring-magic-ice/50 focus:shadow-[0_0_15px_rgba(165,201,202,0.2)] transition-all duration-300 font-lato"
+          placeholder="example@hogwarts.edu" />
+      </div>
+
+      <!-- Message Field -->
+      <div class="group">
+        <label htmlFor="message"
+          class="block text-xs font-cinzel tracking-[0.2em] text-magic-ice mb-2 uppercase group-focus-within:text-white transition-colors">Scroll
+          Content (Message)</label>
+        <textarea id="message" name="message" rows="4" required
+          class="w-full px-4 py-3 bg-[#0B101B]/60 border border-white/10 rounded-lg text-gray-200 placeholder-gray-600 focus:outline-none focus:border-magic-ice/80 focus:ring-1 focus:ring-magic-ice/50 focus:shadow-[0_0_15px_rgba(165,201,202,0.2)] transition-all duration-300 font-lato resize-none"
+          placeholder="Write your magical inquiry here..."></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submit-btn"
+        class="group w-full flex items-center justify-center py-3 px-4 border border-magic-ice text-magic-ice font-cinzel tracking-widest text-sm uppercase rounded-lg hover:bg-magic-ice hover:text-[#0B101B] hover:shadow-[0_0_20px_rgba(165,201,202,0.4)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-magic-ice transition-all duration-300 relative overflow-hidden">
+        <span class="relative z-10 flex items-center gap-2">
+          Send via Owl
+          <!-- Feather Icon -->
+          <svg class="w-5 h-5 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform duration-300"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8">
+            </path>
+          </svg>
+        </span>
+      </button>
+    </form>
+  </div>
+  <!-- Footer -->
+  <footer class="bg-black py-8 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="font-cinzel text-gray-500 text-sm">
+        © 2023 Hogwarts School of Witchcraft and Wizardry. <br />
+        Theme by Tailwind CSS.
+      </p>
+    </div>
+  </footer>
+
+  <!-- JavaScript Included Directly -->
+
+  <script src="javascript/navbar.js"></script>
+  <script src="javascript/carousel.js"></script>
+</body>
+
+</html>

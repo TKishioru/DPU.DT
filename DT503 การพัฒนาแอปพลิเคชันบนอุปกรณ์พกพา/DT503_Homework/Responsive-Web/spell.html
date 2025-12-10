@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Harry Potter</title>
+  <link rel="icon" type="image/png" href="image/logo_small.png" />
+  <link rel="stylesheet" href="styles/style.css" />
+
+  <!-- ใช้ไอคอนจาก Web แทน -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/135/135869.png" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap"
+    rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+Thai"
+    rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "magic-dark": "#0B101B" /* พื้นหลังดำอมน้ำเงิน */,
+            "magic-navy": "#152238" /* น้ำเงินเข้ม */,
+            "magic-blue": "#2C4E80" /* น้ำเงินกลาง */,
+            "magic-ice": "#A5C9CA" /* สีฟ้าเย็น (Accent) */,
+            "magic-silver": "#E7F6F2" /* สีเงิน/ขาว */,
+          },
+          fontFamily: {
+            cinzel: ['"Cinzel"', "serif"],
+            lato: ['"Lato"', "sans-serif"],
+            noto: ['"Noto Sans Thai"', 'sans-serif'],
+          },
+          backgroundImage: {
+            "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+          },
+          dropShadow: {
+            glow: "0 0 10px rgba(165, 201, 202, 0.5)",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-magic-dark text-gray-300 font-noto overflow-x-hidden selection:bg-magic-ice selection:text-magic-navy">
+  <!-- Navbar -->
+  <nav id="navbar"
+    class="fixed w-full z-50 transition-all duration-300 bg-magic-dark backdrop-blur-sm md:bg-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="window.scrollTo(0, 0)">
+          <!-- Icon -->
+          <img src="image/logo_small.png" alt="Logo" class="h-10 w-10 group-hover:animate-spin-slow transition-all" />
+          <!--    <span
+            class="ml-3 text-2xl font-cinzel font-bold text-magic-silver tracking-widest group-hover:text-magic-ice transition-colors">Hogwarts</span>
+-->
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-baseline space-x-8">
+            <a href="index.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Home
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full box-shadow-[0_0_8px_#A5C9CA]"></span>
+            </a>
+            <a href="character.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Character
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="movie.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Movie
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="spell.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Spell
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="-mr-2 flex md:hidden">
+          <button id="mobile-menu-btn" type="button"
+            class="inline-flex items-center justify-center p-2 rounded-md text-magic-ice hover:text-white hover:bg-white/10 focus:outline-none">
+            <span class="sr-only">Open main menu</span>
+            <svg id="menu-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-menu" class="hidden md:hidden bg-magic-dark/95 border-b border-white/10 backdrop-blur-xl">
+      <div class="px-4 pt-2 pb-6 space-y-2">
+        <a href="index.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Home</a>
+        <a href="character.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Character</a>
+        <a href="movie.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Movie</a>
+        <a href="house.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">House</a>
+      </div>
+    </div>
+  </nav>
+
+<!-- Section: Spellbook (The Standard Book of Spells) -->
+    <section id="Spell" class="py-24 bg-magic-dark relative min-h-screen">
+        
+        <!-- Background Elements -->
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-magic-ice/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <span class="text-magic-ice font-cinzel tracking-[0.3em] text-sm uppercase">Incantations</span>
+                <h2 class="text-4xl md:text-5xl font-cinzel text-white mt-2 drop-shadow-glow">The Standard Book of Spells</h2>
+                <p class="text-gray-400 font-lato mt-4 max-w-2xl mx-auto">
+                    "Swish and flick! Remember, pronunciation is key."
+                </p>
+            </div>
+
+            <!-- Controls: Search & Filter -->
+            <div class="flex flex-col items-center gap-6 mb-12">
+                
+                <!-- Search Bar -->
+                <div class="relative w-full max-w-md group">
+                    <div class="absolute inset-0 bg-magic-ice/20 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative flex items-center bg-[#0B101B] border border-white/20 rounded-full px-6 py-3 focus-within:border-magic-ice focus-within:shadow-[0_0_20px_rgba(165,201,202,0.3)] transition-all">
+                        <svg class="w-5 h-5 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="spell-search" placeholder="Search for a spell (e.g. Lumos)..." class="bg-transparent border-none outline-none text-white w-full font-cinzel placeholder-gray-600" onkeyup="filterSpells()">
+                    </div>
+                </div>
+
+                <!-- Category Tabs (Scrollable on mobile) -->
+                <div class="w-full overflow-x-auto pb-2 scrollbar-hide">
+                    <div class="flex md:justify-center gap-3 min-w-max px-4">
+                        <button onclick="setCategory('all')" class="spell-filter active px-4 py-2 border border-white/10 rounded-lg text-xs font-cinzel uppercase tracking-widest text-gray-400 hover:text-white hover:border-magic-ice transition-all">All</button>
+                        <button onclick="setCategory('combat')" class="spell-filter px-4 py-2 border border-white/10 rounded-lg text-xs font-cinzel uppercase tracking-widest text-gray-400 hover:text-white hover:border-magic-ice transition-all">Combat</button>
+                        <button onclick="setCategory('utility')" class="spell-filter px-4 py-2 border border-white/10 rounded-lg text-xs font-cinzel uppercase tracking-widest text-gray-400 hover:text-white hover:border-magic-ice transition-all">Utility</button>
+                        <button onclick="setCategory('light')" class="spell-filter px-4 py-2 border border-white/10 rounded-lg text-xs font-cinzel uppercase tracking-widest text-gray-400 hover:text-white hover:border-magic-ice transition-all">Light/Dark</button>
+                        <button onclick="setCategory('curse')" class="spell-filter px-4 py-2 border border-red-900/30 rounded-lg text-xs font-cinzel uppercase tracking-widest text-red-900 hover:text-red-500 hover:border-red-500 hover:bg-red-900/20 transition-all">Unforgivable</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spells Grid -->
+            <div id="spell-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Javascript will inject spell cards here -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Script for Spell Data & Logic -->
+    <script>
+        // --- 1. Spell Database ---
+        const spellsData = [
+            // ⚔️ Combat (Defense / Attack)
+            { name: "Expelliarmus", type: "combat", desc: "คาถาปลดอาวุธ ทำให้อาวุธหรือสิ่งที่ถืออยู่หลุดจากมือ (คาถาประจำตัวของแฮร์รี)" },
+            { name: "Stupefy", type: "combat", desc: "ทำให้คู่ต่อสู้ สลบ / หมดสติ" },
+            { name: "Protego", type: "combat", desc: "สร้างเกราะวิเศษ ป้องกันคาถาและการโจมตีทางกายภาพ" },
+            { name: "Petrificus Totalus", type: "combat", desc: "สาปให้ร่างคู่ต่อสู้แข็งทื่อเหมือนท่อนไม้ ขยับไม่ได้ชั่วคราว" },
+            { name: "Reducto", type: "combat", desc: "คาถาระเบิดวัตถุ ทำให้สิ่งของแตกเป็นเสี่ยงๆ หรือพังทลาย" },
+            { name: "Sectumsempra", type: "combat", desc: "คาถาผ่าร่าง (คิดค้นโดยสเนป) ทำให้เกิดบาดแผลฉกรรจ์เหมือนถูกฟันด้วยดาบ" },
+            { name: "Rictusempra", type: "combat", desc: "คาถาจี้เส้น ทำให้คู่ต่อสู้หัวเราะอย่างควบคุมไม่ได้จนอ่อนแรง" },
+            { name: "Bombarda", type: "combat", desc: "คาถาระเบิด ใช้ทำลายสิ่งกีดขวางหรือประตู (Bombarda Maxima เพื่อแรงระเบิดสูงสุด)" },
+
+            // 🔦 Light / Dark / Vision
+            { name: "Lumos", type: "light", desc: "จุดไฟที่ปลายไม้กายสิทธิ์ เพื่อใช้ส่องทางในที่มืด" },
+            { name: "Nox", type: "light", desc: "ดับไฟที่เกิดจากคาถา Lumos" },
+            { name: "Obscuro", type: "light", desc: "สร้างผ้าผูกตามาปิดตาเป้าหมาย ทำให้มองไม่เห็น" },
+
+            // 🧰 Utility (General Use)
+            { name: "Accio", type: "utility", desc: "คาถาเรียกของ ให้ลอยมาหาผู้ร่าย (เช่น 'Accio Firebolt!')" },
+            { name: "Wingardium Leviosa", type: "utility", desc: "ทำให้วัตถุลอยขึ้นและควบคุมทิศทางได้ (เน้นการสะบัดและนิดหน่อย)" },
+            { name: "Alohomora", type: "utility", desc: "สะเดาะกุญแจ เปิดประตูหรือหน้าต่างที่ลงกลอนไว้" },
+            { name: "Reparo", type: "utility", desc: "ซ่อมแซมวัตถุที่แตกหักเสียหายให้กลับมาเป็นสภาพเดิม" },
+            { name: "Scourgify", type: "utility", desc: "คาถาทำความสะอาด ขจัดคราบสกปรก" },
+            { name: "Impervius", type: "utility", desc: "ทำให้วัตถุมีคุณสมบัติกันน้ำและไล่น้ำ" },
+            { name: "Muffliato", type: "utility", desc: "สร้างเสียงหึ่งๆ ในหูคนรอบข้าง เพื่อป้องกันไม่ให้ได้ยินบทสนทนา" },
+
+            // 👻 Creatures / Patronus
+            { name: "Expecto Patronum", type: "utility", desc: "สร้างผู้พิทักษ์ (Patronus) จากความทรงจำที่มีความสุข เพื่อไล่ผู้คุมวิญญาณ" },
+
+            // 🕵️‍♂️ Hiding / Transformation
+            { name: "Disillusionment", type: "utility", desc: "คาถาพรางตา ทำให้เป้าหมายกลมกลืนกับสภาพแวดล้อมเหมือนกิ้งก่า" },
+
+            // 🧹 Movement / Object Control
+            { name: "Locomotor", type: "utility", desc: "สั่งให้วัตถุลอยและเคลื่อนที่ตามไม้กายสิทธิ์ของผู้ร่าย" },
+            { name: "Portus", type: "utility", desc: "เปลี่ยนวัตถุให้กลายเป็นกุญแจนำทาง (Portkey) เพื่อเคลื่อนย้ายข้ามสถานที่" },
+
+            // 📰 Specialized / Other
+            { name: "Obliviate", type: "utility", desc: "ลบความทรงจำบางส่วนหรือทั้งหมดของเป้าหมาย" },
+            { name: "Legilimens", type: "utility", desc: "พินิจใจ เจาะเข้าไปดูความคิดและความทรงจำของผู้อื่น" },
+            { name: "Rennervate", type: "utility", desc: "ปลุกคนที่หมดสติให้ฟื้นคืนสติ" },
+            { name: "Finite Incantatem", type: "utility", desc: "ยกเลิกผลของคาถาอื่นๆ ที่กำลังทำงานอยู่" },
+
+            // 💀 Unforgivable Curses
+            { name: "Avada Kedavra", type: "curse", desc: "คำสาปพิฆาต ปลิดชีพเป้าหมายทันทีด้วยแสงสีเขียว ไม่มีคาถาต้านทาน" },
+            { name: "Crucio", type: "curse", desc: "คำสาปกรีดแทง ทำให้เหยื่อเจ็บปวดทรมานเจียนตาย" },
+            { name: "Imperio", type: "curse", desc: "คำสาปสะกดใจ ควบคุมจิตใจและการกระทำของเหยื่อได้อย่างสมบูรณ์" }
+        ];
+
+        let currentCategory = 'all';
+
+        // --- 2. Render Functions ---
+        function renderSpells(data) {
+            const grid = document.getElementById('spell-grid');
+            grid.innerHTML = '';
+
+            data.forEach((spell, index) => {
+                // Determine Icon & Style based on type
+                let icon = '';
+                let borderClass = 'hover:border-magic-ice group-hover:shadow-[0_0_15px_rgba(165,201,202,0.2)]';
+                let iconClass = 'text-magic-ice bg-magic-ice/10';
+                let titleClass = 'text-white group-hover:text-magic-ice';
+
+                if(spell.type === 'combat') icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>'; // Lightning
+                else if(spell.type === 'light') icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>'; // Sun
+                else if(spell.type === 'curse') {
+                    icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>'; // Warning/Skull
+                    borderClass = 'border-red-900/40 hover:border-red-500 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] bg-red-950/10';
+                    iconClass = 'text-red-500 bg-red-900/20';
+                    titleClass = 'text-red-100 group-hover:text-red-500';
+                }
+                else icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>'; // Potion/Magic
+
+                const cardHTML = `
+                    <div class="group relative bg-[#0B101B]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 ${borderClass} reveal-item" style="animation-delay: ${index * 30}ms">
+                        <div class="flex items-start gap-4">
+                            <!-- Icon -->
+                            <div class="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center ${iconClass}">
+                                ${icon}
+                            </div>
+                            <!-- Content -->
+                            <div>
+                                <h3 class="text-xl font-cinzel font-bold mb-1 ${titleClass} transition-colors">${spell.name}</h3>
+                                <p class="text-gray-400 font-lato text-sm leading-relaxed">${spell.desc}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        // --- 3. Filter Logic ---
+        function setCategory(cat) {
+            currentCategory = cat;
+            
+            // Update Buttons Style
+            document.querySelectorAll('.spell-filter').forEach(btn => {
+                if(btn.innerText.toLowerCase().includes(cat === 'light' ? 'light' : cat)) {
+                    btn.classList.add('bg-white/10', 'text-white', 'border-white/30');
+                    btn.classList.remove('text-gray-400');
+                    if(cat === 'curse') {
+                        btn.classList.add('bg-red-900/40', 'text-red-400', 'border-red-500');
+                        btn.classList.remove('bg-white/10');
+                    }
+                } else {
+                    btn.classList.remove('bg-white/10', 'text-white', 'border-white/30', 'bg-red-900/40', 'text-red-400', 'border-red-500');
+                    btn.classList.add('text-gray-400');
+                }
+            });
+
+            filterSpells();
+        }
+
+        function filterSpells() {
+            const search = document.getElementById('spell-search').value.toLowerCase();
+            
+            const filtered = spellsData.filter(spell => {
+                const matchesCategory = currentCategory === 'all' || spell.type === currentCategory || (currentCategory === 'utility' && (spell.type === 'utility'));
+                // Note: I grouped many utility/movement/hiding into 'utility' type in JSON for simpler tabs, or you can expand logic.
+                
+                const matchesSearch = spell.name.toLowerCase().includes(search) || spell.desc.toLowerCase().includes(search);
+                
+                return matchesCategory && matchesSearch;
+            });
+
+            renderSpells(filtered);
+        }
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSpells(spellsData);
+            
+            // Set All as active styling
+            const allBtn = document.querySelector('button[onclick="setCategory(\'all\')"]');
+            allBtn.classList.add('bg-white/10', 'text-white');
+        });
+
+    </script>
+
+  <!-- JavaScript Included Directly -->
+
+  <script src="javascript/navbar.js"></script>
+  <script src="javascript/carousel.js"></script>
+</body>
+
+</html>

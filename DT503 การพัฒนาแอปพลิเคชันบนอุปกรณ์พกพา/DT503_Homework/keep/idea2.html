@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Boutique - Interactive</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --glass: rgba(255, 255, 255, 0.7);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            font-family: 'Prompt', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* ตกแต่งพื้นหลังให้มีวงกลมลอยๆ (Background Blobs) */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .blob-1 { width: 400px; height: 400px; background: #ff9a9e; top: -100px; left: -100px; }
+        .blob-2 { width: 300px; height: 300px; background: #a18cd1; bottom: -50px; right: -50px; }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 2rem;
+        }
+
+        /* --- Header & Tabs --- */
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .tabs {
+            display: inline-flex;
+            background: rgba(255,255,255,0.5);
+            padding: 5px;
+            border-radius: 30px;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-size: 1rem;
+            color: #666;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+        }
+
+        /* --- Grid --- */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 40px;
+            padding: 20px;
+        }
+
+        /* --- 3D Card Styling --- */
+        .book-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 1; /* สำหรับ Animation */
+            transform: scale(1);
+        }
+
+        /* Animation: Hide/Show */
+        .book-card.hidden {
+            display: none;
+        }
+        .book-card.fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        /* ส่วนรูปภาพที่มี 3D Perspective */
+        .img-container {
+            width: 180px;
+            height: 270px;
+            perspective: 800px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .book-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+            box-shadow: -5px 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        /* เอฟเฟกต์หมุนปกเมื่อ Hover */
+        .book-card:hover .book-img {
+            transform: rotateY(-20deg) rotateX(5deg) scale(1.05);
+            box-shadow: -15px 20px 25px rgba(0,0,0,0.4);
+        }
+
+        /* Badge (New/Hot) */
+        .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(231, 76, 60, 0.4);
+            z-index: 10;
+        }
+
+        .info {
+            text-align: center;
+            width: 100%;
+        }
+
+        .author {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            height: 3rem; /* จำกัดความสูง */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Interactive Button */
+        .add-btn {
+            background: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        /* ปุ่มขยายเมื่อกด */
+        .add-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Floating Actions (ซ่อนอยู่ จะโผล่มาเมื่อ hover) */
+        .actions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none; /* ป้องกันการกดโดนตอนไม่เห็น */
+            z-index: 5;
+        }
+
+        .book-card:hover .actions {
+            opacity: 1;
+            pointer-events: auto;
+            top: 40%; /* เลื่อนขึ้นนิดนึง */
+        }
+
+        .action-icon {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: var(--primary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .action-icon:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- พื้นหลังตกแต่ง -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1>Curated Collection</h1>
+            <p style="color: #666;">หนังสือที่ผ่านการคัดสรร เพื่อประสบการณ์การอ่านที่ดีที่สุด</p>
+            
+            <!-- Tabs Filter -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="filterBooks('all', this)">ทั้งหมด</button>
+                <button class="tab-btn" onclick="filterBooks('bestseller', this)">ขายดี</button>
+                <button class="tab-btn" onclick="filterBooks('new', this)">มาใหม่</button>
+                <button class="tab-btn" onclick="filterBooks('recommended', this)">แนะนำ</button>
+            </div>
+        </div>
+
+        <!-- Grid Cards -->
+        <div class="book-grid">
+
+            <!-- Card 1 -->
+            <div class="book-card fade-in" data-category="bestseller">
+                <span class="badge">Hot</span>
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&w=400&q=80" class="book-img">
+                </div>
+                
+                <!-- Floating Icons (Show on Hover) -->
+                <div class="actions">
+                    <div class="action-icon" title="ดูรายละเอียด"><i class="fa-regular fa-eye"></i></div>
+                    <div class="action-icon" title="บันทึก"><i class="fa-regular fa-heart"></i></div>
+                </div>
+
+                <div class="info">
+                    <div class="author">Chip & Dan Heath</div>
+                    <h3 class="title">The Power of Moments</h3>
+                    <div class="price-row">
+                        <span class="price">฿450</span>
+                        <button class="add-btn" onclick="addToCart(this)"><i class="fa-solid fa-cart-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="book-card fade-in" data-category="new">
+                <span class="badge" style="background:#2ecc71;">New</span>
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=400&q=80" class="book-img">
+                </div>
+                <div class="actions">
+                    <div class="action-icon"><i class="fa-regular fa-eye"></i></div>
+                    <div class="action-icon"><i class="fa-regular fa-heart"></i></div>
+                </div>
+                <div class="info">
+                    <div class="author">Mark Manson</div>
+                    <h3 class="title">Everything is F*cked: A Book About Hope</h3>
+                    <div class="price-row">
+                        <span class="price">฿395</span>
+                        <button class="add-btn" onclick="addToCart(this)"><i class="fa-solid fa-cart-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="book-card fade-in" data-category="recommended">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=400&q=80" class="book-img">
+                </div>
+                <div class="actions">
+                    <div class="action-icon"><i class="fa-regular fa-eye"></i></div>
+                    <div class="action-icon"><i class="fa-regular fa-heart"></i></div>
+                </div>
+                <div class="info">
+                    <div class="author">Haruki Murakami</div>
+                    <h3 class="title">Norwegian Wood (ด้วยรักความตายและหัวใจสลาย)</h3>
+                    <div class="price-row">
+                        <span class="price">฿380</span>
+                        <button class="add-btn" onclick="addToCart(this)"><i class="fa-solid fa-cart-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="book-card fade-in" data-category="bestseller">
+                 <span class="badge">Hot</span>
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80" class="book-img">
+                </div>
+                <div class="actions">
+                    <div class="action-icon"><i class="fa-regular fa-eye"></i></div>
+                    <div class="action-icon"><i class="fa-regular fa-heart"></i></div>
+                </div>
+                <div class="info">
+                    <div class="author">George Orwell</div>
+                    <h3 class="title">1984: ฉบับสมบูรณ์</h3>
+                    <div class="price-row">
+                        <span class="price">฿320</span>
+                        <button class="add-btn" onclick="addToCart(this)"><i class="fa-solid fa-cart-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script สำหรับลูกเล่น -->
+    <script>
+        // ฟังก์ชันเปลี่ยนหมวดหมู่ (Filter)
+        function filterBooks(category, btn) {
+            // จัดการปุ่ม Active
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // จัดการแสดงผลการ์ด
+            const cards = document.querySelectorAll('.book-card');
+            cards.forEach(card => {
+                // Reset Animation
+                card.classList.remove('fade-in'); 
+                void card.offsetWidth; // Trigger reflow
+
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'flex';
+                    card.classList.add('fade-in');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // ฟังก์ชันกดใส่ตะกร้า (Add to Cart Animation)
+        function addToCart(btn) {
+            const originalContent = btn.innerHTML;
+            
+            // เปลี่ยนไอคอนเป็นเครื่องหมายถูก
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            btn.style.backgroundColor = '#27ae60'; // สีเขียว
+            btn.style.color = 'white';
+            btn.style.borderColor = '#27ae60';
+
+            // คืนค่าเดิมหลังจาก 1.5 วินาที
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }, 1500);
+        }
+    </script>
+
+</body>
+</html>
