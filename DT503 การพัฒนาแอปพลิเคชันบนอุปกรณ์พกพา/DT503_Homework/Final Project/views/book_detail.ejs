@@ -83,7 +83,7 @@
         </a>
         <!-- User Logic (EJS) -->
 
-<% if (typeof user !== 'undefined' && user) { %>
+<% if (user) { %>
 
   <!-- เมื่อ Login แล้ว -->
   <div class="hidden md:flex items-center gap-3 pl-4 border-l border-gray-300/60">
@@ -137,7 +137,7 @@
       <a href="#shop" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Shop</a>
       <a href="/about" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">About</a>
       <a href="/cart" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Cart</a>
-      <% if (typeof user !== 'undefined' && user) { %>
+      <% if (user) { %>
       <a href="/profile" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">My Profile</a>
       <a href="/logout" class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg">Logout</a>
       <% } else { %>
@@ -204,7 +204,7 @@
 
         <!-- Price & Rating -->
         <div class="flex items-center gap-6 border-b border-njtk-dark/10 pb-6">
-          <% if (typeof user !== 'undefined' && user) { %>
+          <% if (user) { %>
             <!-- Logged-in User: Show 10% Discount -->
           <div class="flex items-baseline gap-2">
             <span class="text-3xl font-playfair font-bold text-njtk-dark">฿<%= Math.round(book.sellPrice * 0.9) %>
@@ -415,7 +415,7 @@
                       <div class="pill-container">
                         <!-- Price & Rating Section -->
                         <div class="price-info">
-                           <% if (typeof user !== 'undefined' && user) { %>
+                           <% if (user) { %>
                         <!-- Logged-in User: Show 10% Discount -->
                       <div class="flex items-baseline gap-2">
                         <span class="text-xl font-bold text-[#809671]">฿<%= Math.round(book.sellPrice * 0.9) %></span>

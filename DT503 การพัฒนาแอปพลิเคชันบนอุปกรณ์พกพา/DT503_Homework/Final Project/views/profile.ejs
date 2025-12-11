@@ -112,7 +112,7 @@
           </a>
           <!-- User Logic (EJS) -->
 
-          <% if (typeof user !== 'undefined' && user) { %>
+          <% if (user) { %>
 
           <!-- เมื่อ Login แล้ว -->
           <div
@@ -194,7 +194,7 @@
           class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
           >Cart</a
         >
-        <% if (typeof user !== 'undefined' && user) { %>
+        <% if (user) { %>
         <a
           href="/profile"
           class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"

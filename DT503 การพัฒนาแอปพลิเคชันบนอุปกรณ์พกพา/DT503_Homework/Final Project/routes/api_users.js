@@ -5,90 +5,82 @@ const path = require("path");
 
 const USERS_FILE = path.join(__dirname, "../data/users.json");
 
-// โหลดข้อมูล users
 function loadUsers() {
-    try {
-        return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
-    } catch (err) {
-        return { users: [] };
-    }
+  try {
+    return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+  } catch {
+    return { users: [] };
+  }
 }
 
-// บันทึกข้อมูล users
 function saveUsers(data) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
+  fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
 }
 
-// ---------------------
 // REGISTER
-// ---------------------
 router.post("/register", (req, res) => {
-    const {email, password, fullname } = req.body;
-    console.log(req.body);
+  const { email, password, fullname } = req.body;
 
-    if (!email || !password) {
-        console.log(email, password);
-        return res.status(400).json({ message: "Missing email or password" });
-    }
+  if (!email || !password)
+    return res.status(400).json({ message: "Missing fields" });
 
-    let usersData = loadUsers();
+  let usersData = loadUsers();
 
-    // เช็คว่ามี email นี้แล้วหรือยัง
-    const exists = usersData.users.find(u => u.email === email);
-    if (exists) {
-        return res.status(400).json({ message: "email already exists" });
-    }
+  if (usersData.users.find((u) => u.email === email)) {
+    return res.status(400).json({ message: "email already exists" });
+  }
 
-    // บันทึกผู้ใช้ใหม่
-    const newUser = {
-        email,
-        password, // *Note: production ต้อง hash password!
-        fullname: fullname || "",
-        createdAt: new Date()
-    };
+  const newUser = {
+    email,
+    password,
+    fullname,
+    username: email, // ใช้ email เป็น username
+    createdAt: new Date().toISOString(),
+  };
 
-    usersData.users.push(newUser);
-    saveUsers(usersData);
+  usersData.users.push(newUser);
+  saveUsers(usersData);
 
-    res.json({ message: "User registered", user: newUser });
+  res.json({ message: "User registered", user: newUser });
 });
 
-// ---------------------
 // LOGIN
-// ---------------------
 router.post("/login", (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const usersData = loadUsers();
-    const user = usersData.users.find(u => u.email === email);
+  const usersData = loadUsers();
+  const user = usersData.users.find((u) => u.email === email);
 
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
+  if (!user) return res.status(404).json({ message: "User not found" });
+  if (user.password !== password)
+    return res.status(401).json({ message: "Incorrect password" });
 
-    if (user.password !== password) {
-        return res.status(401).json({ message: "Incorrect password" });
-    }
-
-    // เก็บข้อมูล user ลง session
+  // เก็บข้อมูล user ลง session
     req.session.user = {
         email: user.email,
         fullname: user.fullname
     };
-
-    res.json({ message: "Login successful", user: req.session.user });
+    
+  res.json({
+    message: "Login successful",
+    user: {
+      email: user.email,
+      fullname: user.fullname,
+      username: user.username,
+    },
+  });
 });
 
 router.get("/me", (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: "Not logged in" });
-    }
-console.log(req.session.user);
-    res.json({
-        loggedIn: true,
-        user: req.session.user
-    });
-    console.log(user);
+  if (!req.session.user) {
+    return res.status(401).json({ message: "Not logged in" });
+  }
+  console.log(req.session.user);
+  res.json({
+    loggedIn: true,
+    user: req.session.user,
+  });
+  console.log(user);
 });
 
 module.exports = router;

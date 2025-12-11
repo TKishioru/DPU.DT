@@ -1,62 +1,73 @@
 const express = require("express");
 const router = express.Router();
 
-const booksApi = require("./api_books");
-const usersApi = require("./api_users");
+const apiUsers = require("./api_users");
+const apiBooks = require("./api_books");
 const webBooks = require("./web_books");
 const cartRouter = require("./cart");
-const profile =require("./profile");
+const profileRouter = require("./profile");
 
 // API
-router.use("/api/users", usersApi);
-router.use("/api/books", booksApi);
+router.use("/api/users", apiUsers);
+router.use("/api/books", apiBooks);
 
-// WEB PAGES
-router.use("/profile", profile);
-router.use("/cart", cartRouter);      // cart ก่อน
-router.use("/", webBooks);         // หน้าเว็บอื่นตามหลัง
+// WEB Pages
+router.use("/cart", cartRouter);
+router.use("/profile", profileRouter);
+router.use("/", webBooks);
 
+// Login Page
 router.get("/login", (req, res) => {
-    res.render("login", { error: null });
+  res.render("login", { error: null });
 });
 
+// Register Page
 router.get("/register", (req, res) => {
-    res.render("register", { error: null });
+  res.render("register", { error: null });
 });
 
-// ฟอร์มจากหน้า UI จะยิงมาที่นี่ แล้วเราจะ forward ไป API
+// Register
 router.post("/register", async (req, res) => {
-    const response = await fetch("http://localhost:2000/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(req.body)
-    });
+  const response = await fetch("http://localhost:2000/api/users/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req.body),
+  });
 
-    const result = await response.json();
+  const result = await response.json();
 
-    if (result.message === "Username already exists") {
-        return res.render("register", { error: "⚠ ชื่อนี้ถูกใช้แล้ว" });
-    }
+  if (result.message !== "User registered") {
+    return res.render("register", { error: "Email already exists" });
+  }
 
-    res.redirect("/login");
+  res.redirect("/login");
 });
 
+// Login
 router.post("/login", async (req, res) => {
-    const response = await fetch("http://localhost:2000/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(req.body),
-    });
+  const response = await fetch("http://localhost:2000/api/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req.body),
+  });
 
-    const result = await response.json();
+  const result = await response.json();
 
-    if (result.message !== "Login successful") {
-        return res.render("login", { error: "⚠ Username หรือ Password ไม่ถูกต้อง" });
-    }
+  if (result.message !== "Login successful") {
+    return res.render("login", { error: "Invalid email or password" });
+  }
 
-    res.redirect("/");
+  // ⭐ Set session user
+  req.session.user = {
+    email: result.user.email,
+    fullname: result.user.fullname,
+    username: result.user.username,
+  };
+
+  res.redirect("/");
 });
 
+// Logout
 router.get("/logout", (req, res) => {
     // ทำลาย session
     req.session.destroy(err => {

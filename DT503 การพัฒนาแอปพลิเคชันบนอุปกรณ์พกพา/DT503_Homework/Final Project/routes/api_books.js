@@ -1,17 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const books = require("../data/books.json");
 
-// import data
-let books = require("../data/books"); 
-
-// ดึงหนังสือทั้งหมด
-router.get("/", (req, res) => {
-    res.json(books);
-});
-
-// ดึงหนังสือรายตัว
+router.get("/", (req, res) => res.json(books));
 router.get("/:id", (req, res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id));
-    if (!book) return res.status(404).json({ message: "Book not found" });
-    res.json(book);
+  const b = books.find((bk) => bk.id === parseInt(req.params.id));
+  if (!b) return res.status(404).json({ message: "Not found" });
+  res.json(b);
 });
+
+module.exports = router;

@@ -1,16 +1,11 @@
 {
   "users": [
     {
-      "email": "p@gmail.com",
-      "password": "1234567890",
-      "fullname": "Por",
-      "createdAt": "2025-12-11T14:15:42.810Z"
-    },
-    {
       "email": "t@gmail.com",
       "password": "1234567890",
       "fullname": "TK",
-      "createdAt": "2025-12-11T15:53:57.196Z"
+      "username": "t@gmail.com",
+      "createdAt": "2025-12-11T19:10:58.241Z"
     }
   ]
 }
