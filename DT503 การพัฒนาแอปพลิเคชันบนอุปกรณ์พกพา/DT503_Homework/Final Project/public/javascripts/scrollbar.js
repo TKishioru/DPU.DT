@@ -21,3 +21,31 @@
         window.location.reload();
     }
 });
+
+async function loadUserProfile() {
+    try {
+        const res = await fetch("/api/users/me");
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (!data.loggedIn) return;
+
+        // แสดงชื่อบน navbar
+        const nameSlot = document.getElementById("navbar-username");
+        if (nameSlot) {
+            nameSlot.innerText = data.user.fullname;
+        }
+
+        // แสดงโปรไฟล์ในหน้า account
+        const emailSlot = document.getElementById("profile-email");
+        if (emailSlot) {
+            emailSlot.innerText = data.user.email;
+        }
+
+    } catch (err) {
+        console.error("User load failed", err);
+    }
+}
+
+// เรียกตอนโหลดหน้า
+document.addEventListener("DOMContentLoaded", loadUserProfile);

@@ -1,12 +1,82 @@
+async function addToCartSession(bookId, qty = 1) {
+  const payload = {
+    id: Number(bookId), // 👈 บังคับให้เป็นเลข
+    qty: Number(qty),
+  };
+
+  const res = await fetch("/cart/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    console.error("Failed to add cart", await res.text());
+    return;
+  }
+
+  const data = await res.json();
+  console.log("Cart Updated:", data);
+
+  updateCartCountFromSession(); // 👈 sync count จาก server
+}
+
 async function updateCartCountFromSession() {
+  const res = await fetch("/cart/count");
+  const data = await res.json();
+
+  const badge = document.getElementById("cart-count");
+  if (badge) {
+    badge.textContent = data.count || 0;
+  }
+}
+
+async function checkout() {
+    const btnPay = document.getElementById("btnPay");
+
+    btnPay.disabled = true;
+    btnPay.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+
+    // เก็บข้อมูลจากฟอร์ม
+    const form = document.getElementById("checkoutForm");
+    const formData = new FormData(form);
+
+    const payload = Object.fromEntries(formData.entries());
+
     try {
-        const res = await fetch("/cart/count");
+        const res = await fetch("/cart/pay", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
         const data = await res.json();
-        const badge = document.getElementById("cart-count");
-        if (badge) badge.textContent = data.count;
+
+        if (data.success) {
+            window.location.href = "/cart/summary?orderId=" + data.orderId;
+        } else {
+            alert("เกิดข้อผิดพลาด: " + (data.message || "ไม่สามารถชำระเงินได้"));
+        }
     } catch (err) {
-        console.error("Cannot load cart count:", err);
+        alert("Network error");
     }
+
+    btnPay.disabled = false;
+    btnPay.innerHTML = "Pay Now";
+}
+
+function processPayment() {
+    const btnPay = document.getElementById("btnPay");
+
+    btnPay.disabled = true;
+    btnPay.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+    btnPay.style.opacity = '0.8';
+
+    setTimeout(() => {
+        btnPay.innerHTML = '<i class="fa-solid fa-check"></i> Payment Successful!';
+        btnPay.style.backgroundColor = '#27ae60';
+        window.location.href = "/cart/summary";
+    }, 2000);
 }
 
 // ✓ ปรับจำนวนบนหน้า detail
@@ -18,118 +88,4 @@ function adjustQty(amount) {
   qtyEl.textContent = qty;
 }
 
-async function addToCartSession(bookId, qty = 1) {
-    await fetch("/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: bookId, qty })
-    });
-
-    updateCartCountFromSession();
-}
-
 document.addEventListener("DOMContentLoaded", updateCartCountFromSession);
-
-function checkout() {
-    fetch("/cart/checkout", { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            alert("สั่งซื้อสำเร็จ! Order ID: " + data.orderId);
-            location.href = "/checkout";  // กลับหน้าหลัก หรือหน้าใบสั่งซื้อก็ได้
-        })
-        .catch(err => console.error(err));
-}
-
-/*
-console.log("cart.js loaded");
-
-// โหลด cart จาก localStorage
-function getCart() {
-  return JSON.parse(localStorage.getItem("cart")) || {};
-}
-
-// บันทึก cart
-function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-// อัปเดตจำนวนใน navbar
-function updateCartCount() {
-  const cart = getCart();
-  let totalQty = 0;
-  Object.values(cart).forEach((qty) => (totalQty += qty));
-
-  const badge = document.getElementById("cart-count");
-  if (badge) {
-    badge.textContent = totalQty;
-  }
-}
-
-// เพิ่มสินค้าแบบเลือกจำนวน
-function addToCart(bookId) {
-  const cart = getCart();
-  const qty = parseInt(document.getElementById("qtyDisplay").textContent);
-
-  cart[bookId] = (cart[bookId] || 0) + qty;
-
-  saveCart(cart);
-  updateCartCount();
-
-  alert("เพิ่มหนังสือลงตะกร้าแล้ว!");
-}
-
-// ฟังก์ชัน Add to Cart (อัปเดตจากเดิมให้รับจำนวนไปด้วย)
-function addToCartOnec(btn, bookId) {
-  const span = btn.querySelector("span");
-  const icon = btn.querySelector("i");
-  const cart = getCart();
-  const qty = 1;
-  const originalContent = "Add to Cart";
-
-  // เปลี่ยนปุ่มเป็นสถานะสำเร็จ
-  span.innerText = `Added ${qty} item(s)`; // โชว์จำนวนที่หยิบใส่
-  icon.className = "fa-solid fa-check relative z-10";
-  btn.classList.remove("bg-njtk-sage");
-  btn.classList.add("bg-njtk-dark"); // เปลี่ยนสีปุ่มชั่วคราว
-
-  // อัปเดต cart ใน localStorage
-  cart[bookId] = (cart[bookId] || 0) + qty;
-
-  saveCart(cart);
-  updateCartCount();
-
-  alert("เพิ่มหนังสือลงตะกร้าแล้ว!");
-
-  // คืนค่าเดิมหลังจาก 2 วินาที
-  setTimeout(() => {
-    span.innerText = originalContent;
-    icon.className =
-      "fa-solid fa-arrow-right relative z-10 group-hover:translate-x-1 transition-transform";
-    btn.classList.add("bg-njtk-sage");
-    btn.classList.remove("bg-njtk-dark");
-  }, 2000);
-}
-
-
-
-// ✓ Sync localStorage → server
-async function syncCartToServer() {
-  const cart = getCart();
-
-  await fetch("/cart/sync", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cart })
-  });
-}
-
-// โหลดจำนวนในตะกร้าเมื่อเปิดหน้า
-document.addEventListener("DOMContentLoaded", async () => {
-  updateCartCount();
-
-  // ถ้าอยู่ในหน้าตะกร้า → sync
-  if (window.location.pathname === "/cart") {
-    await syncCartToServer();
-    //location.reload(); // โหลดใหม่เพื่อให้ render session
-  }
-});*/

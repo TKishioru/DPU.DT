@@ -6,7 +6,7 @@ const mainRouter = require("./routes/index");
 const logger = require("./middleware/logger");
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 // static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -20,6 +20,10 @@ app.use(session({
 
 // logger (ต้องมาก่อน routes)
 app.use(logger);
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
 
 // EJS view engine
 app.set("views", path.join(__dirname, "views"));

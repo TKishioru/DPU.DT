@@ -1,397 +1,422 @@
 <!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | NJTK Bookstore</title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
-    
+<html lang="th" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>NJTK Bookstore</title>
+
+    <link rel="icon" type="image/png" href="/images/NJTK_Logo_small.png" />
+
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
-    <!-- Tailwind CSS (ใช้ CDN เพื่อความสะดวกในการทดสอบ) -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/stylesheets/styles.css" />
+    <link rel="stylesheet" href="/stylesheets/cardBook.css" />
+    <link rel="stylesheet" href="/stylesheets/scrollbar.css" />
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Config Tailwind ให้ตรงธีม -->
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;700&family=Noto+Sans+Thai:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        njtk: {
-                            cream: '#F9F7F2',    /* พื้นหลังสีครีม */
-                            green: '#748C70',    /* สีเขียวตุ่นๆ ตามธีม */
-                            dark: '#1D1D1D',     /* สีดำถ่าน */
-                            light: '#FFFFFF',
-                            border: '#E5E5E5'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                        mono: ['Courier New', 'monospace'],
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "theme-sage": "#809671" /* Primary: เขียวใบไม้ */,
+              "theme-olive": "#B3B792" /* Secondary: เขียวมะกอก/ทอง */,
+              "theme-cream": "#E5E0D8" /* Background: สีครีมกระดาษ */,
+              "theme-charcoal": "#2A3328" /* Text: สีเทาเข้มอมเขียว */,
+              "theme-paper": "#F5F3EF" /* Card: สีขาวนวล */,
+            },
+            fontFamily: {
+              playfair: ['"Playfair Display"', "serif"],
+              sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 10px 40px -10px rgba(0,0,0,0.08)",
+              glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
+            },
+          },
+        },
+      };
     </script>
+  </head>
 
-    <!-- Custom CSS สำหรับ 3D Card Animation -->
-    <style>
-        /* Class สำหรับ 3D Transform ที่ Tailwind default ไม่มี */
-        .perspective-1000 { perspective: 1000px; }
-        .transform-style-3d { transform-style: preserve-3d; }
-        .backface-hidden { backface-visibility: hidden; }
-        .rotate-y-180 { transform: rotateY(180deg); }
-        
-        /* Animation การพลิกบัตร */
-        .flip-card { transform: rotateY(180deg); }
-        
-        /* Gradient สวยๆ สำหรับบัตรเครดิต */
-        .bg-card-gradient { background: linear-gradient(135deg, #5D7A60 0%, #2C3E50 100%); }
-        
-        /* Input Field Focus Transition */
-        .input-field {
-            transition: all 0.2s ease-in-out;
-        }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #aaa; }
-    </style>
-</head>
-<body class="bg-njtk-cream text-njtk-dark antialiased min-h-screen flex flex-col font-sans">
+  <body
+    class="bg-theme-cream text-theme-charcoal font-sans antialiased selection:bg-theme-olive"
+  >
+  <!-- Navbar -->
+  <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-4 px-6 md:px-12 bg-transparent">
+    <div
+      class="max-w-7xl mx-auto backdrop-blur-md bg-white/60 border border-white/40 rounded-2xl shadow-glass px-6 py-3 flex justify-between items-center">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group">
+        <img class="w-[75px]" src="/images/NJTK_Logo_full.png" alt="NJTK Logo" />
+      </a>
 
-    <!-- Navbar (จำลองให้เหมือน Screenshot) -->
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-3">
-                    <div class="text-njtk-green text-3xl">
-                        <i class="fa-brands fa-pagelines"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-serif font-bold text-lg tracking-wider text-njtk-dark leading-none">NJTK</span>
-                        <span class="text-[10px] tracking-[0.2em] text-gray-500">BOOKSTORE</span>
-                    </div>
-                </div>
-                
-                <!-- Menu -->
-                <div class="hidden md:flex gap-8 text-xs font-semibold tracking-widest text-gray-500">
-                    <a href="#" class="hover:text-njtk-green transition duration-300">HOME</a>
-                    <a href="#" class="hover:text-njtk-green transition duration-300">COLLECTION</a>
-                    <a href="#" class="text-njtk-dark border-b border-njtk-dark pb-1">SHOP</a>
-                </div>
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="#home"
+          class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">Home</a>
+        <a href="#shop"
+          class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">Shop</a>
+        <a href="/about"
+          class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">About</a>
+      </div>
 
-                <!-- Icons -->
-                <div class="flex items-center gap-6">
-                    <i class="fa-solid fa-magnifying-glass text-gray-400 hover:text-njtk-green cursor-pointer"></i>
-                    <div class="relative cursor-pointer">
-                        <i class="fa-solid fa-bag-shopping text-xl text-njtk-dark"></i>
-                        <span class="absolute -top-1 -right-2 bg-njtk-green text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+      <!-- Icons & Mobile Button -->
+      <div class="flex items-center gap-6">
+        <a href="/cart" class="relative cursor-pointer group">
+          <i class="fa-solid fa-bag-shopping text-xl hover:text-theme-sage transition-colors"></i>
+          <span id="cart-count"
+            class="absolute -top-2 -right-2 bg-theme-sage text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full group-hover:scale-110 transition-transform">0</span>
+        </a>
+        <!-- User Logic (EJS) -->
+
+<% if (typeof user !== 'undefined' && user) { %>
+
+  <!-- เมื่อ Login แล้ว -->
+  <div class="hidden md:flex items-center gap-3 pl-4 border-l border-gray-300/60">
+
+    <a href="/profile" class="flex items-center gap-2 group">
+      <div class="flex flex-col">
+        <span 
+          class="text-xs font-bold text-gray-700 group-hover:text-theme-sage transition-colors truncate max-w-[100px]">
+          <%= user.fullname %> 
+        </span>
+
+        <span class="text-[10px] text-gray-500 truncate max-w-[100px]">
+          <%= user.email %>
+        </span>
+      </div>
+    </a>
+
+    <!-- Logout -->
+    <a href="/logout"
+      class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 
+             hover:bg-red-50 hover:text-red-500 transition-all shadow-sm"
+      title="Logout">
+      <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+    </a>
+  </div>
+
+<% } else { %>
+
+  <!-- Guest (ไม่ได้ Login) -->
+  <a href="/login"
+    class="px-5 py-2 bg-theme-sage text-white text-sm rounded-full font-bold shadow-md 
+           hover:bg-theme-charcoal transition-colors hidden md:inline-block">
+    Login
+  </a>
+
+<% } %>
+
+              <button id="mobile-menu-btn" class="md:hidden text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars-staggered"></i>
+              </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+      class="fixed inset-0 bg-theme-cream/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col items-center justify-center space-y-8">
+      <button id="close-menu" class="absolute top-8 right-8 text-3xl text-theme-sage">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <a href="#home" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Home</a>
+      <a href="#shop" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Shop</a>
+      <a href="/about" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">About</a>
+      <a href="/cart" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Cart</a>
+      <% if (typeof user !== 'undefined' && user) { %>
+      <a href="/profile" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">My Profile</a>
+      <a href="/logout" class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg">Logout</a>
+      <% } else { %>
+        <a href="/login" class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg">Login</a>
+        <% } %>
+    </div>
+  </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-10 max-w-6xl">
-        <form id="checkoutForm" onsubmit="event.preventDefault(); processPayment();">
-            
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                
-                <!-- LEFT COLUMN: Forms (7 Columns) -->
-                <div class="lg:col-span-7 space-y-12">
-                    
-                    <!-- 1. Shipping Section -->
-                    <section>
-                        <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
-                            <h2 class="font-serif text-2xl text-njtk-dark">Shipping Address</h2>
-                            <span class="text-xs text-gray-400 font-mono">STEP 1 OF 2</span>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">First Name</label>
-                                <input type="text" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green" placeholder="Jane">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Last Name</label>
-                                <input type="text" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green" placeholder="Pek">
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 mb-6">
-                            <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Address</label>
-                            <input type="text" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green" placeholder="123 Sukhumvit Road, Watthana">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Postal Code</label>
-                                <input type="text" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green" placeholder="10110">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Phone</label>
-                                <input type="tel" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green" placeholder="081-xxx-xxxx">
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- 2. Payment Section -->
-                    <section>
-                        <div class="flex items-center justify-between mb-8 border-b border-gray-200 pb-4">
-                            <h2 class="font-serif text-2xl text-njtk-dark">Payment Method</h2>
-                            <div class="flex gap-2">
-                                <i class="fa-brands fa-cc-visa text-gray-400 text-2xl"></i>
-                                <i class="fa-brands fa-cc-mastercard text-gray-400 text-2xl"></i>
-                            </div>
-                        </div>
-
-                        <!-- 3D Credit Card Viz -->
-                        <div class="flex justify-center mb-10 perspective-1000">
-                            <div id="visualCard" class="relative w-80 h-48 transform-style-3d transition-transform duration-700 rounded-xl shadow-2xl font-mono text-white">
-                                
-                                <!-- Front Face -->
-                                <div class="absolute inset-0 bg-card-gradient rounded-xl p-6 backface-hidden flex flex-col justify-between z-10">
-                                    <div class="flex justify-between items-start">
-                                        <div class="w-10 h-8 bg-yellow-500/80 rounded flex items-center justify-center">
-                                            <div class="w-6 h-5 border border-yellow-600/50 rounded-sm"></div>
-                                        </div>
-                                        <i class="fa-brands fa-cc-visa text-3xl opacity-80"></i>
-                                    </div>
-                                    <div class="text-xl tracking-[0.15em] mt-2 drop-shadow-md" id="cardNumDisplay">#### #### #### ####</div>
-                                    <div class="flex justify-between items-end text-xs opacity-90 uppercase tracking-widest">
-                                        <div>
-                                            <div class="text-[0.6rem] opacity-70 mb-1">Card Holder</div>
-                                            <div id="cardNameDisplay" class="font-bold">YOUR NAME</div>
-                                        </div>
-                                        <div class="text-right">
-                                            <div class="text-[0.6rem] opacity-70 mb-1">Expires</div>
-                                            <div id="cardExpDisplay" class="font-bold">MM/YY</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Back Face -->
-                                <div class="absolute inset-0 bg-gray-800 rounded-xl backface-hidden rotate-y-180 flex flex-col pt-6 overflow-hidden">
-                                    <div class="w-full h-10 bg-black/80 mb-4"></div> <!-- Magnetic Strip -->
-                                    <div class="px-6 relative">
-                                        <div class="bg-white/20 h-8 w-full rounded flex items-center justify-end pr-3">
-                                            <span class="text-black font-bold font-sans bg-white px-2 py-1 rounded-sm text-sm" id="cardCvvDisplay">***</span>
-                                        </div>
-                                        <p class="text-[0.5rem] text-gray-400 mt-2 text-right">CVV / CVC code on the back</p>
-                                    </div>
-                                    <div class="mt-auto p-4 flex justify-center opacity-30">
-                                        <i class="fa-brands fa-cc-visa text-4xl"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Payment Forms -->
-                        <div class="space-y-6">
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Card Number</label>
-                                <div class="relative">
-                                    <input type="text" id="inputCardNum" maxlength="19" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 pl-10 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green font-mono" placeholder="4242 4242 4242 4242">
-                                    <i class="fa-regular fa-credit-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                </div>
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Card Holder Name</label>
-                                <input type="text" id="inputCardName" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green uppercase" placeholder="NAME ON CARD">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="space-y-2">
-                                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Expiry Date</label>
-                                    <input type="text" id="inputCardExp" maxlength="5" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green text-center" placeholder="MM/YY">
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">CVV</label>
-                                    <div class="relative">
-                                        <input type="text" id="inputCardCvv" maxlength="3" class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green text-center" placeholder="123">
-                                        <i class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-xs"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-
-                <!-- RIGHT COLUMN: Order Summary (5 Columns) -->
-                <div class="lg:col-span-5">
-                    <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8 sticky top-24 border border-gray-100">
-                        <h3 class="font-serif text-xl mb-6 text-njtk-dark">Order Summary</h3>
-                        
-                        <!-- Item 1 -->
-                        <div class="flex gap-4 mb-6">
-                            <div class="w-16 h-24 flex-shrink-0 relative shadow-sm">
-                                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=200" alt="Book" class="w-full h-full object-cover rounded-sm">
-                                <span class="absolute -top-2 -right-2 bg-gray-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">1</span>
-                            </div>
-                            <div class="flex-grow flex flex-col justify-between">
-                                <div>
-                                    <h4 class="font-serif font-bold text-njtk-dark leading-tight mb-1">The Verifiers</h4>
-                                    <p class="text-xs text-gray-500">Jane Pek</p>
-                                </div>
-                                <p class="text-sm font-semibold">฿533</p>
-                            </div>
-                        </div>
-
-                        <!-- Item 2 -->
-                        <div class="flex gap-4 mb-6 border-b border-gray-100 pb-6">
-                            <div class="w-16 h-24 flex-shrink-0 relative shadow-sm">
-                                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=200" alt="Book" class="w-full h-full object-cover rounded-sm">
-                                <span class="absolute -top-2 -right-2 bg-gray-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">1</span>
-                            </div>
-                            <div class="flex-grow flex flex-col justify-between">
-                                <div>
-                                    <h4 class="font-serif font-bold text-njtk-dark leading-tight mb-1">Art & Fear</h4>
-                                    <p class="text-xs text-gray-500">David Bayles</p>
-                                </div>
-                                <p class="text-sm font-semibold">฿450</p>
-                            </div>
-                        </div>
-
-                        <!-- Calculations -->
-                        <div class="space-y-3 text-sm text-gray-600 mb-6">
-                            <div class="flex justify-between">
-                                <span>Subtotal</span>
-                                <span>฿983</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Shipping (Standard)</span>
-                                <span>฿50</span>
-                            </div>
-                            <div class="flex justify-between text-njtk-green">
-                                <span>Discount</span>
-                                <span>-฿0</span>
-                            </div>
-                        </div>
-
-                        <!-- Total -->
-                        <div class="flex justify-between items-center pt-6 border-t border-gray-200 mb-8">
-                            <span class="font-serif text-lg text-njtk-dark font-bold">Total</span>
-                            <div class="text-right">
-                                <span class="text-xs text-gray-400 block mb-1">THB</span>
-                                <span class="font-serif text-2xl font-bold text-njtk-dark">฿1,033</span>
-                            </div>
-                        </div>
-
-                        <!-- Button -->
-                        <button type="submit" id="btnPay" class="w-full bg-njtk-green text-white font-medium py-4 px-6 rounded-lg shadow-md hover:bg-[#5D7A60] hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 group">
-                            <span>Pay Now</span>
-                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                        </button>
-                        
-                        <div class="mt-4 text-center">
-                            <p class="text-[10px] text-gray-400">
-                                <i class="fa-solid fa-lock mr-1"></i> Secure Encrypted Payment
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </form>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white py-8 mt-auto border-t border-gray-100">
-        <div class="container mx-auto px-4 text-center text-gray-400 text-xs">
-            &copy; 2023 NJTK Bookstore. All rights reserved.
+    <main class="flex-grow container mx-auto py-20 px-6 md:px-12 max-w-7xl">
+              <div class="text-center my-16 fade-in-up">
+          <p
+            class="text-gray-400 text-xs tracking-[0.2em] font-bold uppercase mb-2"
+          >
+            Your Cart Checkout
+          </p>
+          <h2 class="text-4xl font-playfair font-bold text-njtk-dark">
+            Details & Payment
+          </h2>
         </div>
-    </footer>
+      <form
+        id="checkoutForm"
+        onsubmit="event.preventDefault(); processPayment();"
+      >
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- LEFT COLUMN: Forms (7 Columns) -->
+          <div class="lg:col-span-7 space-y-12">
+            <!-- 1. Shipping Section -->
+            <section>
+              <div
+                class="flex items-center justify-between mb-6 pb-4"
+              >
+                <h2 class="font-serif text-2xl text-njtk-dark">
+                  Shipping Address
+                </h2>
+              </div>
 
-    <!-- Script ควบคุมการทำงาน -->
-    <script>
-        // DOM Elements
-        const visualCard = document.getElementById('visualCard');
-        const inputNum = document.getElementById('inputCardNum');
-        const inputName = document.getElementById('inputCardName');
-        const inputExp = document.getElementById('inputCardExp');
-        const inputCvv = document.getElementById('inputCardCvv');
+                <div class="space-y-2">
+                  <label
+                    class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                    >First Name</label
+                  >
+                  <input name="fullname" 
+  value="<%= user ? user.fullname : '' %>"
 
-        const displayNum = document.getElementById('cardNumDisplay');
-        const displayName = document.getElementById('cardNameDisplay');
-        const displayExp = document.getElementById('cardExpDisplay');
-        const displayCvv = document.getElementById('cardCvvDisplay');
-        const btnPay = document.getElementById('btnPay');
+                    type="text"
+                    class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green"
+                    placeholder="First Name"
+                  />
+                </div>
 
-        // Logic 1: Format & Update Card Number
-        inputNum.addEventListener('input', (e) => {
-            // ลบทุกอย่างที่ไม่ใช่ตัวเลข
-            let value = e.target.value.replace(/\D/g, '');
-            // จำกัด 16 หลัก
-            value = value.substring(0, 16);
-            // เพิ่มเว้นวรรคทุก 4 ตัว
-            let formatted = value.match(/.{1,4}/g)?.join(' ') || '';
-            
-            e.target.value = formatted;
-            displayNum.innerText = formatted || '#### #### #### ####';
-        });
+              <div class="space-y-2 mb-6">
+                <label
+                  class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                  >Address</label
+                >
+                <input name="address"
+                  type="text"
+                  class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green"
+                  placeholder="123 Sukhumvit Road, Watthana"
+                />
+              </div>
 
-        // Logic 2: Update Name
-        inputName.addEventListener('input', (e) => {
-            let val = e.target.value.toUpperCase();
-            displayName.innerText = val || 'YOUR NAME';
-        });
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label
+                    class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                    >Postal Code</label
+                  >
+                  <input name="postal" 
+                    type="text"
+                    class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green"
+                    placeholder="10110" maxlength="5"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label
+                    class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                    >Phone</label
+                  >
+                  <input name="phone"
+                    type="tel"
+                    class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green"
+                    placeholder="081-xxx-xxxx" maxlength="10"
+                  />
+                </div>
+              </div>
+            </section>
 
-        // Logic 3: Update Expiry Date (Auto Slash)
-        inputExp.addEventListener('input', (e) => {
-            let val = e.target.value.replace(/\D/g, ''); // เอาเฉพาะตัวเลข
-            if (val.length >= 2) {
-                val = val.substring(0, 2) + '/' + val.substring(2, 4);
-            }
-            e.target.value = val;
-            displayExp.innerText = val || 'MM/YY';
-        });
+            <!-- 2. Payment Section -->
+            <section>
+              <div
+                class="flex items-center justify-between mb-8 border-b border-gray-200 pb-4"
+              >
+                <h2 class="font-serif text-2xl text-njtk-dark">
+                  Payment Method
+                </h2>
+                <div class="flex gap-2">
+                  <i class="fa-brands fa-cc-visa text-gray-400 text-2xl"></i>
+                  <i
+                    class="fa-brands fa-cc-mastercard text-gray-400 text-2xl"
+                  ></i>
+                </div>
+              </div>
 
-        // Logic 4: Handle CVV & Flip Animation
-        inputCvv.addEventListener('focus', () => {
-            visualCard.classList.add('flip-card');
-        });
+              <!-- Payment Forms -->
+              <div class="space-y-6">
+                <div class="space-y-2">
+                  <label
+                    class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                    >Card Number</label
+                  >
+                  <div class="relative">
+                    <input
+                    name="cardNumber"
+                      type="text"
+                      id="inputCardNum"
+                      maxlength="19"
+                      class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 pl-10 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green font-sans"
+                      placeholder="4242 4242 4242 4242"
+                    />
+                    <i
+                      class="fa-regular fa-credit-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    ></i>
+                  </div>
+                </div>
 
-        inputCvv.addEventListener('blur', () => {
-            visualCard.classList.remove('flip-card');
-        });
+                <div class="space-y-2">
+                  <label
+                    class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                    >Card Holder Name</label
+                  >
+                  <input
+                  name="cardName"
+                    type="text"
+                    id="inputCardName"
+                    class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green uppercase"
+                    placeholder="NAME ON CARD"
+                  />
+                </div>
 
-        inputCvv.addEventListener('input', (e) => {
-            let val = e.target.value.replace(/\D/g, '');
-            displayCvv.innerText = val || '***';
-        });
+                <div class="grid grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                    <label
+                      class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                      >Expiry Date</label
+                    >
+                    <input
+                    name="cardExp"
+                      type="text"
+                      id="inputCardExp"
+                      maxlength="5"
+                      class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green text-center"
+                      placeholder="MM/YY"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label
+                      class="text-xs font-bold uppercase tracking-wider text-gray-500"
+                      >CVV</label
+                    >
+                    <div class="relative">
+                      <input name="cardCvv"
+                        type="text"
+                        id="inputCardCvv"
+                        maxlength="3"
+                        class="input-field w-full bg-white border border-gray-200 rounded px-4 py-3 focus:outline-none focus:border-njtk-green focus:ring-1 focus:ring-njtk-green text-center"
+                        placeholder="123"
+                      />
+                      <i
+                        class="fa-solid fa-lock absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-xs"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
 
-        // Logic 5: Payment Simulation
-        function processPayment() {
-            // เปลี่ยนสถานะปุ่ม
-            const originalText = btnPay.innerHTML;
-            btnPay.disabled = true;
-            btnPay.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
-            btnPay.classList.add('opacity-75', 'cursor-not-allowed');
+          <!-- RIGHT COLUMN: Order Summary (5 Columns) -->
+          <div class="lg:col-span-5">
+            <div
+              class="bg-white rounded-xl shadow-lg p-6 lg:p-8 sticky top-24 border border-gray-100"
+            >
+              <h3 class="font-playfair text-xl mb-6 text-njtk-dark">
+                Order Summary
+              </h3>
 
-            // จำลองการส่งข้อมูล (2 วินาที)
-            setTimeout(() => {
-                btnPay.classList.remove('bg-njtk-green', 'hover:bg-[#5D7A60]');
-                btnPay.classList.add('bg-green-600');
-                btnPay.innerHTML = '<i class="fa-solid fa-check"></i> Success!';
-                
-                // แจ้งเตือนหรือ Redirect
-                setTimeout(() => {
-                    alert('Payment Successful! Thank you for buying from NJTK.');
-                    window.location.href = '/'; // กลับหน้าแรก
-                }, 1000);
-            }, 2000);
-        }
-    </script>
-</body>
+              <% if (cart && cart.length > 0) { %> <%
+              cart.forEach(function(item, index) { %>
+
+              <div
+                class="flex gap-4 mb-6 <%= index === cart.length - 1 ? 'border-b border-gray-100 pb-6' : '' %>"
+              >
+                <div class="w-16 h-24 flex-shrink-0 relative shadow-sm">
+                  <img
+                    src="<%= item.imageURL %>"
+                    alt="Book"
+                    class="w-full h-full object-cover rounded-sm"
+                  />
+                </div>
+                <div class="flex-grow flex flex-col justify-between">
+                  <div class="item-info">
+                    <h4>item.bookname</h4>
+                    <p class="text-sm font-semibold">
+                      Quantity: <%= item.qty %>
+                    </p>
+                    <p class="text-sm font-semibold">
+                      ฿<%= item.total.toLocaleString("th-TH") %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <% }); %> <% } else { %>
+              <p class="text-sm text-gray-500 mb-6">
+                ยังไม่มีสินค้าในคำสั่งซื้อ
+              </p>
+              <% } %>
+
+              <!-- Calculations -->
+              <div class="space-y-3 text-sm text-gray-600 mb-6">
+                <div class="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>฿<%= subtotal.toLocaleString("th-TH") %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Shipping (Standard)</span>
+                  <span>฿<%= shipping.toLocaleString("th-TH") %></span>
+                </div>
+              </div>
+
+              <!-- Total -->
+              <div
+                class="flex justify-between items-center pt-6 border-t border-gray-200 mb-8"
+              >
+                <span class="font-playfair text-lg text-njtk-dark font-bold"
+                  >Total</span
+                >
+                <div class="text-right">
+                  <span class="font-playfair text-2xl font-bold text-njtk-dark">
+                    ฿<%= grandTotal.toLocaleString("th-TH") %>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Button -->
+              <button onclick="checkout()"
+                type="submit"
+                id="btnPay"
+                class="w-full bg-theme-sage text-white font-medium py-4 px-6 rounded-lg shadow-md hover:bg-[#5D7A60] hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 group"
+              >
+                <span>Pay Now</span>
+                <i
+                  class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"
+                ></i>
+              </button>
+
+              <div class="mt-4 text-center">
+                <p class="text-[10px] text-gray-400">
+                  <i class="fa-solid fa-lock mr-1"></i> Secure Encrypted Payment
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+    <!-- JavaScript Logic -->
+    <script src="/javascripts/navbar.js"></script>
+    <script src="/javascripts/scrollbar.js"></script>
+    <script src="/javascripts/cart.js"></script>
+    <script src="/javascripts/info.js"></script>
+  </body>
 </html>

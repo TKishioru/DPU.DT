@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>NJTK Bookstore</title>
+
+    <link rel="icon" type="image/png" href="/images/NJTK_Logo_small.png" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/stylesheets/styles.css" />
+    <link rel="stylesheet" href="/stylesheets/cardBook.css" />
+    <link rel="stylesheet" href="/stylesheets/scrollbar.css" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;700&family=Noto+Sans+Thai:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "theme-sage": "#809671" /* Primary: เขียวใบไม้ */,
+              "theme-olive": "#B3B792" /* Secondary: เขียวมะกอก/ทอง */,
+              "theme-cream": "#E5E0D8" /* Background: สีครีมกระดาษ */,
+              "theme-charcoal": "#2A3328" /* Text: สีเทาเข้มอมเขียว */,
+              "theme-paper": "#F5F3EF" /* Card: สีขาวนวล */,
+            },
+            fontFamily: {
+              playfair: ['"Playfair Display"', "serif"],
+              sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 10px 40px -10px rgba(0,0,0,0.08)",
+              glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-theme-cream text-theme-charcoal font-sans antialiased selection:bg-theme-olive"
+  >
+    <!-- Navbar -->
+    <nav
+      id="navbar"
+      class="fixed w-full z-50 transition-all duration-500 py-4 px-6 md:px-12 bg-transparent"
+    >
+      <div
+        class="max-w-7xl mx-auto backdrop-blur-md bg-white/60 border border-white/40 rounded-2xl shadow-glass px-6 py-3 flex justify-between items-center"
+      >
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2 group">
+          <img
+            class="w-[75px]"
+            src="/images/NJTK_Logo_full.png"
+            alt="NJTK Logo"
+          />
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a
+            href="#home"
+            class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full"
+            >Home</a
+          >
+          <a
+            href="#shop"
+            class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full"
+            >Shop</a
+          >
+          <a
+            href="/about"
+            class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full"
+            >About</a
+          >
+        </div>
+
+        <!-- Icons & Mobile Button -->
+        <div class="flex items-center gap-6">
+          <a href="/cart" class="relative cursor-pointer group">
+            <i
+              class="fa-solid fa-bag-shopping text-xl hover:text-theme-sage transition-colors"
+            ></i>
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-theme-sage text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full group-hover:scale-110 transition-transform"
+              >0</span
+            >
+          </a>
+          <!-- User Logic (EJS) -->
+
+          <% if (typeof user !== 'undefined' && user) { %>
+
+          <!-- เมื่อ Login แล้ว -->
+          <div
+            class="hidden md:flex items-center gap-3 pl-4 border-l border-gray-300/60"
+          >
+            <a href="/profile" class="flex items-center gap-2 group">
+              <div class="flex flex-col">
+                <span
+                  class="text-xs font-bold text-gray-700 group-hover:text-theme-sage transition-colors truncate max-w-[100px]"
+                >
+                  <%= user.fullname %>
+                </span>
+
+                <span class="text-[10px] text-gray-500 truncate max-w-[100px]">
+                  <%= user.email %>
+                </span>
+              </div>
+            </a>
+
+            <!-- Logout -->
+            <a
+              href="/logout"
+              class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm"
+              title="Logout"
+            >
+              <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+            </a>
+          </div>
+
+          <% } else { %>
+
+          <!-- Guest (ไม่ได้ Login) -->
+          <a
+            href="/login"
+            class="px-5 py-2 bg-theme-sage text-white text-sm rounded-full font-bold shadow-md hover:bg-theme-charcoal transition-colors hidden md:inline-block"
+          >
+            Login
+          </a>
+
+          <% } %>
+
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden text-2xl focus:outline-none"
+          >
+            <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Overlay -->
+      <div
+        id="mobile-menu"
+        class="fixed inset-0 bg-theme-cream/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col items-center justify-center space-y-8"
+      >
+        <button
+          id="close-menu"
+          class="absolute top-8 right-8 text-3xl text-theme-sage"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <a
+          href="#home"
+          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
+          >Home</a
+        >
+        <a
+          href="#shop"
+          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
+          >Shop</a
+        >
+        <a
+          href="/about"
+          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
+          >About</a
+        >
+        <a
+          href="/cart"
+          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
+          >Cart</a
+        >
+        <% if (typeof user !== 'undefined' && user) { %>
+        <a
+          href="/profile"
+          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
+          >My Profile</a
+        >
+        <a
+          href="/logout"
+          class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg"
+          >Logout</a
+        >
+        <% } else { %>
+        <a
+          href="/login"
+          class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg"
+          >Login</a
+        >
+        <% } %>
+      </div>
+    </nav>
+    <main class="pt-28 pb-16 min-h-screen px-6 md:px-12">
+      <!-- Header -->
+      <header class="py-10 text-center">
+        <h1 class="text-4xl font-playfair font-bold text-theme-charcoal">
+          Order History
+        </h1>
+        <p class="text-gray-600">ประวัติการสั่งซื้อและสถานะพัสดุของคุณ</p>
+      </header>
+      <% if (!orders || orders.length === 0) { %>
+      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 mb-20">
+        <!-- Orders List -->
+        <div class="space-y-6">
+          <!-- Empty State (ถ้าไม่มีคำสั่งซื้อ) -->
+          <div class="p-12 text-center">
+            <div
+              class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300 text-3xl"
+            >
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h3 class="font-playfair text-xl font-bold mb-2">No orders yet</h3>
+            <p class="text-gray-500 mb-6 text-sm">
+              คุณยังไม่มีประวัติการสั่งซื้อหนังสือ
+            </p>
+            <a
+              href="/shop"
+              class="inline-block bg-njtk-sage text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[#5D7A60] transition"
+            >
+              Start Shopping
+            </a>
+          </div>
+        </div>
+      </div>
+      <% } else { %>
+
+      <!-- Loop Orders -->
+      <% orders.forEach(order => { %>
+      <div class="max-w-4xl mx-auto mb-20">
+        <!-- Orders List -->
+        <div class="space-y-6">
+          <div
+            class="bg-white rounded-xl p-6 hover:shadow-md transition duration-300 border border-transparent hover:border-njtk-sage/20"
+          >
+            <!-- Top Bar: ID & Status -->
+            <div
+              class="flex flex-wrap justify-between items-start pb-4 mb-4 gap-4"
+            >
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="font-playfair font-bold text-lg text-njtk-dark"
+                    >Order #<%= order.orderId %></span
+                  >
+                  <span class="text-xs text-gray-400 font-mono"
+                    ><%= order.dateFormatted %></span
+                  >
+                </div>
+                <p class="text-xs text-gray-500 mt-1">
+                  Total items: <%= order.items.length %>
+                </p>
+              </div>
+
+              <!-- Status Badge Logic -->
+              <% let statusClass = "bg-gray-100 text-gray-600"; let icon =
+              "fa-clock"; if(order.status === 'Processing') { statusClass =
+              "bg-blue-50 text-blue-600"; icon = "fa-rotate"; } if(order.status
+              === 'Shipped') { statusClass = "bg-orange-50 text-orange-600";
+              icon = "fa-truck-fast"; } if(order.status === 'Delivered') {
+              statusClass = "bg-green-50 text-green-700"; icon =
+              "fa-check-circle"; } if(order.status === 'Cancelled') {
+              statusClass = "bg-red-50 text-red-600"; icon = "fa-xmark"; } %>
+              <div
+                class="<%= statusClass %> px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-2"
+              >
+                <i class="fa-solid <%= icon %>"></i>
+                <%= order.status %>
+              </div>
+            </div>
+
+            <!-- Order Items (Preview) -->
+            <div class="flex flex-col gap-4">
+        <% order.items.forEach(item => { %>
+        <div class="flex items-center gap-4 border-b pb-3">
+
+            <!-- รูปหนังสือ -->
+            <img 
+                src="<%= item.imageURL %>" 
+                class="w-14 h-20 object-cover rounded shadow"
+                alt="<%= item.bookname %>"
+            />
+
+            <!-- รายละเอียดหนังสือ -->
+            <div class="flex-1">
+                <p class="font-semibold"><%= item.bookname %></p>
+                <p class="text-sm text-gray-600">
+                    ฿<%= item.price.toLocaleString() %> × <%= item.qty %>
+                </p>
+            </div>
+
+            <!-- ราคารวม -->
+            <div class="font-bold text-theme-green">
+                ฿<%= item.total.toLocaleString() %>
+            </div>
+
+        </div>
+        <% }) %>
+            </div>
+
+            <!-- Footer: Total & Actions -->
+            <div
+              class="mt-6 pt-4 flex justify-end items-end"
+            >
+              <div>
+                <span class="text-xs text-gray-500 uppercase tracking-wider"
+                  >Total Amount</span
+                >
+                <div class="font-playfair text-2xl font-bold text-njtk-sage text-right">
+                  ฿ <%= order.grandTotal.toLocaleString() %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }) %> 
+        </div>
+      </div>
+      <% } %>
+    </main>
+  </body>
+</html>

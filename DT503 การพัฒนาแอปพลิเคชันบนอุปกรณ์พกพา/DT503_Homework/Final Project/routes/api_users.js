@@ -23,23 +23,25 @@ function saveUsers(data) {
 // REGISTER
 // ---------------------
 router.post("/register", (req, res) => {
-    const { username, password, fullname } = req.body;
+    const {email, password, fullname } = req.body;
+    console.log(req.body);
 
-    if (!username || !password) {
-        return res.status(400).json({ message: "Missing username or password" });
+    if (!email || !password) {
+        console.log(email, password);
+        return res.status(400).json({ message: "Missing email or password" });
     }
 
     let usersData = loadUsers();
 
-    // เช็คว่ามี username นี้แล้วหรือยัง
-    const exists = usersData.users.find(u => u.username === username);
+    // เช็คว่ามี email นี้แล้วหรือยัง
+    const exists = usersData.users.find(u => u.email === email);
     if (exists) {
-        return res.status(400).json({ message: "Username already exists" });
+        return res.status(400).json({ message: "email already exists" });
     }
 
     // บันทึกผู้ใช้ใหม่
     const newUser = {
-        username,
+        email,
         password, // *Note: production ต้อง hash password!
         fullname: fullname || "",
         createdAt: new Date()
@@ -55,10 +57,10 @@ router.post("/register", (req, res) => {
 // LOGIN
 // ---------------------
 router.post("/login", (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     const usersData = loadUsers();
-    const user = usersData.users.find(u => u.username === username);
+    const user = usersData.users.find(u => u.email === email);
 
     if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -70,19 +72,23 @@ router.post("/login", (req, res) => {
 
     // เก็บข้อมูล user ลง session
     req.session.user = {
-        username: user.username,
+        email: user.email,
         fullname: user.fullname
     };
 
     res.json({ message: "Login successful", user: req.session.user });
 });
 
-// ---------------------
-// LOGOUT
-// ---------------------
-router.post("/logout", (req, res) => {
-    req.session.destroy();
-    res.json({ message: "Logged out" });
+router.get("/me", (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: "Not logged in" });
+    }
+console.log(req.session.user);
+    res.json({
+        loggedIn: true,
+        user: req.session.user
+    });
+    console.log(user);
 });
 
 module.exports = router;

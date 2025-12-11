@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <title>Order Summary - NJTK Bookstore</title>
+
+    <link rel="icon" type="image/png" href="/images/NJTK_Logo_small.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Non-View Global Styles -->
+    <link rel="stylesheet" href="/stylesheets/styles.css" />
+    <link rel="stylesheet" href="/stylesheets/scrollbar.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&family=Noto+Sans+Thai:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "theme-sage": "#809671",
+              "theme-olive": "#B3B792",
+              "theme-cream": "#E5E0D8",
+              "theme-charcoal": "#2A3328",
+              "theme-paper": "#F5F3EF",
+              "theme-gold": "#A69168",
+              "theme-success": "#27AE60",
+            },
+            fontFamily: {
+              playfair: ['"Playfair Display"', "serif"],
+              sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 10px 40px -10px rgba(0,0,0,0.08)",
+              glass: "0 8px 32px 0 rgba(31,38,135,0.07)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Confetti Style -->
+    <style>
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        animation: fall linear forwards;
+        top: -10px;
+        z-index: 100;
+      }
+      @keyframes fall {
+        to {
+          transform: translateY(100vh) rotate(720deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-theme-cream font-sans text-theme-charcoal overflow-x-hidden">
+  <main class="text-center py-20 px-6 md:px-12 max-w-7xl mx-auto">
+      <!-- 1. Header & Success Icon -->
+      <div
+        class="w-20 h-20 rounded-full bg-theme-sage text-white flex items-center justify-center mx-auto text-4xl shadow-soft animate-[popUp_.5s_ease-out]"
+      >
+        <i class="fa-solid fa-check"></i>
+      </div>
+
+      <h1 class="font-playfair text-4xl mt-6 text-theme-sage">
+        Thank you for your order!
+      </h1>
+      <p class="text-gray-600 mt-2">
+        Your order has been received. We are getting your books ready.
+      </p>
+
+      <!-- Click to copy ID -->
+      <div
+        onclick="copyOrderId()"
+        class="inline-flex items-center gap-2 bg-white/50 hover:bg-black/10 text-gray-500 hover:text-theme-charcoal px-4 py-2 rounded-full mt-6 cursor-pointer transition"
+      >
+        Order ID: <span id="orderId"><%= order.orderId %></span>
+        <i class="fa-regular fa-copy"></i>
+      </div>
+
+      <!-- 2. Animated Map & Tracking -->
+      <div class="map-container mt-10">
+        <div class="route-visual">
+          <div class="route-line"></div>
+          <div class="point" data-label="Bookstore"></div>
+
+          <!-- Gimmick: Moving Truck -->
+          <div class="delivery-truck">
+            <i class="fa-solid fa-truck-fast"></i>
+          </div>
+
+          <div class="point" data-label="Home"></div>
+        </div>
+
+        <div class="tracker">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 33%"></div>
+          </div>
+
+          <div class="step active">
+            <div class="step-icon"><i class="fa-solid fa-receipt"></i></div>
+            <div class="step-text">Confirmed</div>
+          </div>
+          <div class="step active">
+            <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
+            <div class="step-text">Processing</div>
+          </div>
+          <div class="step">
+            <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
+            <div class="step-text">On Delivery</div>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <i class="fa-solid fa-house-chimney"></i>
+            </div>
+            <div class="step-text">Delivered</div>
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #fcfcfc;
+            border-radius: 10px;
+            border: 1px dashed #ddd;
+            font-size: 0.9rem;
+          "
+        >
+          <i class="fa-regular fa-clock"></i> Estimated Delivery:
+          <strong>2 - 3 Days</strong>
+        </div>
+      </div>
+
+      <!-- Order details -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 text-left">
+        <!-- Items -->
+        <div class="bg-white rounded-xl shadow-soft p-6">
+          <h3 class="font-playfair text-xl border-b pb-2 mb-4">Order Items</h3>
+
+          <ul class="space-y-2">
+            <% order.items.forEach(item => { %>
+            <li class="flex justify-between">
+              <span><%= item.bookname %> × <%= item.qty %></span>
+              <strong><%= item.total %> ฿</strong>
+            </li>
+            <% }) %>
+
+            <li class="flex justify-between border-t pt-3 mt-2 text-gray-600">
+              <span>Shipping Fee</span>
+              <span><%= order.shipping %> ฿</span>
+            </li>
+
+            <li
+              class="flex justify-between pt-2 text-theme-sage font-semibold text-lg"
+            >
+              <span>Total Amount</span>
+              <span><%= order.grandTotal %> ฿</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Shipping -->
+        <div class="bg-white rounded-xl shadow-soft p-6">
+          <h3 class="font-playfair text-xl border-b pb-2 mb-4">
+            Shipping Address
+          </h3>
+
+          <p>
+            <strong
+              ><%= order.shippingInfo.fullname %></strong
+            >
+          </p>
+          <p><%= order.shippingInfo.address %></p>
+          <p><%= order.shippingInfo.postal %></p>
+          <p>Thailand</p>
+
+          <p class="mt-4">
+            <i class="fa-solid fa-phone"></i> <%= order.shippingInfo.phone %>
+          </p>
+          <p>
+            <i class="fa-solid fa-credit-card"></i> Card **** <%=
+            order.paymentInfo.last4 %>
+          </p>
+        </div>
+      </section>
+
+      <!-- Back to Home -->
+      <a
+        href="/"
+        class="inline-block mt-10 bg-theme-charcoal text-white py-3 px-10 rounded-full hover:bg-theme-sage shadow-md transition"
+      >
+        Back to Home
+      </a>
+    </div>
+
+    <!-- Scripts: Confetti & Copy -->
+    <script>
+      // 1. Confetti Effect Function
+      function createConfetti() {
+        const colors = ["#5D7A60", "#A69168", "#E74C3C", "#F1C40F", "#3498DB"];
+
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement("div");
+          confetti.classList.add("confetti");
+
+          // Random properties
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDuration = Math.random() * 3 + 2 + "s"; // 2-5s fall time
+          confetti.style.opacity = Math.random();
+
+          document.body.appendChild(confetti);
+
+          // Remove after animation
+          setTimeout(() => {
+            confetti.remove();
+          }, 5000);
+        }
+      }
+
+      // Trigger on load
+      window.onload = createConfetti;
+
+      // 2. Copy Order ID Function
+      function copyOrderId() {
+        const orderId = document.getElementById("orderId").innerText;
+        navigator.clipboard.writeText(orderId).then(() => {
+          const refDiv = document.querySelector(".order-ref");
+          const originalHtml = refDiv.innerHTML;
+
+          // Changed text to English
+          refDiv.innerHTML = 'Copied! <i class="fa-solid fa-check"></i>';
+          refDiv.style.color = "var(--success)";
+
+          setTimeout(() => {
+            refDiv.innerHTML = originalHtml;
+            refDiv.style.color = "";
+          }, 2000);
+        });
+      }
+    </script>
+  </body>
+</html>

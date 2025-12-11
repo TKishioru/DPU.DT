@@ -1,0 +1,186 @@
+{
+  "orders": [
+    {
+      "orderId": "ORD-1765471297840",
+      "user": "guest",
+      "date": "2025-12-11T16:41:37.840Z",
+      "items": [
+        {
+          "id": 13,
+          "qty": 2,
+          "price": 592,
+          "total": 1184
+        },
+        {
+          "id": 9,
+          "qty": 1,
+          "price": 474,
+          "total": 474
+        }
+      ],
+      "subtotal": 1658,
+      "shipping": 50,
+      "grandTotal": 1708,
+      "status": "PAID",
+      "shippingInfo": {
+        "fullname": "testdl;",
+        "address": "24mlmlklk;l",
+        "postal": "32453",
+        "phone": "0987654321"
+      },
+      "paymentInfo": {
+        "cardName": "test",
+        "cardExp": "03/52",
+        "last4": "4597"
+      }
+    },
+    {
+      "orderId": "ORD-1765471413400",
+      "user": "guest",
+      "date": "2025-12-11T16:43:33.401Z",
+      "items": [
+        {
+          "id": 12,
+          "qty": 3,
+          "price": 960,
+          "total": 2880
+        },
+        {
+          "id": 13,
+          "qty": 2,
+          "price": 533,
+          "total": 1066
+        }
+      ],
+      "subtotal": 3946,
+      "shipping": 50,
+      "grandTotal": 3996,
+      "status": "PAID",
+      "shippingInfo": {
+        "fullname": "TK",
+        "address": "ewrfwds3",
+        "postal": "32526",
+        "phone": "9238750372"
+      },
+      "paymentInfo": {
+        "cardName": "td",
+        "cardExp": "03/24",
+        "last4": "4760"
+      }
+    },
+    {
+      "orderId": "ORD-1765472091114",
+      "user": "TK",
+      "date": "2025-12-11T16:54:51.114Z",
+      "items": [
+        {
+          "id": 12,
+          "qty": 1,
+          "price": 960,
+          "total": 960
+        },
+        {
+          "id": 13,
+          "qty": 1,
+          "price": 533,
+          "total": 533
+        },
+        {
+          "id": 11,
+          "qty": 2,
+          "price": 884,
+          "total": 1768
+        },
+        {
+          "id": 10,
+          "qty": 4,
+          "price": 1042,
+          "total": 4168
+        },
+        {
+          "id": 5,
+          "qty": 1,
+          "price": 892,
+          "total": 892
+        }
+      ],
+      "subtotal": 8321,
+      "shipping": 50,
+      "grandTotal": 8371,
+      "status": "PAID",
+      "shippingInfo": {
+        "fullname": "TK",
+        "address": "098325-95fdgfdfggfd",
+        "postal": "25362",
+        "phone": "3490384609"
+      },
+      "paymentInfo": {
+        "cardName": "gfd",
+        "cardExp": "03/24",
+        "last4": "8506"
+      }
+    },
+    {
+      "orderId": "ORD-1765474261054",
+      "user": "TK",
+      "date": "2025-12-11T17:31:01.054Z",
+      "items": [
+        {
+          "id": 13,
+          "qty": 1,
+          "price": 533,
+          "total": 533
+        },
+        {
+          "id": 9,
+          "qty": 1,
+          "price": 427,
+          "total": 427
+        }
+      ],
+      "subtotal": 960,
+      "shipping": 50,
+      "grandTotal": 1010,
+      "status": "PAID",
+      "shippingInfo": {
+        "fullname": "TK",
+        "address": "",
+        "postal": "",
+        "phone": ""
+      },
+      "paymentInfo": {
+        "cardName": "",
+        "cardExp": "",
+        "last4": null
+      }
+    },
+    {
+      "orderId": "ORD-1765477010589",
+      "user": "Por",
+      "date": "2025-12-11T18:16:50.589Z",
+      "items": [
+        {
+          "id": 7,
+          "qty": 1,
+          "price": 252,
+          "total": 252
+        }
+      ],
+      "subtotal": 252,
+      "shipping": 50,
+      "grandTotal": 302,
+      "status": "PAID",
+      "shippingInfo": {
+        "fullname": "Por",
+        "address": "32432",
+        "postal": "53253",
+        "phone": "3255676587"
+      },
+      "paymentInfo": {
+        "cardName": "fgd",
+        "cardExp": "03/42",
+        "last4": "6756"
+      }
+    }
+  ]
+}

@@ -1,567 +1,469 @@
 <!DOCTYPE html>
 <html lang="th" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-    <title>NJTK Bookstore</title>
 
-    <link rel="icon" type="image/png" href="/images/NJTK_Logo_small.png" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>NJTK Bookstore</title>
 
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+  <link rel="icon" type="image/png" href="/images/NJTK_Logo_small.png" />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/stylesheets/styles.css" />
-    <link rel="stylesheet" href="/stylesheets/cardBook.css" />
-    <link rel="stylesheet" href="/stylesheets/scrollbar.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" href="/stylesheets/styles.css" />
+  <link rel="stylesheet" href="/stylesheets/cardBook.css" />
+  <link rel="stylesheet" href="/stylesheets/scrollbar.css" />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;700&family=Noto+Sans+Thai:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              "theme-sage": "#809671" /* Primary: เขียวใบไม้ */,
-              "theme-olive": "#B3B792" /* Secondary: เขียวมะกอก/ทอง */,
-              "theme-cream": "#E5E0D8" /* Background: สีครีมกระดาษ */,
-              "theme-charcoal": "#2A3328" /* Text: สีเทาเข้มอมเขียว */,
-              "theme-paper": "#F5F3EF" /* Card: สีขาวนวล */,
-            },
-            fontFamily: {
-              playfair: ['"Playfair Display"', "serif"],
-              sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
-            },
-            boxShadow: {
-              soft: "0 10px 40px -10px rgba(0,0,0,0.08)",
-              glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
-            },
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;700&family=Noto+Sans+Thai:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "theme-sage": "#809671" /* Primary: เขียวใบไม้ */,
+            "theme-olive": "#B3B792" /* Secondary: เขียวมะกอก/ทอง */,
+            "theme-cream": "#E5E0D8" /* Background: สีครีมกระดาษ */,
+            "theme-charcoal": "#2A3328" /* Text: สีเทาเข้มอมเขียว */,
+            "theme-paper": "#F5F3EF" /* Card: สีขาวนวล */,
+          },
+          fontFamily: {
+            playfair: ['"Playfair Display"', "serif"],
+            sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
+          },
+          boxShadow: {
+            soft: "0 10px 40px -10px rgba(0,0,0,0.08)",
+            glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
           },
         },
-      };
-    </script>
-  </head>
+      },
+    };
+  </script>
+</head>
 
-  <body
-    class="bg-theme-cream text-theme-charcoal font-sans antialiased selection:bg-theme-olive"
-  >
-    <!-- Navbar -->
-    <nav
-      id="navbar"
-      class="fixed w-full z-50 transition-all duration-500 py-4 px-6 md:px-12 bg-transparent"
-    >
-      <div
-        class="max-w-7xl mx-auto backdrop-blur-md bg-white/60 border border-white/40 rounded-2xl shadow-glass px-6 py-3 flex justify-between items-center"
-      >
-        <!-- Logo -->
-        <a href="/" class="flex items-center gap-2 group">
-          <img
-            class="w-[75px]"
-            src="/images/NJTK_Logo_full.png"
-            alt="NJTK Logo"
-          />
+<body class="bg-theme-cream text-theme-charcoal font-sans antialiased selection:bg-theme-olive">
+  <!-- Navbar -->
+  <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-4 px-6 md:px-12 bg-transparent">
+    <div
+      class="max-w-7xl mx-auto backdrop-blur-md bg-white/60 border border-white/40 rounded-2xl shadow-glass px-6 py-3 flex justify-between items-center">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group">
+        <img class="w-[75px]" src="/images/NJTK_Logo_full.png" alt="NJTK Logo" />
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="#home"
+          class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">Home</a>
+        <a href="#shop"
+          class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">Shop</a>
+        <a href="/about"
+          class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">About</a>
+      </div>
+
+      <!-- Icons & Mobile Button -->
+      <div class="flex items-center gap-6">
+        <a href="/cart" class="relative cursor-pointer group">
+          <i class="fa-solid fa-bag-shopping text-xl hover:text-theme-sage transition-colors"></i>
+          <span id="cart-count"
+            class="absolute -top-2 -right-2 bg-theme-sage text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full group-hover:scale-110 transition-transform">0</span>
         </a>
+        <!-- User Logic (EJS) -->
 
-        <!-- Desktop Menu -->
-        <div class="hidden md:flex items-center space-x-8">
-          <a
-            href="#home"
-            class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full"
-            >Home</a
-          >
-          <a
-            href="#shop"
-            class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full"
-            >Shop</a
-          >
-          <a
-            href="/about"
-            class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full"
-            >About</a
-          >
-        </div>
+<% if (typeof user !== 'undefined' && user) { %>
 
-        <!-- Icons & Mobile Button -->
-        <div class="flex items-center gap-6">
-          <a href="/cart" class="relative cursor-pointer group">
-            <i
-              class="fa-solid fa-bag-shopping text-xl hover:text-theme-sage transition-colors"
-            ></i>
-            <span id="cart-count"
-              class="absolute -top-2 -right-2 bg-theme-sage text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full group-hover:scale-110 transition-transform"
-              >0</span
-            >
-          </a>
-           <!-- User Logic (EJS) -->
-          <% if (typeof user !== 'undefined' && user) { %>
-            <!-- กรณี Login แล้ว: แสดง Profile & Logout -->
-            <div class="hidden md:flex items-center gap-3 pl-4 border-l border-gray-300/60">
-                <!-- User Profile (Click เพื่อไปหน้า Profile หรือ Dashboard) -->
-                <a href="/profile" class="flex items-center gap-2 group">
-                    <img 
-                        src="<%= user.image || 'https://ui-avatars.com/api/?name=' + user.username + '&background=748C70&color=fff' %>" 
-                        alt="Profile" 
-                        class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm group-hover:border-theme-sage transition-all"
-                    >
-                    <div class="flex flex-col">
-                        <span class="text-xs font-bold text-gray-700 group-hover:text-theme-sage transition-colors truncate max-w-[100px]">
-                            <%= user.username %>
-                        </span>
-                    </div>
-                </a>
+  <!-- เมื่อ Login แล้ว -->
+  <div class="hidden md:flex items-center gap-3 pl-4 border-l border-gray-300/60">
 
-                <!-- Logout Button (Icon Style) -->
-                <a href="/logout" 
-                   class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm"
-                   title="Logout">
-                   <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
-                </a>
+    <a href="/profile" class="flex items-center gap-2 group">
+      <div class="flex flex-col">
+        <span 
+          class="text-xs font-bold text-gray-700 group-hover:text-theme-sage transition-colors truncate max-w-[100px]">
+          <%= user.fullname %> 
+        </span>
+
+        <span class="text-[10px] text-gray-500 truncate max-w-[100px]">
+          <%= user.email %>
+        </span>
+      </div>
+    </a>
+
+    <!-- Logout -->
+    <a href="/logout"
+      class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 
+             hover:bg-red-50 hover:text-red-500 transition-all shadow-sm"
+      title="Logout">
+      <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+    </a>
+  </div>
+
+<% } else { %>
+
+  <!-- Guest (ไม่ได้ Login) -->
+  <a href="/login"
+    class="px-5 py-2 bg-theme-sage text-white text-sm rounded-full font-bold shadow-md 
+           hover:bg-theme-charcoal transition-colors hidden md:inline-block">
+    Login
+  </a>
+
+<% } %>
+
+              <button id="mobile-menu-btn" class="md:hidden text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars-staggered"></i>
+              </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+      class="fixed inset-0 bg-theme-cream/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col items-center justify-center space-y-8">
+      <button id="close-menu" class="absolute top-8 right-8 text-3xl text-theme-sage">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <a href="#home" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Home</a>
+      <a href="#shop" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Shop</a>
+      <a href="/about" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">About</a>
+      <a href="/cart" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Cart</a>
+      <% if (typeof user !== 'undefined' && user) { %>
+      <a href="/profile" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">My Profile</a>
+      <a href="/logout" class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg">Logout</a>
+      <% } else { %>
+        <a href="/login" class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg">Login</a>
+        <% } %>
+    </div>
+  </nav>
+
+  <!-- Hero Section (Parallax & Split) -->
+  <header id="home"
+    class="relative min-h-screen flex items-center pt-20 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+    <!-- Background Shape -->
+    <div class="absolute top-0 right-0 w-2/3 h-full bg-theme-olive/20 rounded-l-[100px] -z-10 blur-3xl opacity-50">
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Text Content -->
+      <div class="space-y-6 reveal active">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-playfair font-bold leading-[1.1] text-theme-charcoal">
+          NJTK<br />
+          <span class="text-theme-sage">Bookstore</span>
+        </h1>
+        <p class="text-lg text-gray-600 max-w-md leading-relaxed">
+          นำพาผู้อ่านสู่โลกความรู้<br>เชิญมาค้นพบหนังสือเล่มโปรดที่จะเติมเต็มหัวใจ และพาคุณออกเดินทางไปในเรื่องราวใหม่ ๆ
+          กับเรา
+        </p>
+        <div class="flex flex-wrap gap-4 pt-4">
+          <a href="#shop"
+            class="group relative px-8 py-4 bg-theme-sage text-white rounded-full overflow-hidden shadow-lg hover:shadow-theme-sage/40 transition-shadow">
+            <span class="relative z-10 font-bold tracking-wide flex items-center gap-2">Shop Now<i
+                class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+            <div
+              class="absolute inset-0 bg-theme-charcoal transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out">
             </div>
-          <% } else { %>
-            <!-- กรณี Guest: แสดงปุ่ม Login -->
-            <a href="/login" class="px-5 py-2 bg-theme-sage text-white text-sm rounded-full font-bold shadow-md hover:bg-theme-charcoal transition-colors hidden md:inline-block">
-                Login
-            </a>
-          <% } %>
-          <button
-            id="mobile-menu-btn"
-            class="md:hidden text-2xl focus:outline-none"
-          >
-            <i class="fa-solid fa-bars-staggered"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile Menu Overlay -->
-      <div
-        id="mobile-menu"
-        class="fixed inset-0 bg-theme-cream/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col items-center justify-center space-y-8"
-      >
-        <button
-          id="close-menu"
-          class="absolute top-8 right-8 text-3xl text-theme-sage"
-        >
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <a
-          href="#home"
-          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
-          >Home</a
-        >
-        <a
-          href="#shop"
-          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
-          >Shop</a
-        >
-        <a
-          href="/about"
-          class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage"
-          >About</a
-        >
-        <a href="/cart" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage flex items-center gap-2">
-            Cart
           </a>
-        <a
-          href="#login"
-          class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg"
-          >Login</a
-        >
-      </div>
-    </nav>
-
-    <!-- Hero Section (Parallax & Split) -->
-    <header
-      id="home"
-      class="relative min-h-screen flex items-center pt-20 overflow-hidden"
-    >
-      <!-- Background Shape -->
-      <div
-        class="absolute top-0 right-0 w-2/3 h-full bg-theme-olive/20 rounded-l-[100px] -z-10 blur-3xl opacity-50"
-      ></div>
-
-      <div
-        class="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-      >
-        <!-- Text Content -->
-        <div class="space-y-6 reveal active">
-          <h1
-            class="text-5xl md:text-7xl lg:text-8xl font-playfair font-bold leading-[1.1] text-theme-charcoal"
-          >
-            NJTK<br />
-            <span class="text-theme-sage">Bookstore</span>
-          </h1>
-          <p class="text-lg text-gray-600 max-w-md leading-relaxed">
-            นำพาผู้อ่านสู่โลกความรู้<br>เชิญมาค้นพบหนังสือเล่มโปรดที่จะเติมเต็มหัวใจ และพาคุณออกเดินทางไปในเรื่องราวใหม่ ๆ กับเรา
-          </p>
-          <div class="flex flex-wrap gap-4 pt-4">
-            <a
-              href="#shop"
-              class="group relative px-8 py-4 bg-theme-sage text-white rounded-full overflow-hidden shadow-lg hover:shadow-theme-sage/40 transition-shadow"
-            >
-              <span
-                class="relative z-10 font-bold tracking-wide flex items-center gap-2"
-                >Shop Now<i
-                  class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"
-                ></i
-              ></span>
-              <div
-                class="absolute inset-0 bg-theme-charcoal transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out"
-              ></div>
-            </a>
-          </div>
         </div>
+      </div>
 
-        <!-- Hero Image Composition -->
+      <!-- Hero Image Composition -->
+      <div class="relative h-[500px] md:h-[600px] w-full reveal delay-200 hidden md:block">
         <div
-          class="relative h-[500px] md:h-[600px] w-full reveal delay-200 hidden md:block"
-        >
-          <div
-            class="absolute top-10 left-10 w-64 h-80 bg-theme-olive rounded-lg rotate-[-6deg] opacity-80 mix-blend-multiply"
-          ></div>
-          <div
-            class="absolute top-0 left-20 w-72 h-96 overflow-hidden rounded-lg shadow-2xl rotate-[-3deg] z-10 hover:rotate-0 hover:scale-105 transition-all duration-500"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop"
-              class="object-cover w-full h-full"
-            />
-          </div>
-          <div
-            class="absolute bottom-20 right-10 w-60 h-80 overflow-hidden rounded-lg shadow-2xl rotate-[3deg] z-20 hover:rotate-0 hover:scale-105 transition-all duration-500 border-4 border-white"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop"
-              class="object-cover w-full h-full"
-            />
-          </div>
-          <!-- Decorative Badge -->
-          <div
-            class="absolute top-1/2 right-0 bg-white/80 backdrop-blur-md p-4 rounded-xl shadow-glass z-30 animate-bounce delay-700 duration-1000"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500"
-              >
-                <i class="fa-solid fa-fire"></i>
-              </div>
-              <div>
-                <p class="text-xs text-gray-500 font-bold uppercase">
-                  Trending
-                </p>
-                <p class="text-sm font-playfair font-bold">Book Name</p>
-              </div>
+          class="absolute top-10 left-10 w-64 h-80 bg-theme-olive rounded-lg rotate-[-6deg] opacity-80 mix-blend-multiply">
+        </div>
+        <!--
+        <div
+          class="absolute top-0 left-20 w-72 h-96 overflow-hidden rounded-lg shadow-2xl rotate-[-3deg] z-10 hover:rotate-0 hover:scale-105 transition-all duration-500">
+          <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop"
+            class="object-cover w-full h-full" />
+        </div>-->
+        <div
+          class="absolute bottom-20 right-10 w-auto h-120 overflow-hidden rounded-lg rotate-[3deg] z-20 hover:rotate-0 hover:scale-105 transition-all duration-500 ">
+          <img src="/images/BannerBook.png" class="object-cover w-full h-full" />
+        </div>
+        <!-- Decorative Badge -->
+        <div
+          class="absolute top-1/2 right-0 bg-white/80 backdrop-blur-md p-4 rounded-xl shadow-glass z-30 animate-bounce delay-700 duration-1000">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 font-bold uppercase">
+                Trending
+              </p>
+              <p class="text-sm font-playfair font-bold">Alchemised</p>
             </div>
           </div>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- Shop Section -->
-    <section id="shop" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
-      <div
-        class="flex flex-col md:flex-row justify-between items-end mb-12 reveal"
-      >
-        <div>
-          <span
-            class="text-theme-sage font-bold uppercase tracking-widest text-xs"
-            >Curated for you</span
-          >
-          <h2 class="text-4xl font-playfair font-bold text-theme-charcoal mt-2">
-            Book Store
-          </h2>
-        </div>
+  <!-- Shop Section -->
+  <section id="shop" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-12 reveal">
+      <div>
+        <span class="text-theme-sage font-bold uppercase tracking-widest text-xs">Curated for you</span>
+        <h2 class="text-4xl font-playfair font-bold text-theme-charcoal mt-2">
+          Book Store
+        </h2>
       </div>
+    </div>
 
-      <!-- Product Grid -->
-      <div class="grid book-grid">
-        <!-- Card -->
-        <% books.slice().reverse().forEach(book => { %>
+    <!-- Product Grid -->
+    <div class="grid book-grid">
+      <!-- Card -->
+      <% books.slice().reverse().forEach(book=> { %>
 
         <div class="book-card fade-in bg-white/60" data-category="bestseller">
-          <% if (book.status == "Hot") { %>
-          <span class="badge bg-red-500 shadow-[0_5px_10px_rgba(231,76,60,0.4)]"
-            >Hot</span
-          >
-          <% } else if (book.status == "New") { %>
-          <span class="badge bg-green-500 shadow-[0_5px_10px_rgba(46,204,113,0.4)]"
-            >New</span
-          >
-          <% } %>
-          <div class="img-container">
-            <% if (book.imageURL) { %>
-            <img
-              src="<%= book.imageURL %>"
-              alt="<%= book.bookname %>"
-              class="book-img"
-            />
-            <% } %>
-          </div>
+          <% if (book.status=="Hot" ) { %>
+            <span class="badge bg-red-500 shadow-[0_5px_10px_rgba(231,76,60,0.4)]">Hot</span>
+            <% } else if (book.status=="New" ) { %>
+              <span class="badge bg-green-500 shadow-[0_5px_10px_rgba(46,204,113,0.4)]">New</span>
+              <% } %>
+                <div class="img-container">
+                  <% if (book.imageURL) { %>
+                    <img src="<%= book.imageURL %>" alt="<%= book.bookname %>" class="book-img" />
+                    <% } %>
+                </div>
 
-          <!-- Floating Icons (Show on Hover) -->
-          <div class="actions">
-            <a href="/books/<%= book.id %>" class="action-icon" title="ดูรายละเอียด">
-              <i class="fa-regular fa-eye"></i>
-            </a>
-            <div class="action-icon" title="บันทึก">
-              <i class="fa-regular fa-heart"></i>
-            </div>
-          </div>
+                <!-- Floating Icons (Show on Hover) -->
+                <div class="actions">
+                  <a href="/books/<%= book.id %>" class="action-icon" title="ดูรายละเอียด">
+                    <i class="fa-regular fa-eye"></i>
+                  </a>
+                  <div class="action-icon" title="บันทึก">
+                    <i class="fa-regular fa-heart"></i>
+                  </div>
+                </div>
 
-          <div class="info group transition-all duration-300">
-            <div class="author"><%= book.author %></div>
-            <h3 class="title"><%= book.bookname %></h3>
-            <div class="pill-container">
-              <!-- Price & Rating Section -->
-              <div class="price-info">
-                <div class="flex items-baseline gap-2">
-                  <span class="text-xl font-bold text-[#809671]"
-                    >฿<%= Math.round(book.sellPrice * 0.9) %></span
-                  >
-                  <span class="text-xs text-gray-400 line-through"
-                    >฿<%= book.sellPrice %></span
-                  >
-                </div>
-                <!-- Rating -->
-                <% if (book.rating >= 5) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 4.5) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star-half-stroke"></i>
-                <% } else if (book.rating >= 4) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 3.5) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star-half-stroke"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 3) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 2.5) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star-half-stroke"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 2) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 1.5) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star-half-stroke"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 1) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 0.5) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-solid fa-star-half-stroke"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } else if (book.rating >= 0) { %>
-                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
-                </div>
-                <% } %>
-              </div>
+                <div class="info group transition-all duration-300">
+                  <div class="author">
+                    <%= book.author %>
+                  </div>
+                  <h3 class="title">
+                    <%= book.bookname %>
+                  </h3>
+                  <div class="pill-container">
+                    <!-- Price & Rating Section -->
+                    <div class="price-info">
+                      <% if (typeof user !== 'undefined' && user) { %>
+                        <!-- Logged-in User: Show 10% Discount -->
+                      <div class="flex items-baseline gap-2">
+                        <span class="text-xl font-bold text-[#809671]">฿<%= Math.round(book.sellPrice * 0.9) %></span>
+                        <span class="text-xs text-gray-400 line-through">฿<%= book.sellPrice %></span>
+                      </div>
+                      <% } else { %>
+                        <!-- Guest: Show Regular Price -->
+                         <div class="text-left">
+                          <span class="text-xl font-bold text-[#809671]">฿<%= book.sellPrice %></span>
+                         </div>
+                      <% } %>
+                      <!-- Rating -->
+                      <% if (book.rating>= 5) { %>
+                        <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                        </div>
+                        <% } else if (book.rating>= 4.5) { %>
+                          <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                            <% } else if (book.rating>= 4) { %>
+                              <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                              </div>
+                              <% } else if (book.rating>= 3.5) { %>
+                                <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                  <i class="fa-solid fa-star"></i>
+                                  <i class="fa-solid fa-star"></i>
+                                  <i class="fa-solid fa-star"></i>
+                                  <i class="fa-solid fa-star-half-stroke"></i>
+                                  <i class="fa-regular fa-star"></i>
+                                </div>
+                                <% } else if (book.rating>= 3) { %>
+                                  <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-solid fa-star"></i>
+                                    <i class="fa-regular fa-star"></i>
+                                    <i class="fa-regular fa-star"></i>
+                                  </div>
+                                  <% } else if (book.rating>= 2.5) { %>
+                                    <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                      <i class="fa-solid fa-star"></i>
+                                      <i class="fa-solid fa-star"></i>
+                                      <i class="fa-solid fa-star-half-stroke"></i>
+                                      <i class="fa-regular fa-star"></i>
+                                      <i class="fa-regular fa-star"></i>
+                                    </div>
+                                    <% } else if (book.rating>= 2) { %>
+                                      <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                        <i class="fa-regular fa-star"></i>
+                                      </div>
+                                      <% } else if (book.rating>= 1.5) { %>
+                                        <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                          <i class="fa-solid fa-star"></i>
+                                          <i class="fa-solid fa-star-half-stroke"></i>
+                                          <i class="fa-regular fa-star"></i>
+                                          <i class="fa-regular fa-star"></i>
+                                          <i class="fa-regular fa-star"></i>
+                                        </div>
+                                        <% } else if (book.rating>= 1) { %>
+                                          <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                          </div>
+                                          <% } else if (book.rating>= 0.5) { %>
+                                            <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                              <i class="fa-solid fa-star-half-stroke"></i>
+                                              <i class="fa-regular fa-star"></i>
+                                              <i class="fa-regular fa-star"></i>
+                                              <i class="fa-regular fa-star"></i>
+                                              <i class="fa-regular fa-star"></i>
+                                            </div>
+                                            <% } else if (book.rating>= 0) { %>
+                                              <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                                                <i class="fa-regular fa-star"></i>
+                                                <i class="fa-regular fa-star"></i>
+                                                <i class="fa-regular fa-star"></i>
+                                                <i class="fa-regular fa-star"></i>
+                                                <i class="fa-regular fa-star"></i>
+                                              </div>
+                                              <% } %>
+                          </div>
 
-              <!-- Animated Button -->
-              <button class="circle-btn" onclick="addToCartSession(<%= book.id %>, 1)">
-                <span class="btn-text text-xs font-bold uppercase">Buy</span>
-                <i class="fa-solid fa-bag-shopping text-xs"></i>
-              </button>
-            </div>
-          </div>
+                          <!-- Animated Button -->
+                          <button class="circle-btn" onclick="addToCartSession(<%= book.id %>, 1)">
+                            <span class="btn-text text-xs font-bold uppercase">Buy</span>
+                            <i class="fa-solid fa-bag-shopping text-xs"></i>
+                          </button>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
         </div>
-        <% }) %>
-      </div>
-    </section>
+  </section>
 
-    <!-- Newsletter Section -->
-    <section class="py-20 px-6 md:px-12 bg-theme-olive/10">
-      <div class="max-w-4xl mx-auto px-6 text-center reveal">
-        <i
-          class="fa-solid fa-envelope-open-text text-4xl text-theme-sage mb-4"
-        ></i>
-        <h2 class="text-3xl font-playfair font-bold text-theme-charcoal mb-4">
-          Subscribe to our Newsletter
-        </h2>
-        <p class="text-gray-600 mb-8">
-          รับข่าวสารหนังสือใหม่และโปรโมชั่นพิเศษก่อนใคร
+  <!-- Newsletter Section -->
+  <section class="py-20 px-6 md:px-12 bg-theme-olive/10">
+    <div class="max-w-4xl mx-auto px-6 text-center reveal">
+      <i class="fa-solid fa-envelope-open-text text-4xl text-theme-sage mb-4"></i>
+      <h2 class="text-3xl font-playfair font-bold text-theme-charcoal mb-4">
+        Subscribe to our Newsletter
+      </h2>
+      <p class="text-gray-600 mb-8">
+        รับข่าวสารหนังสือใหม่และโปรโมชั่นพิเศษก่อนใคร
+      </p>
+      <form class="flex flex-col sm:flex-row gap-4 justify-center">
+        <input type="email" placeholder="Your email address"
+          class="px-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-theme-sage w-full sm:w-80 bg-white/80" />
+        <button
+          class="px-8 py-3 bg-theme-charcoal text-white rounded-full font-bold hover:bg-theme-sage transition-colors shadow-lg">
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-theme-charcoal text-theme-cream pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-700 pb-12">
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+
+          <img class="w-[75px]" src="/images/NJTK_Logo_full.png" alt="NJTK Logo">
+
+        </div>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          ร้านหนังสืออิสระที่คัดสรรวรรณกรรมคุณภาพ
+          เพื่อส่งต่อแรงบันดาลใจสู่ผู้อ่านทุกคน
         </p>
-        <form class="flex flex-col sm:flex-row gap-4 justify-center">
-          <input
-            type="email"
-            placeholder="Your email address"
-            class="px-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-theme-sage w-full sm:w-80 bg-white/80"
-          />
-          <button
-            class="px-8 py-3 bg-theme-charcoal text-white rounded-full font-bold hover:bg-theme-sage transition-colors shadow-lg"
-          >
-            Subscribe
-          </button>
-        </form>
       </div>
-    </section>
+      <div>
+        <h4 class="font-bold text-lg mb-6 text-theme-olive">Explore</h4>
+        <ul class="space-y-3 text-gray-400 text-sm">
+          <li>
+            <a href="#" class="hover:text-theme-sage transition-colors">Home</a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-theme-sage transition-colors">About Us</a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-theme-sage transition-colors">Best Sellers</a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-theme-sage transition-colors">New Arrivals</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold text-lg mb-6 text-theme-olive">Support</h4>
+        <ul class="space-y-3 text-gray-400 text-sm">
+          <li>
+            <a href="#" class="hover:text-theme-sage transition-colors">FAQ</a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-theme-sage transition-colors">Shipping & Returns</a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-theme-sage transition-colors">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold text-lg mb-6 text-theme-olive">Follow Us</h4>
+        <div class="flex gap-4">
+          <a href="#"
+            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"><i
+              class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"
+            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"><i
+              class="fa-brands fa-instagram"></i></a>
+          <a href="#"
+            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"><i
+              class="fa-brands fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 pt-8 text-center text-gray-500 text-xs">
+      &copy; 2023 NJTK Bookstore. Designed with Passion.
+    </div>
+  </footer>
 
-    <!-- Footer -->
-    <footer class="bg-theme-charcoal text-theme-cream pt-16 pb-8">
-      <div
-        class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-700 pb-12"
-      >
-        <div class="space-y-4">
-          <div class="flex items-center gap-2">
-           
-              <img 
-            class="w-[75px]"
-            src="/images/NJTK_Logo_full.png"
-            alt="NJTK Logo">
-      
-          </div>
-          <p class="text-gray-400 text-sm leading-relaxed">
-            ร้านหนังสืออิสระที่คัดสรรวรรณกรรมคุณภาพ
-            เพื่อส่งต่อแรงบันดาลใจสู่ผู้อ่านทุกคน
-          </p>
-        </div>
-        <div>
-          <h4 class="font-bold text-lg mb-6 text-theme-olive">Explore</h4>
-          <ul class="space-y-3 text-gray-400 text-sm">
-            <li>
-              <a href="#" class="hover:text-theme-sage transition-colors"
-                >Home</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-theme-sage transition-colors"
-                >About Us</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-theme-sage transition-colors"
-                >Best Sellers</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-theme-sage transition-colors"
-                >New Arrivals</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-bold text-lg mb-6 text-theme-olive">Support</h4>
-          <ul class="space-y-3 text-gray-400 text-sm">
-            <li>
-              <a href="#" class="hover:text-theme-sage transition-colors"
-                >FAQ</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-theme-sage transition-colors"
-                >Shipping & Returns</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-theme-sage transition-colors"
-                >Contact Us</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-bold text-lg mb-6 text-theme-olive">Follow Us</h4>
-          <div class="flex gap-4">
-            <a
-              href="#"
-              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"
-              ><i class="fa-brands fa-facebook-f"></i
-            ></a>
-            <a
-              href="#"
-              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"
-              ><i class="fa-brands fa-instagram"></i
-            ></a>
-            <a
-              href="#"
-              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"
-              ><i class="fa-brands fa-twitter"></i
-            ></a>
-          </div>
-        </div>
-      </div>
-      <div
-        class="max-w-7xl mx-auto px-6 pt-8 text-center text-gray-500 text-xs"
-      >
-        &copy; 2023 NJTK Bookstore. Designed with Passion.
-      </div>
-    </footer>
+  <!-- Scripts -->
+  <script src="/javascripts/navbar.js"></script>
+  <script src="/javascripts/cardBook.js"></script>
+  <script src="/javascripts/scrollbar.js"></script>
+  <script src="/javascripts/cart.js"></script>
+</body>
 
-    <!-- Scripts -->
-    <script src="/javascripts/navbar.js"></script>
-    <script src="/javascripts/cardBook.js"></script>
-    <script src="/javascripts/scrollbar.js"></script>
-    <script src="/javascripts/cart.js"></script>
-  </body>
 </html>

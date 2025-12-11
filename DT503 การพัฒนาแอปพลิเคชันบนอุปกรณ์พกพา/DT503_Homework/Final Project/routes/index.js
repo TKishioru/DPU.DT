@@ -5,12 +5,14 @@ const booksApi = require("./api_books");
 const usersApi = require("./api_users");
 const webBooks = require("./web_books");
 const cartRouter = require("./cart");
+const profile =require("./profile");
 
 // API
 router.use("/api/users", usersApi);
 router.use("/api/books", booksApi);
 
 // WEB PAGES
+router.use("/profile", profile);
 router.use("/cart", cartRouter);      // cart ก่อน
 router.use("/", webBooks);         // หน้าเว็บอื่นตามหลัง
 
@@ -53,6 +55,22 @@ router.post("/login", async (req, res) => {
     }
 
     res.redirect("/");
+});
+
+router.get("/logout", (req, res) => {
+    // ทำลาย session
+    req.session.destroy(err => {
+        if (err) {
+            console.error("Logout error:", err);
+            return res.redirect("/");
+        }
+
+        // เคลียร์ cookie (ถ้ามี)
+        res.clearCookie("connect.sid");
+
+        // กลับหน้าแรก
+        res.redirect("/");
+    });
 });
 
 module.exports = router;
