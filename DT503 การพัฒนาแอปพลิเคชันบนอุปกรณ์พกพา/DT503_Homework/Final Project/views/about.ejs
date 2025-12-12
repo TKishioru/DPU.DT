@@ -59,6 +59,7 @@
       };
     </script>
   </head>
+
   <body
     class="bg-theme-cream text-theme-charcoal font-sans antialiased selection:bg-theme-olive"
   >
@@ -214,134 +215,114 @@
         <% } %>
       </div>
     </nav>
-    
+    <!-- Main Content -->
     <main class="pt-28 pb-16 min-h-screen px-6 md:px-12">
       <!-- Header -->
-      <header class="py-10 text-center">
-        <h1 class="text-4xl font-playfair font-bold text-theme-charcoal">
-          Order History
+      <div class="text-center mb-20 space-y-4">
+        <h1 class="font-playfair text-5xl font-bold text-theme-charcoal">
+          Our Project
         </h1>
-        <p class="text-gray-600">ประวัติการสั่งซื้อและสถานะพัสดุของคุณ</p>
-      </header>
-      <% if (!orders || orders.length === 0) { %>
-      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 mb-20">
-        <!-- Orders List -->
-        <div class="space-y-6">
-          <!-- Empty State (ถ้าไม่มีคำสั่งซื้อ) -->
-          <div class="p-12 text-center">
-            <div
-              class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300 text-3xl"
-            >
-              <i class="fa-solid fa-box-open"></i>
-            </div>
-            <h3 class="font-playfair text-xl font-bold mb-2">No orders yet</h3>
-            <p class="text-gray-500 mb-6 text-sm">
-              คุณยังไม่มีประวัติการสั่งซื้อหนังสือ
-            </p>
-            <a
-              href="/shop"
-              class="inline-block bg-njtk-sage text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[#5D7A60] transition"
-            >
-              Start Shopping
-            </a>
-          </div>
+        <div class="flex items-center justify-center gap-3">
+          <div class="h-[1px] w-12 bg-theme-olive/40"></div>
+          <i class="fa-solid fa-leaf text-theme-sage text-xs"></i>
+          <div class="h-[1px] w-12 bg-theme-olive/40"></div>
         </div>
+        <p
+          class="text-theme-charcoal/60 text-sm tracking-wide font-light max-w-md mx-auto"
+        >
+          คณะผู้จัดทำโครงการพัฒนาเว็บไซต์ร้านหนังสือออนไลน์ NJTK
+        </p>
       </div>
-      <% } else { %>
 
-      <!-- Loop Orders -->
-      <% orders.forEach(order => { %>
-      <div class="max-w-4xl mx-auto mb-20">
-        <!-- Orders List -->
-        <div class="space-y-6">
-          <div
-            class="bg-white rounded-xl p-6 hover:shadow-md transition duration-300 border border-transparent hover:border-njtk-sage/20"
+      <!-- Grid 3 Member Cards (No Photo) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- Member Card 1 -->
+        <div
+          class="group bg-theme-paper p-10 rounded-2xl shadow-soft hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-white/50 text-center flex flex-col justify-center relative overflow-hidden"
+        >
+          <!-- Background Decoration Icon -->
+          <i
+            class="fa-solid fa-feather absolute -top-4 -right-4 text-theme-olive/5 text-6xl rotate-45 group-hover:text-theme-sage/10 transition-colors"
+          ></i>
+
+          <i class="fa-solid fa-user-tie text-theme-sage/30 text-4xl mb-6"></i>
+
+          <h3 class="font-playfair text-xl font-bold text-theme-charcoal mb-2">
+            ชุติกาญจน์ เบญจมโภไคย
+          </h3>
+          <p
+            class="text-[11px] font-bold text-theme-sage uppercase tracking-[0.2em] mb-4"
           >
-            <!-- Top Bar: ID & Status -->
-            <div
-              class="flex flex-wrap justify-between items-start pb-4 mb-4 gap-4"
-            >
-              <div>
-                <div class="flex items-center gap-3">
-                  <span class="font-playfair font-bold text-lg text-njtk-dark"
-                    >Order #<%= order.orderId %></span
-                  >
-                  <span class="text-xs text-gray-400 font-mono"
-                    ><%= order.dateFormatted %></span
-                  >
-                </div>
-                <p class="text-xs text-gray-500 mt-1">
-                  Total items: <%= order.items.length %>
-                </p>
-              </div>
+            Developer
+          </p>
 
-              <!-- Status Badge Logic -->
-              <% let statusClass = "bg-gray-100 text-gray-600"; let icon =
-              "fa-clock"; if(order.status === 'Processing') { statusClass =
-              "bg-blue-50 text-blue-600"; icon = "fa-rotate"; } if(order.status
-              === 'Shipped') { statusClass = "bg-orange-50 text-orange-600";
-              icon = "fa-truck-fast"; } if(order.status === 'Delivered') {
-              statusClass = "bg-green-50 text-green-700"; icon =
-              "fa-check-circle"; } if(order.status === 'Cancelled') {
-              statusClass = "bg-red-50 text-red-600"; icon = "fa-xmark"; } %>
-              <div
-                class="<%= statusClass %> px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-2"
-              >
-                <i class="fa-solid <%= icon %>"></i>
-                <%= order.status %>
-              </div>
-            </div>
+          <div class="w-8 h-[2px] bg-theme-olive/30 mx-auto mb-4"></div>
 
-            <!-- Order Items (Preview) -->
-            <div class="flex flex-col gap-4">
-        <% order.items.forEach(item => { %>
-        <div class="flex items-center gap-4 border-b pb-3">
-
-            <!-- รูปหนังสือ -->
-            <img 
-                src="<%= item.imageURL %>" 
-                class="w-14 h-20 object-cover rounded shadow"
-                alt="<%= item.bookname %>"
-            />
-
-            <!-- รายละเอียดหนังสือ -->
-            <div class="flex-1">
-                <p class="font-semibold"><%= item.bookname %></p>
-                <p class="text-sm text-gray-600">
-                    ฿<%= item.price.toLocaleString() %> × <%= item.qty %>
-                </p>
-            </div>
-
-            <!-- ราคารวม -->
-            <div class="font-bold text-theme-green">
-                ฿<%= item.total.toLocaleString() %>
-            </div>
-
+          <p class="text-theme-charcoal/50 font-mono text-sm tracking-widest">
+            Student ID: 68130057
+          </p>
         </div>
-        <% }) %>
-            </div>
 
-            <!-- Footer: Total & Actions -->
-            <div
-              class="mt-6 pt-4 flex justify-end items-end"
-            >
-              <div>
-                <span class="text-xs text-gray-500 uppercase tracking-wider"
-                  >Total Amount</span
-                >
-                <div class="font-playfair text-2xl font-bold text-njtk-sage text-right">
-                  ฿ <%= order.grandTotal.toLocaleString() %>
-                </div>
-              </div>
-            </div>
-          </div>
-          <% }) %> 
+        <!-- Member Card 2 (Project Lead Highlight) -->
+        <div
+          class="group bg-theme-paper p-10 rounded-2xl shadow-soft hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-theme-sage/20 text-center flex flex-col justify-center relative overflow-hidden md:scale-105"
+        >
+          <i
+            class="fa-solid fa-crown absolute -top-4 -right-4 text-theme-olive/5 text-6xl rotate-12 group-hover:text-theme-sage/10 transition-colors"
+          ></i>
+
+          <i class="fa-solid fa-user-tie text-theme-sage/30 text-4xl mb-6"></i>
+
+          <h3 class="font-playfair text-xl font-bold text-theme-charcoal mb-2">
+            ภัทรพร บุญรอด
+          </h3>
+          <p
+            class="text-[11px] font-bold text-theme-sage uppercase tracking-[0.2em] mb-4"
+          >
+            Developer
+          </p>
+
+          <div class="w-8 h-[2px] bg-theme-olive/30 mx-auto mb-4"></div>
+
+          <p class="text-theme-charcoal/50 font-mono text-sm tracking-widest">
+            Student ID: 68130361
+          </p>
+        </div>
+
+        <!-- Member Card 3 -->
+        <div
+          class="group bg-theme-paper p-10 rounded-2xl shadow-soft hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-white/50 text-center flex flex-col justify-center relative overflow-hidden"
+        >
+          <i
+            class="fa-solid fa-pen-nib absolute -top-4 -right-4 text-theme-olive/5 text-6xl rotate-45 group-hover:text-theme-sage/10 transition-colors"
+          ></i>
+
+          <i class="fa-solid fa-user-tie text-theme-sage/30 text-4xl mb-6"></i>
+
+          <h3 class="font-playfair text-xl font-bold text-theme-charcoal mb-2">
+            คัมภีรดา ภู่ทอง
+          </h3>
+          <p
+            class="text-[11px] font-bold text-theme-sage uppercase tracking-[0.2em] mb-4"
+          >
+            Developer
+          </p>
+
+          <div class="w-8 h-[2px] bg-theme-olive/30 mx-auto mb-4"></div>
+
+          <p class="text-theme-charcoal/50 font-mono text-sm tracking-widest">
+            Student ID: 68130387
+          </p>
         </div>
       </div>
-      <% } %>
     </main>
-    <!-- JavaScript Logic -->
-    <script src="/javascripts/navbar.js"></script>
-    <script src="/javascripts/scrollbar.js"></script>
+
+    <!-- Footer -->
+    <footer
+      class="py-6 text-center text-[10px] uppercase tracking-widest text-theme-charcoal/40"
+    >
+      &copy; 2025 NJTK Bookstore. Crafted with
+      <i class="fa-solid fa-heart text-theme-sage mx-1"></i> by Our Team.
+    </footer>
   </body>
 </html>
