@@ -1,0 +1,13 @@
+[project]
+name = "face-recognition-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "deepface>=0.0.100",
+    "numpy>=2.4.6",
+    "opencv-python>=4.13.0.92",
+    "requests>=2.34.2",
+    "tf-keras>=2.21.0",
+]
