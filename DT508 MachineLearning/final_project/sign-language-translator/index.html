@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Translator</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Teachable Machine Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        #webcam-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        #webcam-container canvas {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 100%;
+        }
+        
+        .prediction-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .detected-letter {
+            font-size: 120px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .sentence-display {
+            font-size: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 80px;
+            word-wrap: break-word;
+        }
+        
+        .confidence-bar {
+            height: 30px;
+            border-radius: 15px;
+            transition: width 0.3s ease;
+        }
+        
+        .btn-control {
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="text-white display-4 fw-bold">Sign Language Translator</h1>
+            <p class="text-white lead">แปลภาษามือเป็นข้อความ (A-Z)</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left: Camera -->
+            <div class="col-lg-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-camera-video"></i> กล้อง</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div id="webcam-container"></div>
+                        
+                        <button id="startBtn" class="btn btn-success btn-control">
+                            <i class="bi bi-play-fill"></i> เริ่มต้น
+                        </button>
+                        <button id="stopBtn" class="btn btn-danger btn-control" style="display:none;">
+                            <i class="bi bi-stop-fill"></i> หยุด
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="card shadow-lg mt-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> วิธีใช้งาน</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li>คลิก "เริ่มต้น" เพื่อเปิดกล้อง</li>
+                            <li>ทำท่าภาษามือ A-Z</li>
+                            <li>ระบบจะแปลเป็นตัวอักษรอัตโนมัติ</li>
+                            <li>คลิก "เว้นวรรค" เพื่อเว้นวรรค</li>
+                            <li>คลิก "ลบ" เพื่อลบตัวอักษร</li>
+                            <li>คลิก "อ่านออกเสียง" เพื่อฟังข้อความ</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Results -->
+            <div class="col-lg-6">
+                <!-- Detected Letter -->
+                <div class="card shadow-lg mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-hand-index-thumb"></i> ตัวอักษรที่ตรวจพบ</h5>
+                    </div>
+                    <div class="card-body prediction-box">
+                        <div class="detected-letter" id="detectedLetter">-</div>
+                        <div class="mb-2">
+                            <strong>ความมั่นใจ:</strong>
+                            <div class="progress mt-2">
+                                <div id="confidenceBar" class="progress-bar bg-success confidence-bar" 
+                                     role="progressbar" style="width: 0%">
+                                    <span id="confidenceText">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentence -->
+                <div class="card shadow-lg mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-chat-text"></i> ข้อความ</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="sentence-display" id="sentence">
+                            <em class="text-muted">เริ่มทำท่าภาษามือเพื่อสร้างข้อความ...</em>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-3">
+                            <button id="addBtn" class="btn btn-primary btn-lg" disabled>
+                                <i class="bi bi-plus-circle"></i> เพิ่มตัวอักษร
+                            </button>
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <button id="spaceBtn" class="btn btn-secondary w-100" disabled>
+                                        <i class="bi bi-dash-lg"></i> เว้นวรรค
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button id="deleteBtn" class="btn btn-danger w-100" disabled>
+                                        <i class="bi bi-backspace"></i> ลบ
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button id="clearBtn" class="btn btn-warning w-100" disabled>
+                                        <i class="bi bi-trash"></i> ล้าง
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="speakBtn" class="btn btn-info btn-lg" disabled>
+                                <i class="bi bi-volume-up"></i> อ่านออกเสียง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="card shadow-lg">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-graph-up"></i> สถิติ</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <h3 id="letterCount" class="text-primary">0</h3>
+                                <small class="text-muted">ตัวอักษร</small>
+                            </div>
+                            <div class="col-4">
+                                <h3 id="wordCount" class="text-success">0</h3>
+                                <small class="text-muted">คำ</small>
+                            </div>
+                            <div class="col-4">
+                                <h3 id="avgConfidence" class="text-warning">0%</h3>
+                                <small class="text-muted">ความแม่นยำ</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-4">
+            <p class="text-white">
+                <i class="bi bi-lightbulb"></i> 
+                Prototype สำหรับนักศึกษาต่อยอด | Powered by Teachable Machine
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Main Script -->
+    <script>
+        // ========== Configuration ==========
+        const MODEL_URL = "./model/";  // โฟลเดอร์โมเดล
+        
+        // ========== Global Variables ==========
+        let model, webcam, maxPredictions;
+        let isRunning = false;
+        let currentLetter = '';
+        let currentConfidence = 0;
+        let sentence = '';
+        let letterHistory = [];
+        let confidenceHistory = [];
+        
+        // ========== DOM Elements ==========
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const addBtn = document.getElementById('addBtn');
+        const spaceBtn = document.getElementById('spaceBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const speakBtn = document.getElementById('speakBtn');
+        const detectedLetter = document.getElementById('detectedLetter');
+        const confidenceBar = document.getElementById('confidenceBar');
+        const confidenceText = document.getElementById('confidenceText');
+        const sentenceDisplay = document.getElementById('sentence');
+        const letterCount = document.getElementById('letterCount');
+        const wordCount = document.getElementById('wordCount');
+        const avgConfidence = document.getElementById('avgConfidence');
+        
+        // ========== Initialize ==========
+        async function init() {
+            try {
+                showStatus('กำลังโหลดโมเดล...', 'info');
+                
+                // โหลดโมเดล
+                const modelURL = MODEL_URL + "model.json";
+                const metadataURL = MODEL_URL + "metadata.json";
+                
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+                
+                // Setup webcam
+                const flip = true;
+                webcam = new tmImage.Webcam(640, 480, flip);
+                await webcam.setup();
+                await webcam.play();
+                
+                document.getElementById("webcam-container").appendChild(webcam.canvas);
+                
+                isRunning = true;
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                enableButtons();
+                
+                showStatus('เริ่มต้นสำเร็จ!', 'success');
+                
+                // เริ่ม loop
+                window.requestAnimationFrame(loop);
+                
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'danger');
+                console.error(error);
+            }
+        }
+        
+        // ========== Main Loop ==========
+        async function loop() {
+            if (!isRunning) return;
+            
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+        
+        // ========== Prediction ==========
+        async function predict() {
+            const prediction = await model.predict(webcam.canvas);
+            
+            // หา prediction ที่มี confidence สูงสุด
+            let maxProb = 0;
+            let maxClass = '';
+            
+            prediction.forEach(p => {
+                if (p.probability > maxProb) {
+                    maxProb = p.probability;
+                    maxClass = p.className;
+                }
+            });
+            
+            // อัปเดต UI ถ้า confidence > 70%
+            if (maxProb > 0.7) {
+                currentLetter = maxClass;
+                currentConfidence = maxProb;
+                updatePredictionDisplay(maxClass, maxProb);
+            } else {
+                currentLetter = '';
+                currentConfidence = 0;
+                updatePredictionDisplay('-', 0);
+            }
+        }
+        
+        // ========== Update Display ==========
+        function updatePredictionDisplay(letter, confidence) {
+            detectedLetter.textContent = letter;
+            
+            const percent = Math.round(confidence * 100);
+            confidenceBar.style.width = percent + '%';
+            confidenceText.textContent = percent + '%';
+            
+            // เปลี่ยนสีตาม confidence
+            confidenceBar.className = 'progress-bar confidence-bar';
+            if (percent >= 90) {
+                confidenceBar.classList.add('bg-success');
+            } else if (percent >= 70) {
+                confidenceBar.classList.add('bg-warning');
+            } else {
+                confidenceBar.classList.add('bg-danger');
+            }
+        }
+        
+        // ========== Button Actions ==========
+        function addLetter() {
+            if (currentLetter && currentLetter !== '-') {
+                sentence += currentLetter;
+                letterHistory.push(currentLetter);
+                confidenceHistory.push(currentConfidence);
+                updateSentence();
+                updateStats();
+            }
+        }
+        
+        function addSpace() {
+            if (sentence && !sentence.endsWith(' ')) {
+                sentence += ' ';
+                updateSentence();
+                updateStats();
+            }
+        }
+        
+        function deleteLetter() {
+            if (sentence.length > 0) {
+                sentence = sentence.slice(0, -1);
+                if (letterHistory.length > 0) {
+                    letterHistory.pop();
+                    confidenceHistory.pop();
+                }
+                updateSentence();
+                updateStats();
+            }
+        }
+        
+        function clearSentence() {
+            sentence = '';
+            letterHistory = [];
+            confidenceHistory = [];
+            updateSentence();
+            updateStats();
+        }
+        
+        function updateSentence() {
+            if (sentence) {
+                sentenceDisplay.innerHTML = sentence;
+            } else {
+                sentenceDisplay.innerHTML = '<em class="text-muted">เริ่มทำท่าภาษามือเพื่อสร้างข้อความ...</em>';
+            }
+        }
+        
+        function updateStats() {
+            // นับตัวอักษร
+            const letters = sentence.replace(/\s/g, '').length;
+            letterCount.textContent = letters;
+            
+            // นับคำ
+            const words = sentence.trim().split(/\s+/).filter(w => w.length > 0).length;
+            wordCount.textContent = words;
+            
+            // คำนวณความแม่นยำเฉลี่ย
+            if (confidenceHistory.length > 0) {
+                const avg = confidenceHistory.reduce((a, b) => a + b, 0) / confidenceHistory.length;
+                avgConfidence.textContent = Math.round(avg * 100) + '%';
+            } else {
+                avgConfidence.textContent = '0%';
+            }
+        }
+        
+        // ========== Text-to-Speech ==========
+        function speak() {
+            if (!sentence.trim()) {
+                alert('ไม่มีข้อความให้อ่าน');
+                return;
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(sentence);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            
+            speechSynthesis.speak(utterance);
+        }
+        
+        // ========== Stop ==========
+        function stop() {
+            isRunning = false;
+            if (webcam) {
+                webcam.stop();
+            }
+            startBtn.style.display = 'inline-block';
+            stopBtn.style.display = 'none';
+            disableButtons();
+            showStatus('หยุดการทำงาน', 'warning');
+        }
+        
+        // ========== Utilities ==========
+        function enableButtons() {
+            addBtn.disabled = false;
+            spaceBtn.disabled = false;
+            deleteBtn.disabled = false;
+            clearBtn.disabled = false;
+            speakBtn.disabled = false;
+        }
+        
+        function disableButtons() {
+            addBtn.disabled = true;
+            spaceBtn.disabled = true;
+            deleteBtn.disabled = true;
+            clearBtn.disabled = true;
+            speakBtn.disabled = true;
+        }
+        
+        function showStatus(message, type) {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        // ========== Event Listeners ==========
+        startBtn.addEventListener('click', init);
+        stopBtn.addEventListener('click', stop);
+        addBtn.addEventListener('click', addLetter);
+        spaceBtn.addEventListener('click', addSpace);
+        deleteBtn.addEventListener('click', deleteLetter);
+        clearBtn.addEventListener('click', clearSentence);
+        speakBtn.addEventListener('click', speak);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (!isRunning) return;
+            
+            if (e.key === 'Enter') addLetter();
+            else if (e.key === ' ') { e.preventDefault(); addSpace(); }
+            else if (e.key === 'Backspace') { e.preventDefault(); deleteLetter(); }
+            else if (e.key === 'Escape') clearSentence();
+        });
+    </script>
+</body>
+</html>

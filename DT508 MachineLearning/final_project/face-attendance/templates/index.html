@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบสแกนหน้าเข้าห้องเรียน</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 15px 20px;
+        }
+        
+        #video, #canvas {
+            width: 100%;
+            max-width: 640px;
+            border-radius: 10px;
+            background: #000;
+        }
+        
+        .btn-scan {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        .student-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .student-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .attendance-badge {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="text-white"> ระบบสแกนหน้าเข้าห้องเรียน</h1>
+            <p class="text-white">Face Recognition Attendance System</p>
+        </div>
+
+        <div class="row">
+            <!-- Left Column: Camera & Scan -->
+            <div class="col-lg-6">
+                <!-- Camera Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-camera-video"></i> กล้อง</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <video id="video" autoplay playsinline></video>
+                        <canvas id="canvas" style="display:none;"></canvas>
+                        
+                        <div id="statusMessage" class="status-message"></div>
+                        
+                        <button id="startCamera" class="btn btn-primary btn-scan">
+                            <i class="bi bi-camera"></i> เปิดกล้อง
+                        </button>
+                        
+                        <div id="scanButtons" style="display:none;">
+                            <button id="scanIn" class="btn btn-success btn-scan">
+                                <i class="bi bi-box-arrow-in-right"></i> สแกนเข้า
+                            </button>
+                            <button id="scanOut" class="btn btn-warning btn-scan">
+                                <i class="bi bi-box-arrow-left"></i> สแกนออก
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Student Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-person-plus"></i> เพิ่มนักเรียนใหม่</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="addStudentForm">
+                            <div class="mb-3">
+                                <label class="form-label">ชื่อ-นามสกุล</label>
+                                <input type="text" id="studentName" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">รูปถ่าย</label>
+                                <input type="file" id="studentImage" class="form-control" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-plus-circle"></i> เพิ่มนักเรียน
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Lists -->
+            <div class="col-lg-6">
+                <!-- Today's Attendance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check"></i> เข้าเรียนวันนี้</h5>
+                    </div>
+                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                        <div id="todayList"></div>
+                    </div>
+                </div>
+
+                <!-- All Students -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-people"></i> รายชื่อนักเรียนทั้งหมด</h5>
+                    </div>
+                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                        <div id="studentsList"></div>
+                    </div>
+                </div>
+
+                <!-- Attendance History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-clock-history"></i> ประวัติการเข้า-ออก</h5>
+                    </div>
+                    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                        <div id="historyList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
