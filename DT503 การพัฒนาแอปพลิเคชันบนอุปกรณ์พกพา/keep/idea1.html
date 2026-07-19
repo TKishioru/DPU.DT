@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestsellers Section</title>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-outer: #5D7A60; /* สีเขียวเข้มพื้นหลังด้านนอก */
+            --bg-inner: #FFFFFF; /* สีขาวด้านใน */
+            --card-bg: #F7F7F7;  /* สีเทาอ่อนหลังรูปปก */
+            --tag-yellow: #FFF5A5; /* สีเหลืองป้าย HIT */
+            --text-main: #1D1D1D;
+            --text-light: #777777;
+            --star-green: #89BFA0; /* สีเขียวดาว */
+            --btn-border: #333333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-outer); /* พื้นหลังเขียวตามขอบรูป */
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* กล่องเนื้อหาหลักสีขาว */
+        .container {
+            background-color: var(--bg-inner);
+            width: 100%;
+            max-width: 1200px;
+            padding: 4rem;
+            box-sizing: border-box;
+            /* ทำให้ดูเหมือนกระดาษวางอยู่ */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+        }
+
+        /* --- Header Section --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif; /* หรือใช้ Playfair ถ้าอยากได้หัวข้อหรู */
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 20px;
+        }
+
+        .arrow {
+            cursor: pointer;
+            width: 50px;
+            height: 20px;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        
+        .arrow:hover { opacity: 1; }
+
+        /* สร้างลูกศรด้วย CSS SVG (เพื่อให้ไม่ต้องโหลดรูป) */
+        .arrow-left {
+            background-image: url("data:image/svg+xml,%3Csvg width='50' height='20' viewBox='0 0 50 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10H50 M10 10L18 2 M10 10L18 18' stroke='%23333' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+        }
+        .arrow-right {
+            background-image: url("data:image/svg+xml,%3Csvg width='50' height='20' viewBox='0 0 50 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 10H0 M40 10L32 2 M40 10L32 18' stroke='%23333' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+        }
+
+        /* --- Grid System --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 คอลัมน์ */
+            gap: 2rem;
+        }
+
+        /* --- Product Card --- */
+        .product-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ส่วนรูปภาพ */
+        .image-wrapper {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            position: relative; /* เพื่อวางป้าย HIT และ Bookmark */
+            margin-bottom: 1.5rem;
+            height: 320px; /* ความสูงคงที่ */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .image-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* ป้าย HIT */
+        .tag-hit {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: var(--tag-yellow);
+            color: #555;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ไอคอน Bookmark */
+        .bookmark-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            stroke: #333;
+            stroke-width: 1.5;
+            fill: none;
+        }
+        .bookmark-icon:hover { fill: #333; }
+
+        /* ข้อมูลหนังสือ */
+        .book-author {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-main);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.4;
+            height: 3rem; /* จำกัดความสูงชื่อเรื่องให้เท่ากัน 2 บรรทัด */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .book-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ดาว Rating */
+        .rating {
+            color: var(--star-green);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+        .rating-empty {
+            color: #ddd;
+        }
+
+        /* ปุ่ม Add to Cart */
+        .btn-cart {
+            width: 100%;
+            padding: 12px;
+            background-color: transparent;
+            border: 1px solid var(--btn-border);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: lowercase; /* ตามแบบรูปที่เป็นตัวพิมพ์เล็ก */
+        }
+
+        .btn-cart:hover {
+            background-color: var(--btn-border);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .container { padding: 2rem; }
+        }
+        @media (max-width: 600px) {
+            .product-grid { grid-template-columns: 1fr; }
+            .section-header { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="section-header">
+            <h2 class="section-title">หนังสือแนะนำ (Bestsellers)</h2>
+            <div class="nav-arrows">
+                <div class="arrow arrow-left"></div>
+                <div class="arrow arrow-right"></div>
+            </div>
+        </header>
+
+        <!-- Product Grid -->
+        <div class="product-grid">
+
+            <!-- Card 1 -->
+            <article class="product-card">
+                <div class="image-wrapper">
+                    <span class="tag-hit">HIT</span>
+                    <!-- SVG Bookmark Icon -->
+                    <svg class="bookmark-icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    
+                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=300&q=80" alt="Book Cover">
+                </div>
+                <div class="book-author">Lindbergh P.</div>
+                <h3 class="book-title">Peter Lindbergh on Fashion Photography</h3>
+                <div class="book-price">2,846 ฿</div>
+                <div class="rating">★★★★★</div>
+                <button class="btn-cart">เพิ่มลงตะกร้า</button>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="product-card">
+                <div class="image-wrapper">
+                    <span class="tag-hit">HIT</span>
+                    <svg class="bookmark-icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    
+                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=300&q=80" alt="Book Cover">
+                </div>
+                <div class="book-author">Donna Tartt</div>
+                <h3 class="book-title">The Goldfinch: A Novel (Pulitzer Prize)</h3>
+                <div class="book-price">1,390 ฿</div>
+                <div class="rating">★★★★<span class="rating-empty">★</span></div>
+                <button class="btn-cart">เพิ่มลงตะกร้า</button>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="product-card">
+                <div class="image-wrapper">
+                    <span class="tag-hit">HIT</span>
+                    <svg class="bookmark-icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80" alt="Book Cover">
+                </div>
+                <h3 class="book-title">Mythos: The Greek Myths Retold</h3>
+                <div class="book-price">1,361 ฿</div>
+                <div class="rating">★★★★★</div>
+                <button class="btn-cart">เพิ่มลงตะกร้า</button>
+            </article>
+
+            <!-- Card 4 -->
+            <article class="product-card">
+                <div class="image-wrapper">
+                    <span class="tag-hit">HIT</span>
+                    <svg class="bookmark-icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    
+                    <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&w=300&q=80" alt="Book Cover">
+                </div>
+                <div class="book-author">R.F. Kuang</div>
+                <h3 class="book-title">The Poppy War: A Novel</h3>
+                <div class="book-price">1,099 ฿</div>
+                <div class="rating">★★★<span class="rating-empty">★★</span></div>
+                <button class="btn-cart">เพิ่มลงตะกร้า</button>
+            </article>
+
+        </div>
+    </div>
+
+</body>
+</html>

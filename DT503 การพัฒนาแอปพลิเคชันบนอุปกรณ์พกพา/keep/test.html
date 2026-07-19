@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Books Page</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <h1>รายการหนังสือทั้งหมด</h1>
+
+    <% if (books && books.length > 0) { %>
+        <ul class="book-list">
+            <% books.forEach(book => { %>
+                <li class="book-item">
+                    <h2><%= book.title %></h2>
+                    <p>ผู้เขียน: <%= book.author %></p>
+                    <p>รายละเอียด: <%= book.detail %></p>
+                    <p>ราคา: <%= book.price %> บาท</p>
+                    <p>จำนวนคงเหลือ: <%= book.stock %></p>
+
+                    <% if (book.image) { %>
+                        <img class="book-image" src="<%= book.image %>" alt="<%= book.title %>">
+                    <% } %>
+
+                    <a href="/books/<%= book.id %>">ดูรายละเอียดเพิ่มเติม</a>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>ไม่มีข้อมูลหนังสือในระบบตอนนี้</p>
+    <% } %>
+
+</body>
+</html>

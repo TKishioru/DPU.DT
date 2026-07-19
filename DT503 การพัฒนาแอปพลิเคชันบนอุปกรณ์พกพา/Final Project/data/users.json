@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "email": "t@gmail.com",
+      "password": "1234567890",
+      "fullname": "TK",
+      "username": "t@gmail.com",
+      "createdAt": "2025-12-11T19:10:58.241Z"
+    }
+  ]
+}

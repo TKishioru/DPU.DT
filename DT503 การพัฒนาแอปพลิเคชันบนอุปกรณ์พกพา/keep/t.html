@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NJTK Bookstore | The Modern Library</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;700&family=Noto+Sans+Thai:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "theme-sage": "#809671",    /* Primary: เขียวใบไม้ */
+            "theme-olive": "#B3B792",   /* Secondary: เขียวมะกอก/ทอง */
+            "theme-cream": "#E5E0D8",   /* Background: สีครีมกระดาษ */
+            "theme-charcoal": "#2A3328", /* Text: สีเทาเข้มอมเขียว */
+            "theme-paper": "#F5F3EF",    /* Card: สีขาวนวล */
+          },
+          fontFamily: {
+            playfair: ['"Playfair Display"', "serif"],
+            sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
+          },
+          boxShadow: {
+            'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+            'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+          }
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #E5E0D8; }
+    ::-webkit-scrollbar-thumb { background: #809671; border-radius: 4px; }
+    
+    /* Reveal Animation Class */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Parallax Effect Utility */
+    .parallax-bg {
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    
+    /* Text Selection */
+    ::selection {
+        background-color: #B3B792;
+        color: #fff;
+    }
+  </style>
+</head>
+
+<body class="bg-theme-cream text-theme-charcoal font-sans antialiased selection:bg-theme-olive">
+
+  <!-- Navbar (Glassmorphism) -->
+  <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-4 px-6 md:px-12 bg-transparent">
+    <div class="max-w-7xl mx-auto backdrop-blur-md bg-white/60 border border-white/40 rounded-2xl shadow-glass px-6 py-3 flex justify-between items-center">
+        
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 group">
+            <div class="w-10 h-10 bg-theme-sage text-white rounded-full flex items-center justify-center text-xl shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                <i class="fa-solid fa-feather-pointed"></i>
+            </div>
+            <span class="font-playfair font-bold text-2xl tracking-wide text-theme-charcoal">NJTK</span>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="#home" class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">Home</a>
+            <a href="#featured" class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">Collection</a>
+            <a href="#shop" class="text-sm font-bold uppercase tracking-widest hover:text-theme-sage transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-theme-sage after:transition-all hover:after:w-full">Shop</a>
+        </div>
+
+        <!-- Icons & Mobile Button -->
+        <div class="flex items-center gap-4">
+            <div class="relative cursor-pointer group">
+                <i class="fa-solid fa-bag-shopping text-xl hover:text-theme-sage transition-colors"></i>
+                <span class="absolute -top-2 -right-2 bg-theme-sage text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full group-hover:scale-110 transition-transform">0</span>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-theme-cream/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col items-center justify-center space-y-8">
+        <button id="close-menu" class="absolute top-8 right-8 text-3xl text-theme-sage"><i class="fa-solid fa-xmark"></i></button>
+        <a href="#home" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Home</a>
+        <a href="#featured" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Collection</a>
+        <a href="#shop" class="text-3xl font-playfair font-bold text-theme-charcoal hover:text-theme-sage">Shop</a>
+        <a href="#login" class="px-8 py-3 bg-theme-sage text-white rounded-full font-bold shadow-lg">Login</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section (Parallax & Split) -->
+  <header id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <!-- Background Shape -->
+    <div class="absolute top-0 right-0 w-2/3 h-full bg-theme-olive/20 rounded-l-[100px] -z-10 blur-3xl opacity-50"></div>
+    
+    <div class="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- Text Content -->
+        <div class="space-y-6 reveal active">
+            <span class="inline-block px-4 py-1 border border-theme-sage text-theme-sage rounded-full text-xs font-bold tracking-[0.2em] uppercase">Est. 2023 Bookstore</span>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-playfair font-bold leading-[1.1] text-theme-charcoal">
+                Escape <br> <span class="text-theme-sage italic">into</span> Pages.
+            </h1>
+            <p class="text-lg text-gray-600 max-w-md leading-relaxed font-light">
+                ค้นพบเรื่องราวที่ซ่อนอยู่ระหว่างบรรทัด แหล่งรวมหนังสือคัดสรรเพื่อนักอ่านที่หลงใหลในกลิ่นกระดาษและจินตนาการ
+            </p>
+            <div class="flex flex-wrap gap-4 pt-4">
+                <a href="#shop" class="group relative px-8 py-4 bg-theme-sage text-white rounded-full overflow-hidden shadow-lg hover:shadow-theme-sage/40 transition-shadow">
+                    <span class="relative z-10 font-bold tracking-wide flex items-center gap-2">Start Reading <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+                    <div class="absolute inset-0 bg-theme-charcoal transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out"></div>
+                </a>
+                <a href="#featured" class="px-8 py-4 border border-theme-charcoal text-theme-charcoal rounded-full font-bold hover:bg-theme-charcoal hover:text-white transition-all duration-300">
+                    View Collections
+                </a>
+            </div>
+        </div>
+
+        <!-- Hero Image Composition -->
+        <div class="relative h-[500px] md:h-[600px] w-full reveal delay-200 hidden md:block">
+            <div class="absolute top-10 left-10 w-64 h-80 bg-theme-olive rounded-lg rotate-[-6deg] opacity-80 mix-blend-multiply"></div>
+            <div class="absolute top-0 left-20 w-72 h-96 overflow-hidden rounded-lg shadow-2xl rotate-[-3deg] z-10 hover:rotate-0 hover:scale-105 transition-all duration-500">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop" class="object-cover w-full h-full">
+            </div>
+            <div class="absolute bottom-20 right-10 w-60 h-80 overflow-hidden rounded-lg shadow-2xl rotate-[3deg] z-20 hover:rotate-0 hover:scale-105 transition-all duration-500 border-4 border-white">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop" class="object-cover w-full h-full">
+            </div>
+            <!-- Decorative Badge -->
+            <div class="absolute top-1/2 right-0 bg-white/80 backdrop-blur-md p-4 rounded-xl shadow-glass z-30 animate-bounce delay-700 duration-1000">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500"><i class="fa-solid fa-fire"></i></div>
+                    <div>
+                        <p class="text-xs text-gray-500 font-bold uppercase">Trending</p>
+                        <p class="text-sm font-playfair font-bold">The Great Gatsby</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </header>
+
+  <!-- Featured Book (Spotlight) -->
+  <section id="featured" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto bg-theme-charcoal rounded-[2rem] text-white p-8 md:p-16 relative overflow-hidden shadow-2xl reveal">
+        <!-- Background Pattern -->
+        <div class="absolute top-0 right-0 w-full h-full opacity-10" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-12">
+            <div class="w-full md:w-1/3 flex justify-center">
+                <div class="relative group">
+                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600&auto=format&fit=crop" class="w-64 rounded shadow-2xl group-hover:-translate-y-4 transition-transform duration-500">
+                    <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-theme-sage rounded-full flex items-center justify-center font-playfair font-bold text-xl animate-spin-slow">
+                        <svg viewBox="0 0 100 100" width="100" height="100" class="absolute w-full h-full">
+                            <defs>
+                              <path id="circle" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
+                            </defs>
+                            <text font-size="14" fill="white">
+                              <textPath xlink:href="#circle">
+                                Book of the Month • Must Read •
+                              </textPath>
+                            </text>
+                        </svg>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-2/3 space-y-6 text-center md:text-left">
+                <h3 class="text-theme-olive font-bold tracking-widest uppercase text-sm">Editor's Choice</h3>
+                <h2 class="text-4xl md:text-5xl font-playfair font-bold leading-tight">"A reader lives a thousand lives before he dies."</h2>
+                <p class="text-gray-300 font-light leading-relaxed max-w-xl">
+                    สัมผัสประสบการณ์การอ่านที่ลึกซึ้ง หนังสือเล่มนี้ได้รับการคัดเลือกให้เป็นสุดยอดวรรณกรรมประจำเดือน ด้วยภาษาที่สละสลวยและเนื้อหาที่จับใจ
+                </p>
+                <button class="px-8 py-3 border border-white/30 hover:bg-white hover:text-theme-charcoal transition-all duration-300 rounded-lg">
+                    Read Review
+                </button>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- Shop Section -->
+  <section id="shop" class="py-20 px-6 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-12 reveal">
+        <div>
+            <span class="text-theme-sage font-bold uppercase tracking-widest text-xs">Curated for you</span>
+            <h2 class="text-4xl font-playfair font-bold text-theme-charcoal mt-2">New Arrivals</h2>
+        </div>
+        <div class="flex gap-2 mt-4 md:mt-0">
+             <button class="w-10 h-10 rounded-full border border-theme-charcoal/20 flex items-center justify-center hover:bg-theme-sage hover:text-white hover:border-transparent transition-all"><i class="fa-solid fa-chevron-left"></i></button>
+             <button class="w-10 h-10 rounded-full border border-theme-charcoal/20 flex items-center justify-center hover:bg-theme-sage hover:text-white hover:border-transparent transition-all"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Product Card 1 -->
+        <div class="group reveal delay-100">
+            <div class="relative bg-theme-paper p-8 rounded-[2rem] overflow-hidden transition-all duration-300 hover:shadow-soft group-hover:-translate-y-2">
+                <!-- Image -->
+                <div class="h-64 flex justify-center items-center relative z-10">
+                    <img src="https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&w=400&q=80" 
+                         class="h-full object-contain shadow-md group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <!-- Action Button Overlay -->
+                <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-theme-sage/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center z-20">
+                    <button onclick="addToCart(this)" class="bg-white text-theme-sage font-bold py-2 px-6 rounded-full shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
+                        Add to Cart
+                    </button>
+                </div>
+                <!-- Heart Icon -->
+                <button class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-300 hover:text-red-500 shadow-sm transition-colors z-20">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+            </div>
+            <div class="mt-4 text-center">
+                <h3 class="text-lg font-playfair font-bold text-theme-charcoal truncate">The Power of Moments</h3>
+                <p class="text-sm text-gray-500 mb-2">Chip & Dan Heath</p>
+                <span class="text-theme-sage font-bold text-lg">฿450</span>
+            </div>
+        </div>
+
+        <!-- Product Card 2 -->
+        <div class="group reveal delay-200">
+            <div class="relative bg-theme-paper p-8 rounded-[2rem] overflow-hidden transition-all duration-300 hover:shadow-soft group-hover:-translate-y-2">
+                <div class="h-64 flex justify-center items-center relative z-10">
+                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80" 
+                         class="h-full object-contain shadow-md group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-theme-sage/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center z-20">
+                    <button onclick="addToCart(this)" class="bg-white text-theme-sage font-bold py-2 px-6 rounded-full shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
+                        Add to Cart
+                    </button>
+                </div>
+                <button class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-300 hover:text-red-500 shadow-sm transition-colors z-20">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+            </div>
+            <div class="mt-4 text-center">
+                <h3 class="text-lg font-playfair font-bold text-theme-charcoal truncate">Milk and Honey</h3>
+                <p class="text-sm text-gray-500 mb-2">Rupi Kaur</p>
+                <span class="text-theme-sage font-bold text-lg">฿320</span>
+            </div>
+        </div>
+
+        <!-- Product Card 3 -->
+        <div class="group reveal delay-300">
+            <div class="relative bg-theme-paper p-8 rounded-[2rem] overflow-hidden transition-all duration-300 hover:shadow-soft group-hover:-translate-y-2">
+                <div class="absolute top-4 left-4 bg-theme-olive text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider z-20">Best Seller</div>
+                <div class="h-64 flex justify-center items-center relative z-10">
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80" 
+                         class="h-full object-contain shadow-md group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-theme-sage/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center z-20">
+                    <button onclick="addToCart(this)" class="bg-white text-theme-sage font-bold py-2 px-6 rounded-full shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
+                        Add to Cart
+                    </button>
+                </div>
+                <button class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-300 hover:text-red-500 shadow-sm transition-colors z-20">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+            </div>
+            <div class="mt-4 text-center">
+                <h3 class="text-lg font-playfair font-bold text-theme-charcoal truncate">The Great Gatsby</h3>
+                <p class="text-sm text-gray-500 mb-2">F. Scott Fitzgerald</p>
+                <span class="text-theme-sage font-bold text-lg">฿290</span>
+            </div>
+        </div>
+
+        <!-- Product Card 4 -->
+        <div class="group reveal delay-400">
+            <div class="relative bg-theme-paper p-8 rounded-[2rem] overflow-hidden transition-all duration-300 hover:shadow-soft group-hover:-translate-y-2">
+                <div class="h-64 flex justify-center items-center relative z-10">
+                    <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=400&q=80" 
+                         class="h-full object-contain shadow-md group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-theme-sage/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center z-20">
+                    <button onclick="addToCart(this)" class="bg-white text-theme-sage font-bold py-2 px-6 rounded-full shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
+                        Add to Cart
+                    </button>
+                </div>
+                <button class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-300 hover:text-red-500 shadow-sm transition-colors z-20">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+            </div>
+            <div class="mt-4 text-center">
+                <h3 class="text-lg font-playfair font-bold text-theme-charcoal truncate">Designing Your Life</h3>
+                <p class="text-sm text-gray-500 mb-2">Bill Burnett</p>
+                <span class="text-theme-sage font-bold text-lg">฿395</span>
+            </div>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- Section: Books (Updated Theme) -->
+  <section id="Shopbook" class="py-24 bg-theme-cream relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Header Section -->
+      <div class="text-center mb-16 reveal">
+        <span class="text-theme-sage font-bold tracking-[0.3em] text-sm uppercase">Library</span>
+        <h2 class="text-4xl md:text-5xl font-playfair font-bold text-theme-charcoal mt-2">Book Seller</h2>
+        <!-- Gradient Divider: ปรับสีเป็น Theme Sage -->
+        <div class="w-24 h-1 bg-gradient-to-r from-transparent via-theme-sage to-transparent mx-auto mt-6 rounded-full"></div>
+      </div>
+
+      <!-- Grid System -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+
+        <!-- Card 1 -->
+        <div class="group relative bg-white rounded-[20px] overflow-hidden shadow-soft hover:-translate-y-2 transition-all duration-300 reveal delay-100">
+            <!-- Badge: Hot -->
+            <span class="absolute top-4 left-4 z-20 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Hot</span>
+            
+            <!-- Image Container -->
+            <div class="relative h-72 bg-[#F9F8F6] flex items-center justify-center p-4 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&w=400&q=80" 
+                     class="h-full object-contain shadow-lg group-hover:scale-110 transition-transform duration-500">
+                
+                <!-- Floating Icons (Show on Hover) -->
+                <!-- ปรับให้ใช้ Tailwind Group Hover แทน CSS แยก -->
+                <div class="absolute inset-0 bg-theme-charcoal/20 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                    <button class="w-10 h-10 bg-white rounded-full text-theme-charcoal hover:text-theme-sage hover:scale-110 transition-all flex items-center justify-center shadow-lg" title="ดูรายละเอียด">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                    <button class="w-10 h-10 bg-white rounded-full text-theme-charcoal hover:text-red-500 hover:scale-110 transition-all flex items-center justify-center shadow-lg" title="บันทึก">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info -->
+            <div class="p-6">
+                <div class="text-sm text-gray-400 mb-1 font-medium">Chip & Dan Heath</div>
+                <h3 class="text-xl font-playfair font-bold text-theme-charcoal mb-4 line-clamp-1 group-hover:text-theme-sage transition-colors">The Power of Moments</h3>
+                
+                <div class="flex items-center justify-between border-t border-gray-100 pt-4">
+                    <div>
+                        <span class="block text-xl font-bold text-theme-sage">฿450</span>
+                        <!-- Rating -->
+                        <div class="text-yellow-400 text-xs mt-1">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span class="text-gray-300"><i class="fa-solid fa-star"></i></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Button -->
+                    <button class="w-10 h-10 rounded-full bg-theme-charcoal text-white hover:bg-theme-sage transition-colors flex items-center justify-center shadow-md active:scale-95" onclick="addToCart(this)">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 (เพิ่มตัวอย่างให้เต็ม Grid) -->
+        <div class="group relative bg-white rounded-[20px] overflow-hidden shadow-soft hover:-translate-y-2 transition-all duration-300 reveal delay-200">
+            <div class="relative h-72 bg-[#F9F8F6] flex items-center justify-center p-4 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80" 
+                     class="h-full object-contain shadow-lg group-hover:scale-110 transition-transform duration-500">
+                
+                <div class="absolute inset-0 bg-theme-charcoal/20 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                    <button class="w-10 h-10 bg-white rounded-full text-theme-charcoal hover:text-theme-sage hover:scale-110 transition-all flex items-center justify-center shadow-lg"><i class="fa-regular fa-eye"></i></button>
+                    <button class="w-10 h-10 bg-white rounded-full text-theme-charcoal hover:text-red-500 hover:scale-110 transition-all flex items-center justify-center shadow-lg"><i class="fa-regular fa-heart"></i></button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="text-sm text-gray-400 mb-1 font-medium">Rupi Kaur</div>
+                <h3 class="text-xl font-playfair font-bold text-theme-charcoal mb-4 line-clamp-1 group-hover:text-theme-sage transition-colors">Milk and Honey</h3>
+                
+                <div class="flex items-center justify-between border-t border-gray-100 pt-4">
+                    <div>
+                        <span class="block text-xl font-bold text-theme-sage">฿320</span>
+                        <div class="text-yellow-400 text-xs mt-1">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                    <button class="w-10 h-10 rounded-full bg-theme-charcoal text-white hover:bg-theme-sage transition-colors flex items-center justify-center shadow-md active:scale-95" onclick="addToCart(this)">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="group relative bg-white rounded-[20px] overflow-hidden shadow-soft hover:-translate-y-2 transition-all duration-300 reveal delay-300">
+            <span class="absolute top-4 left-4 z-20 bg-theme-olive text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Best Seller</span>
+            <div class="relative h-72 bg-[#F9F8F6] flex items-center justify-center p-4 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80" 
+                     class="h-full object-contain shadow-lg group-hover:scale-110 transition-transform duration-500">
+                
+                <div class="absolute inset-0 bg-theme-charcoal/20 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                    <button class="w-10 h-10 bg-white rounded-full text-theme-charcoal hover:text-theme-sage hover:scale-110 transition-all flex items-center justify-center shadow-lg"><i class="fa-regular fa-eye"></i></button>
+                    <button class="w-10 h-10 bg-white rounded-full text-theme-charcoal hover:text-red-500 hover:scale-110 transition-all flex items-center justify-center shadow-lg"><i class="fa-regular fa-heart"></i></button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="text-sm text-gray-400 mb-1 font-medium">F. Scott Fitzgerald</div>
+                <h3 class="text-xl font-playfair font-bold text-theme-charcoal mb-4 line-clamp-1 group-hover:text-theme-sage transition-colors">The Great Gatsby</h3>
+                
+                <div class="flex items-center justify-between border-t border-gray-100 pt-4">
+                    <div>
+                        <span class="block text-xl font-bold text-theme-sage">฿290</span>
+                        <div class="text-yellow-400 text-xs mt-1">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                            <span class="text-gray-300"><i class="fa-solid fa-star"></i></span>
+                        </div>
+                    </div>
+                    <button class="w-10 h-10 rounded-full bg-theme-charcoal text-white hover:bg-theme-sage transition-colors flex items-center justify-center shadow-md active:scale-95" onclick="addToCart(this)">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- Newsletter Section -->
+  <section class="py-20 bg-theme-olive/10">
+    <div class="max-w-4xl mx-auto px-6 text-center reveal">
+        <i class="fa-solid fa-envelope-open-text text-4xl text-theme-sage mb-4"></i>
+        <h2 class="text-3xl font-playfair font-bold text-theme-charcoal mb-4">Subscribe to our Newsletter</h2>
+        <p class="text-gray-600 mb-8">รับข่าวสารหนังสือใหม่และโปรโมชั่นพิเศษก่อนใคร</p>
+        <form class="flex flex-col sm:flex-row gap-4 justify-center">
+            <input type="email" placeholder="Your email address" class="px-6 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-theme-sage w-full sm:w-80 bg-white/80">
+            <button class="px-8 py-3 bg-theme-charcoal text-white rounded-full font-bold hover:bg-theme-sage transition-colors shadow-lg">Subscribe</button>
+        </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-theme-charcoal text-theme-cream pt-16 pb-8">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-700 pb-12">
+          <div class="space-y-4">
+              <div class="flex items-center gap-2">
+                 <div class="w-8 h-8 bg-theme-sage text-white rounded-full flex items-center justify-center"><i class="fa-solid fa-feather-pointed"></i></div>
+                 <span class="font-playfair font-bold text-2xl">NJTK</span>
+              </div>
+              <p class="text-gray-400 text-sm leading-relaxed">
+                  ร้านหนังสืออิสระที่คัดสรรวรรณกรรมคุณภาพ เพื่อส่งต่อแรงบันดาลใจสู่ผู้อ่านทุกคน
+              </p>
+          </div>
+          <div>
+              <h4 class="font-bold text-lg mb-6 text-theme-olive">Explore</h4>
+              <ul class="space-y-3 text-gray-400 text-sm">
+                  <li><a href="#" class="hover:text-theme-sage transition-colors">Home</a></li>
+                  <li><a href="#" class="hover:text-theme-sage transition-colors">About Us</a></li>
+                  <li><a href="#" class="hover:text-theme-sage transition-colors">Best Sellers</a></li>
+                  <li><a href="#" class="hover:text-theme-sage transition-colors">New Arrivals</a></li>
+              </ul>
+          </div>
+          <div>
+              <h4 class="font-bold text-lg mb-6 text-theme-olive">Support</h4>
+              <ul class="space-y-3 text-gray-400 text-sm">
+                  <li><a href="#" class="hover:text-theme-sage transition-colors">FAQ</a></li>
+                  <li><a href="#" class="hover:text-theme-sage transition-colors">Shipping & Returns</a></li>
+                  <li><a href="#" class="hover:text-theme-sage transition-colors">Contact Us</a></li>
+              </ul>
+          </div>
+          <div>
+              <h4 class="font-bold text-lg mb-6 text-theme-olive">Follow Us</h4>
+              <div class="flex gap-4">
+                  <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
+                  <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                  <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-theme-sage transition-colors"><i class="fa-brands fa-twitter"></i></a>
+              </div>
+          </div>
+      </div>
+      <div class="max-w-7xl mx-auto px-6 pt-8 text-center text-gray-500 text-xs">
+          &copy; 2023 NJTK Bookstore. Designed with Passion.
+      </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // 1. Navbar Scroll Effect (Glassmorphism & Opacity)
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('py-2');
+            navbar.classList.remove('py-4', 'bg-transparent');
+        } else {
+            navbar.classList.add('py-4', 'bg-transparent');
+            navbar.classList.remove('py-2');
+        }
+    });
+
+    // 2. Mobile Menu Logic
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const closeMenu = document.getElementById('close-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.remove('translate-x-full');
+    });
+
+    closeMenu.addEventListener('click', () => {
+        mobileMenu.classList.add('translate-x-full');
+    });
+
+    // Close menu when clicking links
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('translate-x-full');
+        });
+    });
+
+    // 3. Reveal Animation on Scroll (Intersection Observer)
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target); // Animate once
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+
+    // 4. Add to Cart Logic with Animation
+    function addToCart(btn) {
+        const originalContent = btn.innerHTML;
+        const originalClasses = btn.className;
+
+        // Change State
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added';
+        btn.classList.remove('bg-white', 'text-theme-sage');
+        btn.classList.add('bg-theme-charcoal', 'text-white');
+
+        // Update Counter Bubble (Visual)
+        const counter = document.querySelector('.fa-bag-shopping + span');
+        let count = parseInt(counter.innerText);
+        counter.innerText = count + 1;
+        counter.classList.add('scale-125'); // Pulse effect
+        setTimeout(() => counter.classList.remove('scale-125'), 200);
+
+        // Reset Button after delay
+        setTimeout(() => {
+            btn.innerHTML = originalContent;
+            btn.className = originalClasses;
+        }, 1500);
+    }
+  </script>
+</body>
+</html>

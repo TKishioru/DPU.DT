@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NJTK Bookstore | The Modern Library</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;700&family=Noto+Sans+Thai:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "theme-sage": "#809671",    /* Primary: เขียวใบไม้ */
+            "theme-olive": "#B3B792",   /* Secondary: เขียวมะกอก/ทอง */
+            "theme-cream": "#E5E0D8",   /* Background: สีครีมกระดาษ */
+            "theme-charcoal": "#2A3328", /* Text: สีเทาเข้มอมเขียว */
+            "theme-paper": "#F5F3EF",    /* Card: สีขาวนวล */
+          },
+          fontFamily: {
+            playfair: ['"Playfair Display"', "serif"],
+            sans: ['"DM Sans"', '"Noto Sans Thai"', "sans-serif"],
+          },
+          boxShadow: {
+            'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+            'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+          }
+        },
+      },
+    };
+  </script>
+
+<!-- ใส่ไว้ใน <head> -->
+<style>
+    .smart-info {
+        padding: 1.5rem;
+        background: linear-gradient(to bottom, transparent, #fff 20%);
+    }
+
+    /* ปุ่ม Smart Pill */
+    .pill-container {
+        background: #F5F3EF; /* สีครีมอ่อนๆ */
+        border-radius: 99px;
+        padding: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .group:hover .pill-container {
+        background: white;
+        border-color: #809671;
+        box-shadow: 0 4px 12px rgba(128, 150, 113, 0.2);
+    }
+
+    /* ปุ่มวงกลมข้างใน */
+    .circle-btn {
+        width: 32px;
+        height: 32px;
+        background: #2A3328;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* เมื่อ Hover ที่การ์ด ปุ่มจะยาวขึ้น */
+    .group:hover .circle-btn {
+        width: 90px;
+        border-radius: 20px;
+        background: #809671;
+    }
+
+    /* ข้อความในปุ่ม */
+    .btn-text {
+        max-width: 0;
+        overflow: hidden;
+        opacity: 0;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        margin-right: 0;
+    }
+
+    .group:hover .btn-text {
+        max-width: 50px;
+        opacity: 1;
+        margin-right: 6px;
+    }
+</style>
+</head>
+
+<!-- HTML Code -->
+<div class="smart-info group">
+    <!-- Metadata -->
+    <div class="flex justify-between items-start mb-2">
+        <div class="text-xs font-bold text-[#B3B792] uppercase tracking-wider">Self-Help</div>
+        <div class="flex text-yellow-400 text-[10px] gap-0.5">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        </div>
+    </div>
+
+    <!-- Title & Author -->
+    <h3 class="text-xl font-playfair font-bold text-[#2A3328] mb-1 leading-tight group-hover:text-[#809671] transition-colors">
+        Everything is F*cked
+    </h3>
+    <p class="text-sm text-gray-400 mb-4 font-light">Mark Manson</p>
+
+    <!-- The Smart Pill Action -->
+    <div class="pill-container">
+        <!-- Price Area -->
+        <div class="pl-3 pr-2">
+            <span class="text-lg font-bold text-[#2A3328]">฿450</span>
+        </div>
+        
+        <!-- Animated Button -->
+        <button class="circle-btn" onclick="addToCart(this)">
+            <span class="btn-text text-xs font-bold">Buy</span>
+            <i class="fa-solid fa-bag-shopping text-xs"></i>
+        </button>
+    </div>
+</div>
+
+------------------
+<!-- Style: ใส่ไว้ใน <head> หรือ <style> ด้านบน -->
+<style>
+    /* 1. คอนเทนเนอร์รูปแคปซูล */
+    .pill-container {
+        background: #F9F8F6; /* สีพื้นหลังครีมอ่อนๆ */
+        border-radius: 50px;
+        padding: 5px 8px 5px 20px; /* จัดระยะห่างภายใน */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+    }
+
+    /* เมื่อเอาเมาส์ชี้ที่การ์ด (class group) ให้เปลี่ยนสีกรอบและเงา */
+    .group:hover .pill-container {
+        background: white;
+        border-color: #809671; /* สีเขียวธีม */
+        box-shadow: 0 4px 15px rgba(128, 150, 113, 0.2);
+    }
+
+    /* 2. ปุ่มวงกลม (Smart Button) */
+    .circle-btn {
+        width: 38px;
+        height: 38px;
+        background: #2C3327; /* สีเข้มปกติ */
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animation เด้งดึ๋ง */
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    /* เมื่อ Hover: ยืดปุ่มออกและเปลี่ยนสี */
+    .group:hover .circle-btn {
+        width: 100px;
+        border-radius: 25px;
+        background: #809671; /* เปลี่ยนเป็นสีเขียว */
+    }
+
+    /* 3. ข้อความในปุ่ม (Buy) */
+    .btn-text {
+        max-width: 0;
+        opacity: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-right: 0;
+    }
+
+    /* เมื่อ Hover: โชว์ข้อความ */
+    .group:hover .btn-text {
+        max-width: 50px;
+        opacity: 1;
+        margin-right: 8px;
+    }
+</style>
+
+<!-- HTML Structure -->
+<!-- สำคัญ: ต้องมี class "group" ที่ div นอกสุด เพื่อสั่งให้ animation ทำงานเมื่อชี้ที่ไหนก็ได้ในการ์ด -->
+<div class="info p-6 bg-white group hover:shadow-lg transition-all duration-300 rounded-b-[20px]">
+    
+    <!-- Author -->
+    <div class="author text-xs font-bold text-[#B3B792] uppercase tracking-wider mb-2">
+        Chip & Dan Heath
+    </div>
+    
+    <!-- Title -->
+    <h3 class="title text-xl font-playfair font-bold text-[#2A3328] leading-tight mb-4 group-hover:text-[#809671] transition-colors">
+        The Power of Moments
+    </h3>
+    
+    <!-- The Modern Pill Container -->
+    <div class="pill-container">
+        
+        <!-- Price & Rating Section -->
+        <div class="price-info">
+            <div class="flex items-baseline gap-2">
+                <span class="text-xl font-bold text-[#809671]">฿450</span>
+                <span class="text-xs text-gray-400 line-through">฿550</span>
+            </div>
+            <!-- Rating -->
+            <div class="flex text-yellow-400 text-[10px] gap-0.5 mt-0.5">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+        </div>
+
+        <!-- Animated Button -->
+        <button class="circle-btn" onclick="addToCart(this)">
+            <span class="btn-text text-xs font-bold uppercase">Buy</span>
+            <i class="fa-solid fa-bag-shopping text-xs"></i>
+        </button>
+    </div>
+
+</div>

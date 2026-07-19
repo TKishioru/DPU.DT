@@ -1,0 +1,91 @@
+        <!-- Card 2 -->
+        <div class="book-card fade-in" data-category="new">
+            <span class="badge bg-green-500 shadow-[0_5px_10px_rgba(46,204,113,0.4)]">New</span>
+            <div class="img-container">
+                <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=400&q=80"
+                    class="book-img">
+            </div>
+            <div class="actions">
+                <div class="action-icon"><i class="fa-regular fa-eye"></i></div>
+                <div class="action-icon"><i class="fa-regular fa-heart"></i></div>
+            </div>
+            <div class="info">
+                <div class="author">Mark Manson</div>
+                <h3 class="title">Everything is F*cked: A Book About Hope</h3>
+                <div class="price-row">
+                    <div>
+                        <span class="block text-xl font-bold text-theme-sage">฿450</span>
+                        <!-- Rating -->
+                        <div class="text-yellow-400 text-xs mt-1">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span class="text-gray-300"><i class="fa-solid fa-star"></i></span>
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addToCart(this)"><i class="fa-solid fa-cart-plus"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="book-card fade-in" data-category="recommended">
+            <div class="img-container">
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=400&q=80"
+                    class="book-img">
+            </div>
+            <div class="actions">
+                <div class="action-icon"><i class="fa-regular fa-eye"></i></div>
+                <div class="action-icon"><i class="fa-regular fa-heart"></i></div>
+            </div>
+            <div class="info">
+                <div class="author">Haruki Murakami</div>
+                <h3 class="title">Norwegian Wood (ด้วยรักความตายและหัวใจสลาย)</h3>
+                <div class="price-row">
+                    <div>
+                        <span class="block text-xl font-bold text-theme-sage">฿450</span>
+                        <!-- Rating -->
+                        <div class="text-yellow-400 text-xs mt-1">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span class="text-gray-300"><i class="fa-solid fa-star"></i></span>
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addToCart(this)"><i class="fa-solid fa-cart-plus"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="book-card fade-in" data-category="bestseller">
+            <span class="badge bg-red-500 shadow-[0_5px_10px_rgba(231,76,60,0.4)]">Hot</span>
+            <div class="img-container">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80"
+                    class="book-img">
+            </div>
+            <div class="actions">
+                <div class="action-icon"><i class="fa-regular fa-eye"></i></div>
+                <div class="action-icon"><i class="fa-regular fa-heart"></i></div>
+            </div>
+            <div class="info">
+                <div class="author">George Orwell</div>
+                <h3 class="title">1984: ฉบับสมบูรณ์</h3>
+                <div class="price-row">
+                    <div>
+                        <span class="block text-xl font-bold text-theme-sage">฿450</span>
+                        <!-- Rating -->
+                        <div class="text-yellow-400 text-xs mt-1">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span class="text-gray-300"><i class="fa-solid fa-star"></i></span>
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addToCart(this)"><i class="fa-solid fa-cart-plus"></i></button>
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Harry Potter</title>
+    <link rel="icon" type="image/png" href="image/hp-icon.png" />
+    <link rel="stylesheet" href="styles/style.css" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "slytherin-dark": "#05100e",
+              "slytherin-green": "#1a472a",
+              "slytherin-gold": "#c5a059",
+              "slytherin-gray": "#8d9692",
+            },
+            fontFamily: {
+              cinzel: ['"Cinzel"', "serif"],
+              lato: ['"Lato"', "sans-serif"],
+            },
+            backgroundImage: {
+              "hero-pattern":
+                "linear-gradient(to right, rgba(5,16,14, 0.9), rgba(5,16,14, 0.6)), url('https://images.unsplash.com/photo-1543169107-1e8697b0a7c4?q=80&w=2070&auto=format&fit=crop')",
+              "fireplace-pattern":
+                "linear-gradient(to right, rgba(5,16,14, 0.95), rgba(5,16,14, 0.7)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069&auto=format&fit=crop')",
+              "room-pattern":
+                "linear-gradient(to bottom, rgba(5,16,14, 0.8), rgba(5,16,14, 0.9)), url('https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?q=80&w=2874&auto=format&fit=crop')",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-slytherin-dark text-gray-300 font-lato overflow-x-hidden">
+
+<!-- Section: Houses (Magical Accordion) -->
+    <section id="House" class="py-24 bg-magic-dark relative overflow-hidden">
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[800px] md:h-[600px] flex flex-col md:flex-row gap-2 transition-all">
+            
+            <!-- 1. GRYFFINDOR -->
+            <div class="relative flex-1 group hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-xl border border-white/10 cursor-pointer">
+                <!-- Background Image -->
+                <div class="absolute inset-0 bg-cover bg-center transition-all duration-700 filter grayscale group-hover:grayscale-0 group-hover:scale-110"
+                     style="background-image: url('image/g_gryffindoor.png');"> <!-- Fire/Red theme -->
+                </div>
+                <!-- Overlay (Dark by default, Red on hover) -->
+                <div class="absolute inset-0 bg-black/60 group-hover:bg-red-900/60 transition-colors duration-700"></div>
+                
+                <!-- Content Container -->
+                <div class="absolute inset-0 p-8 flex flex-col justify-end items-center md:items-start text-center md:text-left">
+                    <!-- Icon/Crest (Lion) -->
+                    <div class="mb-8 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                        <img src="image/logo_gryffindoor.png" alt="Gryffindor Crest" class="w-16 h-16 object-contain"/>
+                    </div>
+
+                    <!-- Title (Vertical on idle, Horizontal on hover) -->
+                    <h3 class="text-3xl md:text-4xl font-cinzel font-bold text-white mb-2 transform origin-left transition-all duration-500">
+                        Gryffindor
+                    </h3>
+
+                    <!-- Hidden Content (Reveals on Hover) -->
+                    <div class="opacity-0 group-hover:opacity-100 max-h-0 group-hover:max-h-[200px] transition-all duration-700 delay-200 overflow-hidden">
+                        <p class="text-red-200 font-cinzel text-sm tracking-widest mb-4 uppercase">Bravery • Daring • Chivalry</p>
+                        <p class="text-gray-200 font-lato text-sm leading-relaxed max-w-md">
+                            "You might belong in Gryffindor, Where dwell the brave at heart, Their daring, nerve, and chivalry Set Gryffindors apart."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. SLYTHERIN -->
+            <div class="relative flex-1 group hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-xl border border-white/10 cursor-pointer">
+                <div class="absolute inset-0 bg-cover bg-center transition-all duration-700 filter grayscale group-hover:grayscale-0 group-hover:scale-110"
+                     style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1368&auto=format&fit=crop');"> <!-- Dark Green/Dungeon -->
+                </div>
+                <div class="absolute inset-0 bg-black/60 group-hover:bg-green-900/60 transition-colors duration-700"></div>
+                
+                <div class="absolute inset-0 p-8 flex flex-col justify-end items-center md:items-start text-center md:text-left">
+                    <div class="mb-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                         <svg class="w-16 h-16 text-white/50 group-hover:text-green-400 transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg> <!-- Placeholder for Snake -->
+                    </div>
+
+                    <h3 class="text-3xl md:text-4xl font-cinzel font-bold text-white mb-2">Slytherin</h3>
+
+                    <div class="opacity-0 group-hover:opacity-100 max-h-0 group-hover:max-h-[200px] transition-all duration-700 delay-200 overflow-hidden">
+                        <p class="text-green-200 font-cinzel text-sm tracking-widest mb-4 uppercase">Ambition • Cunning • Leadership</p>
+                        <p class="text-gray-200 font-lato text-sm leading-relaxed max-w-md">
+                            "Or perhaps in Slytherin, You'll make your real friends, Those cunning folk use any means, To achieve their ends."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. RAVENCLAW -->
+            <div class="relative flex-1 group hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-xl border border-white/10 cursor-pointer">
+                <div class="absolute inset-0 bg-cover bg-center transition-all duration-700 filter grayscale group-hover:grayscale-0 group-hover:scale-110"
+                     style="background-image: url('https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?q=80&w=1470&auto=format&fit=crop');"> <!-- Starry Sky/Blue -->
+                </div>
+                <div class="absolute inset-0 bg-black/60 group-hover:bg-blue-900/60 transition-colors duration-700"></div>
+                
+                <div class="absolute inset-0 p-8 flex flex-col justify-end items-center md:items-start text-center md:text-left">
+                    <div class="mb-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                        <svg class="w-16 h-16 text-white/50 group-hover:text-blue-400 transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 3.5L18.5 20h-13L12 5.5z"/></svg> <!-- Placeholder for Eagle -->
+                    </div>
+
+                    <h3 class="text-3xl md:text-4xl font-cinzel font-bold text-white mb-2">Ravenclaw</h3>
+
+                    <div class="opacity-0 group-hover:opacity-100 max-h-0 group-hover:max-h-[200px] transition-all duration-700 delay-200 overflow-hidden">
+                        <p class="text-blue-200 font-cinzel text-sm tracking-widest mb-4 uppercase">Intelligence • Wit • Wisdom</p>
+                        <p class="text-gray-200 font-lato text-sm leading-relaxed max-w-md">
+                            "Or yet in wise old Ravenclaw, If you've a ready mind, Where those of wit and learning, Will always find their kind."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. HUFFLEPUFF -->
+            <div class="relative flex-1 group hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-xl border border-white/10 cursor-pointer">
+                <div class="absolute inset-0 bg-cover bg-center transition-all duration-700 filter grayscale group-hover:grayscale-0 group-hover:scale-110"
+                     style="background-image: url('https://images.unsplash.com/photo-1470058869958-2a77ade41c02?q=80&w=1470&auto=format&fit=crop');"> <!-- Forest/Yellow light -->
+                </div>
+                <div class="absolute inset-0 bg-black/60 group-hover:bg-yellow-900/60 transition-colors duration-700"></div>
+                
+                <div class="absolute inset-0 p-8 flex flex-col justify-end items-center md:items-start text-center md:text-left">
+                    <div class="mb-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                        <svg class="w-16 h-16 text-white/50 group-hover:text-yellow-400 transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg> <!-- Placeholder for Badger -->
+                    </div>
+
+                    <h3 class="text-3xl md:text-4xl font-cinzel font-bold text-white mb-2">Hufflepuff</h3>
+
+                    <div class="opacity-0 group-hover:opacity-100 max-h-0 group-hover:max-h-[200px] transition-all duration-700 delay-200 overflow-hidden">
+                        <p class="text-yellow-200 font-cinzel text-sm tracking-widest mb-4 uppercase">Loyalty • Patience • Hard Work</p>
+                        <p class="text-gray-200 font-lato text-sm leading-relaxed max-w-md">
+                            "You might belong in Hufflepuff, Where they are just and loyal, Those patient Hufflepuffs are true, And unafraid of toil."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Design 1: Glass Emblems -->
+<section id="House" class="py-24 bg-magic-dark relative overflow-hidden">
+    <!-- Background Noise/Texture -->
+    <div class="absolute inset-0 opacity-20" style="background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-cinzel text-white drop-shadow-glow">Choose Your Path</h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-magic-ice to-transparent mx-auto mt-4"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- GRYFFINDOR CARD -->
+            <div class="group relative h-96 bg-white/5 backdrop-blur-sm border border-white/10 rounded-t-full rounded-b-lg overflow-hidden hover:border-red-500/50 transition-all duration-500 hover:-translate-y-2">
+                <!-- Hover Glow Background -->
+                <div class="absolute inset-0 bg-gradient-to-b from-red-900/0 via-red-900/0 to-red-900/40 group-hover:via-red-900/20 transition-all duration-500"></div>
+                
+                <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <!-- Crest Circle -->
+                    <div class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-red-500 group-hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all duration-500 bg-black/30">
+                        <span class="text-4xl">🦁</span> <!-- ใส่รูป Crest PNG ตรงนี้แทนได้ -->
+                    </div>
+                    
+                    <h3 class="text-2xl font-cinzel text-white group-hover:text-red-400 transition-colors">Gryffindor</h3>
+                    <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">Bravery</p>
+                    
+                    <!-- Hidden Text -->
+                    <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+                        <p class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                            Where dwell the brave at heart.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLYTHERIN CARD -->
+            <div class="group relative h-96 bg-white/5 backdrop-blur-sm border border-white/10 rounded-t-full rounded-b-lg overflow-hidden hover:border-green-500/50 transition-all duration-500 hover:-translate-y-2">
+                <div class="absolute inset-0 bg-gradient-to-b from-green-900/0 via-green-900/0 to-green-900/40 group-hover:via-green-900/20 transition-all duration-500"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <div class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-green-500 group-hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all duration-500 bg-black/30">
+                        <span class="text-4xl">🐍</span>
+                    </div>
+                    <h3 class="text-2xl font-cinzel text-white group-hover:text-green-400 transition-colors">Slytherin</h3>
+                    <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">Ambition</p>
+                    <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+                        <p class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                            Those cunning folk use any means.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RAVENCLAW CARD -->
+            <div class="group relative h-96 bg-white/5 backdrop-blur-sm border border-white/10 rounded-t-full rounded-b-lg overflow-hidden hover:border-blue-500/50 transition-all duration-500 hover:-translate-y-2">
+                <div class="absolute inset-0 bg-gradient-to-b from-blue-900/0 via-blue-900/0 to-blue-900/40 group-hover:via-blue-900/20 transition-all duration-500"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <div class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all duration-500 bg-black/30">
+                        <span class="text-4xl">🦅</span>
+                    </div>
+                    <h3 class="text-2xl font-cinzel text-white group-hover:text-blue-400 transition-colors">Ravenclaw</h3>
+                    <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">Wisdom</p>
+                    <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+                        <p class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                            Wit beyond measure is treasure.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HUFFLEPUFF CARD -->
+            <div class="group relative h-96 bg-white/5 backdrop-blur-sm border border-white/10 rounded-t-full rounded-b-lg overflow-hidden hover:border-yellow-500/50 transition-all duration-500 hover:-translate-y-2">
+                <div class="absolute inset-0 bg-gradient-to-b from-yellow-900/0 via-yellow-900/0 to-yellow-900/40 group-hover:via-yellow-900/20 transition-all duration-500"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <div class="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center mb-6 group-hover:border-yellow-500 group-hover:shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all duration-500 bg-black/30">
+                        <span class="text-4xl">🦡</span>
+                    </div>
+                    <h3 class="text-2xl font-cinzel text-white group-hover:text-yellow-400 transition-colors">Hufflepuff</h3>
+                    <p class="text-xs font-cinzel tracking-[0.2em] text-gray-400 mt-2 uppercase">Loyalty</p>
+                    <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-500">
+                        <p class="text-gray-300 font-lato text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                            Just, loyal, and unafraid of toil.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Design 2: Interactive Background -->
+<section id="House" class="relative min-h-screen flex items-center py-20 overflow-hidden bg-magic-dark transition-all duration-700 ease-in-out">
+    
+    <!-- Background Layers (Absolute) -->
+    <div id="bg-gryffindor" class="house-bg absolute inset-0 bg-cover bg-center transition-opacity duration-700 opacity-0" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?q=80&w=1479&auto=format&fit=crop');"></div>
+    <div id="bg-slytherin" class="house-bg absolute inset-0 bg-cover bg-center transition-opacity duration-700 opacity-0" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1368&auto=format&fit=crop');"></div>
+    <div id="bg-ravenclaw" class="house-bg absolute inset-0 bg-cover bg-center transition-opacity duration-700 opacity-100" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?q=80&w=1470&auto=format&fit=crop');"></div> <!-- Default -->
+    <div id="bg-hufflepuff" class="house-bg absolute inset-0 bg-cover bg-center transition-opacity duration-700 opacity-0" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1470058869958-2a77ade41c02?q=80&w=1470&auto=format&fit=crop');"></div>
+
+    <div class="max-w-7xl mx-auto px-4 w-full relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        
+        <!-- Left: Navigation / List -->
+        <div class="space-y-4">
+            <h2 class="text-magic-ice font-cinzel text-sm tracking-[0.3em] mb-8 uppercase">Select House</h2>
+            
+            <div class="space-y-2">
+                <!-- House Items -->
+                <div class="house-item group cursor-pointer p-4 border-l-2 border-transparent hover:border-red-500 hover:bg-white/5 transition-all duration-300" onmouseover="changeHouse('gryffindor')">
+                    <h3 class="text-3xl font-cinzel text-gray-400 group-hover:text-white transition-colors">Gryffindor</h3>
+                </div>
+                
+                <div class="house-item group cursor-pointer p-4 border-l-2 border-transparent hover:border-green-500 hover:bg-white/5 transition-all duration-300" onmouseover="changeHouse('slytherin')">
+                    <h3 class="text-3xl font-cinzel text-gray-400 group-hover:text-white transition-colors">Slytherin</h3>
+                </div>
+                
+                <div class="house-item group cursor-pointer p-4 border-l-2 border-magic-ice bg-white/5 transition-all duration-300" onmouseover="changeHouse('ravenclaw')" id="default-active">
+                    <h3 class="text-3xl font-cinzel text-white transition-colors">Ravenclaw</h3>
+                </div>
+                
+                <div class="house-item group cursor-pointer p-4 border-l-2 border-transparent hover:border-yellow-500 hover:bg-white/5 transition-all duration-300" onmouseover="changeHouse('hufflepuff')">
+                    <h3 class="text-3xl font-cinzel text-gray-400 group-hover:text-white transition-colors">Hufflepuff</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Description (Static for now, implies details change) -->
+        <div class="bg-black/40 backdrop-blur-md p-8 md:p-12 border border-white/10 rounded-sm">
+            <div id="content-display">
+                <h3 id="house-title" class="text-5xl font-cinzel text-white mb-4">Ravenclaw</h3>
+                <p id="house-desc" class="text-lg text-gray-300 font-lato leading-relaxed">
+                    Ravenclaw values intelligence, learning, wisdom and wit. The house mascot is an eagle and the house colours are blue and bronze.
+                </p>
+                <button class="mt-8 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all font-cinzel text-sm uppercase">
+                    Enter Common Room
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeHouse(house) {
+            // 1. Hide all backgrounds
+            document.querySelectorAll('.house-bg').forEach(bg => bg.classList.remove('opacity-100'));
+            document.querySelectorAll('.house-bg').forEach(bg => bg.classList.add('opacity-0'));
+            
+            // 2. Show selected background
+            document.getElementById('bg-' + house).classList.remove('opacity-0');
+            document.getElementById('bg-' + house).classList.add('opacity-100');
+
+            // 3. Update Text Content
+            const title = document.getElementById('house-title');
+            const desc = document.getElementById('house-desc');
+            
+            // Reset Styles
+            document.querySelectorAll('.house-item').forEach(item => {
+                item.classList.remove('border-magic-ice', 'bg-white/5', 'border-red-500', 'border-green-500', 'border-yellow-500');
+                item.classList.add('border-transparent');
+                item.querySelector('h3').classList.remove('text-white');
+                item.querySelector('h3').classList.add('text-gray-400');
+            });
+
+            // Set content based on house
+            if(house === 'gryffindor') {
+                title.innerText = "Gryffindor";
+                title.className = "text-5xl font-cinzel text-red-400 mb-4";
+                desc.innerText = "Gryffindor values bravery, daring, nerve, and chivalry. Its mascot is the lion, and its colours are scarlet and gold.";
+                event.currentTarget.classList.remove('border-transparent');
+                event.currentTarget.classList.add('border-red-500', 'bg-white/5');
+            } else if(house === 'slytherin') {
+                title.innerText = "Slytherin";
+                title.className = "text-5xl font-cinzel text-green-400 mb-4";
+                desc.innerText = "Slytherin values ambition, cunning, leadership, and resourcefulness. The mascot is a serpent.";
+                event.currentTarget.classList.remove('border-transparent');
+                event.currentTarget.classList.add('border-green-500', 'bg-white/5');
+            } else if(house === 'ravenclaw') {
+                title.innerText = "Ravenclaw";
+                title.className = "text-5xl font-cinzel text-blue-400 mb-4";
+                desc.innerText = "Ravenclaw values intelligence, learning, wisdom and wit. The house mascot is an eagle.";
+                event.currentTarget.classList.remove('border-transparent');
+                event.currentTarget.classList.add('border-magic-ice', 'bg-white/5');
+            } else if(house === 'hufflepuff') {
+                title.innerText = "Hufflepuff";
+                title.className = "text-5xl font-cinzel text-yellow-400 mb-4";
+                desc.innerText = "Hufflepuff values hard work, patience, justice, and loyalty. The house mascot is the badger.";
+                event.currentTarget.classList.remove('border-transparent');
+                event.currentTarget.classList.add('border-yellow-500', 'bg-white/5');
+            }
+            
+            // Highlight text active
+            event.currentTarget.querySelector('h3').classList.remove('text-gray-400');
+            event.currentTarget.querySelector('h3').classList.add('text-white');
+        }
+    </script>
+</section>
+
+    <script src="javascript/navbar.js"></script>
+    <script src="javascript/carousel.js"></script>
+  </body>
+</html>

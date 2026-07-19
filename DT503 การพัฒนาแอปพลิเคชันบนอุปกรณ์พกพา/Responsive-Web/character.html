@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Harry Potter</title>
+    <link rel="icon" type="image/png" href="image/logo_small.png" />
+    <link rel="stylesheet" href="styles/style.css" />
+
+    <!-- ใช้ไอคอนจาก Web แทน -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/135/135869.png" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+Thai" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "magic-dark": "#0B101B" /* พื้นหลังดำอมน้ำเงิน */,
+                        "magic-navy": "#152238" /* น้ำเงินเข้ม */,
+                        "magic-blue": "#2C4E80" /* น้ำเงินกลาง */,
+                        "magic-ice": "#A5C9CA" /* สีฟ้าเย็น (Accent) */,
+                        "magic-silver": "#E7F6F2" /* สีเงิน/ขาว */,
+                    },
+                    fontFamily: {
+                        cinzel: ['"Cinzel"', "serif"],
+                        lato: ['"Lato"', "sans-serif"],
+                        noto: ['"Noto Sans Thai"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+                    },
+                    dropShadow: {
+                        glow: "0 0 10px rgba(165, 201, 202, 0.5)",
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+
+<body class="bg-magic-dark text-gray-300 font-noto overflow-x-hidden selection:bg-magic-ice selection:text-magic-navy">
+  <!-- Navbar -->
+  <nav id="navbar"
+    class="fixed w-full z-50 transition-all duration-300 bg-magic-dark backdrop-blur-sm md:bg-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="window.scrollTo(0, 0)">
+          <!-- Icon -->
+          <img src="image/logo_small.png" alt="Logo" class="h-10 w-10 group-hover:animate-spin-slow transition-all" />
+          <!--    <span
+            class="ml-3 text-2xl font-cinzel font-bold text-magic-silver tracking-widest group-hover:text-magic-ice transition-colors">Hogwarts</span>
+-->
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-baseline space-x-8">
+            <a href="index.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Home
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full box-shadow-[0_0_8px_#A5C9CA]"></span>
+            </a>
+            <a href="character.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Character
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="movie.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Movie
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="spell.html"
+              class="nav-link text-magic-silver hover:text-magic-ice transition-colors duration-300 text-sm font-cinzel font-bold tracking-widest relative group">
+              Spell
+              <span
+                class="absolute -bottom-2 left-0 w-0 h-0.5 bg-magic-ice transition-all duration-300 group-hover:w-full"></span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="-mr-2 flex md:hidden">
+          <button id="mobile-menu-btn" type="button"
+            class="inline-flex items-center justify-center p-2 rounded-md text-magic-ice hover:text-white hover:bg-white/10 focus:outline-none">
+            <span class="sr-only">Open main menu</span>
+            <svg id="menu-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-menu" class="hidden md:hidden bg-magic-dark/95 border-b border-white/10 backdrop-blur-xl">
+      <div class="px-4 pt-2 pb-6 space-y-2">
+        <a href="index.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Home</a>
+        <a href="character.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Character</a>
+        <a href="movie.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">Movie</a>
+        <a href="house.html"
+          class="block px-3 py-3 text-base font-cinzel font-bold text-white hover:text-magic-dark hover:bg-magic-ice rounded-md transition-all">House</a>
+      </div>
+    </div>
+  </nav>
+  
+    <!-- Section: Character Database (Vertical Cards) -->
+    <section id="Character" class="py-24 bg-magic-dark relative min-h-screen">
+
+        <!-- Background & Decor -->
+        <div
+            class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none">
+        </div>
+        <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-magic-dark to-transparent z-10"></div>
+        <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-magic-dark to-transparent z-10"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <span class="text-magic-ice font-cinzel tracking-[0.3em] text-sm uppercase">Dramatis Personae</span>
+                <h2 class="text-4xl md:text-5xl font-cinzel text-white mt-2 drop-shadow-glow">Wizarding Archives</h2>
+                <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-magic-ice to-transparent mx-auto mt-6">
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12">
+                <button onclick="filterCharacters('all')"
+                    class="filter-btn active px-5 py-2 border border-magic-ice/30 rounded-full text-xs md:text-sm font-cinzel uppercase tracking-widest text-gray-300 hover:bg-magic-ice/10 hover:border-magic-ice transition-all">All</button>
+                <button onclick="filterCharacters('student')"
+                    class="filter-btn px-5 py-2 border border-magic-ice/30 rounded-full text-xs md:text-sm font-cinzel uppercase tracking-widest text-gray-300 hover:bg-magic-ice/10 hover:border-magic-ice transition-all">Students</button>
+                <button onclick="filterCharacters('staff')"
+                    class="filter-btn px-5 py-2 border border-magic-ice/30 rounded-full text-xs md:text-sm font-cinzel uppercase tracking-widest text-gray-300 hover:bg-magic-ice/10 hover:border-magic-ice transition-all">Staff</button>
+                <button onclick="filterCharacters('villain')"
+                    class="filter-btn px-5 py-2 border border-magic-ice/30 rounded-full text-xs md:text-sm font-cinzel uppercase tracking-widest text-gray-300 hover:bg-magic-ice/10 hover:border-magic-ice transition-all">Dark
+                    Forces</button>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="character-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Javascript will inject cards here -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // --- 1. ข้อมูลตัวละคร (Updated) ---
+        const charactersData = [
+            // 🧙‍♂️ 1. นักเรียน (Students)
+            {
+                name: "Harry Potter",
+                house: "Gryffindor",
+                patronus: "กวางตัวผู้",
+                desc: "เด็กชายผู้รอดชีวิต ผู้มีพรสวรรค์ด้านการป้องกันตัว เป็นผู้นำโดยธรรมชาติ และกล้าหาญมาก",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1610984929881-8b2b24b89693?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Hermione Granger",
+                house: "Gryffindor",
+                patronus: "นาก",
+                desc: "ฉลาดที่สุดในรุ่น ขยัน มีเหตุผล และใช้ความรู้ช่วยเพื่อนทุกครั้ง เธอคือสมองของทีม",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1598153346810-860daa0d6cad?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Ron Weasley",
+                house: "Gryffindor",
+                patronus: "แจ็ครัสเซลล์ เทอร์เรียร์",
+                desc: "ซื่อสัตย์ อบอุ่น ตลกเป็นธรรมชาติ เป็นแรงสนับสนุนสำคัญของแฮร์รีและเฮอร์ไมโอนี่",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1551269901-5c5e14519294?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Draco Malfoy",
+                house: "Slytherin",
+                patronus: "ไม่เปิดเผย",
+                desc: "มาจากตระกูลเลือดบริสุทธิ์ มักหยิ่งและแข่งขันกับแฮร์รี แต่ลึก ๆ เป็นคนสับสนและกดดัน",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Neville Longbottom",
+                house: "Gryffindor",
+                patronus: "ไม่เปิดเผย",
+                desc: "พัฒนาตัวเองจากคนอ่อนแอจนกลายเป็นฮีโร่ที่กล้าหาญและเด็ดเดี่ยวที่สุดคนหนึ่ง",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Luna Lovegood",
+                house: "Ravenclaw",
+                patronus: "กระต่าย",
+                desc: "มองโลกในมุมแปลกใหม่ ซื่อสัตย์ และยอมเป็นตัวเองแม้คนอื่นมองว่าแปลก จิตใจอ่อนโยนมาก",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Ginny Weasley",
+                house: "Gryffindor",
+                patronus: "ม้า",
+                desc: "แข็งแกร่ง มั่นใจ เก่งควิชดิช และมีนิสัยตรงไปตรงมา เธอเป็นคนรักของแฮร์รี",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Cho Chang",
+                house: "Ravenclaw",
+                patronus: "หงส์",
+                desc: "เก่งควิชดิช อ่อนโยน อ่อนไหว เป็นรักแรกของแฮร์รี",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Cedric Diggory",
+                house: "Hufflepuff",
+                patronus: "ไม่เปิดเผย",
+                desc: "หล่อ เก่ง กีฬาเด่น มีน้ำใจนักกีฬา เป็นตัวแทนฮอกวอตส์ในการประลองเวทไตรภาคี",
+                category: "student",
+                img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop"
+            },
+
+            // 🧙‍♀️ 2. อาจารย์ / พนักงาน (Staff)
+            {
+                name: "Albus Dumbledore",
+                house: "Gryffindor",
+                patronus: "ฟีนิกซ์",
+                desc: "หนึ่งในพ่อมดที่ทรงพลังที่สุด มีสติปัญญาและเมตตา ผู้นำคนสำคัญในการต่อต้านโวลเดอมอร์",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Severus Snape",
+                house: "Slytherin",
+                patronus: "กวางตัวเมีย",
+                desc: "กัดจิกขมขื่นภายนอก แต่ภายในมีความรักและเสียสละสูง เป็นตัวละครที่ซับซ้อนที่สุด",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1608889175123-8ee362201f81?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Minerva McGonagall",
+                house: "Gryffindor",
+                patronus: "แมว",
+                desc: "เข้มงวด ยุติธรรม และหัวใจนักสู้ เป็นอาจารย์ใหญ่หลังดัมเบิลดอร์",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Remus Lupin",
+                house: "Gryffindor",
+                patronus: "หมาป่า",
+                desc: "สุภาพ ใจดี แต่มีคำสาปมนุษย์หมาป่าทำให้เขาต้องต่อสู้กับอคติของสังคม",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1563237023-b1e970526dcb?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Sirius Black",
+                house: "Gryffindor",
+                patronus: "สุนัข",
+                desc: "เพื่อนสนิทของเจมส์ พอตเตอร์ ครอบครัวเดียวของแฮร์รีที่เหลืออยู่ พร้อมปกป้องแฮร์รีเสมอ",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Rubeus Hagrid",
+                house: "Gryffindor",
+                patronus: "ไม่มี",
+                desc: "ใจใหญ่ อบอุ่น รักสัตว์วิเศษทุกรูปแบบ แม้ตัวใหญ่แต่ใจดีมาก",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Filius Flitwick",
+                house: "Ravenclaw",
+                patronus: "ไม่เปิดเผย",
+                desc: "อาจารย์สอนเสน่ห์เวทมนตร์ เก่งเวทมนตร์ระดับปรมาจารย์ สุภาพและเป็นที่รักของนักเรียน",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Pomona Sprout",
+                house: "Hufflepuff",
+                patronus: "ไม่เปิดเผย",
+                desc: "อาจารย์วิชาพืชวิเศษ ใจดี และรักธรรมชาติ ชอบช่วยเหลือนักเรียน",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1585675503020-009772591605?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Horace Slughorn",
+                house: "Slytherin",
+                patronus: "ปลาเทราต์",
+                desc: "ชื่นชอบการรวบรวมคนเก่ง ๆ เข้ากลุ่ม “Slug Club” แต่โดยรวมใจดีและสอนเก่งมาก",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Dolores Umbridge",
+                house: "Slytherin",
+                patronus: "แมว",
+                desc: "ภายนอกหวานแหวว แต่จริง ๆ โหด กดขี่ และชอบใช้อำนาจในทางที่ผิด",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Nymphadora Tonks",
+                house: "Hufflepuff",
+                patronus: "หมาป่า",
+                desc: "เมตาเมอร์ฟมาจัส ปรับรูปลักษณ์ได้ตามใจ ร่าเริง ซุ่มซ่ามนิด ๆ แต่เก่งในการต่อสู้",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Kingsley Shacklebolt",
+                house: "Unknown",
+                patronus: "ลิงลิงซ์",
+                desc: "มือปราบมารที่สุขุม เก่ง และมีความเป็นผู้นำสูง",
+                category: "staff",
+                img: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=600&auto=format&fit=crop"
+            },
+
+            // 🧛‍♂️ 3. ฝ่ายมืด (Villains)
+            {
+                name: "Lord Voldemort",
+                house: "Slytherin",
+                patronus: "ร่ายไม่ได้",
+                desc: "พ่อมดมืดที่ทรงพลังที่สุด ปรารถนาอำนาจและความเป็นอมตะ เย็นชาและไร้ความปรานี",
+                category: "villain",
+                img: "https://images.unsplash.com/photo-1535581652167-3d6b98c5f60b?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Bellatrix Lestrange",
+                house: "Slytherin",
+                patronus: "ไม่เปิดเผย",
+                desc: "ภักดีต่อโวลเดอมอร์อย่างคลั่งไคล้ โหดร้ายและมีฝีมือเวทมนตร์อันตรายมาก",
+                category: "villain",
+                img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop"
+            },
+            {
+                name: "Lucius Malfoy",
+                house: "Slytherin",
+                patronus: "ไม่เปิดเผย",
+                desc: "พ่อของเดรโก มีอิทธิพลในโลกเวทมนตร์ แต่ภายในขี้ขลาดและกลัวโวลเดอมอร์",
+                category: "villain",
+                img: "https://images.unsplash.com/photo-1555786750-7c3c2b9a6b0e?q=80&w=600&auto=format&fit=crop"
+            }
+        ];
+
+        // --- 2. ฟังก์ชันกำหนดสีตามบ้าน ---
+        function getHouseStyle(house) {
+            const styles = {
+                'Gryffindor': {
+                    border: 'hover:border-red-500',
+                    badge: 'bg-red-900/80 text-red-100 border-red-500/30',
+                    text: 'group-hover:text-red-400',
+                    glow: 'group-hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]',
+                    icon: 'image/logo_gryffindoor.png'
+                },
+                'Slytherin': {
+                    border: 'hover:border-green-500',
+                    badge: 'bg-green-900/80 text-green-100 border-green-500/30',
+                    text: 'group-hover:text-green-400',
+                    glow: 'group-hover:shadow-[0_0_20px_rgba(34,197,94,0.3)]',
+                    icon: 'image/logo_slytherin.png'
+                },
+                'Ravenclaw': {
+                    border: 'hover:border-blue-400',
+                    badge: 'bg-blue-900/80 text-blue-100 border-blue-400/30',
+                    text: 'group-hover:text-blue-400',
+                    glow: 'group-hover:shadow-[0_0_20px_rgba(96,165,250,0.3)]',
+                    icon: 'image/logo_ravenclaw.png'
+                },
+                'Hufflepuff': {
+                    border: 'hover:border-yellow-400',
+                    badge: 'bg-yellow-900/80 text-yellow-100 border-yellow-400/30',
+                    text: 'group-hover:text-yellow-400',
+                    glow: 'group-hover:shadow-[0_0_20px_rgba(250,204,21,0.3)]',
+                    icon: 'image/logo_hufflepuff.png'
+                }
+            };
+            return styles[house] || {
+                border: 'hover:border-gray-400',
+                badge: 'bg-gray-800 text-gray-200 border-gray-600',
+                text: 'group-hover:text-gray-300',
+                glow: 'group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]',
+                icon: ''
+            };
+        }
+
+        // --- 3. Render Card (Vertical 3:4 Aspect) ---
+        function renderCharacters(filter = 'all') {
+            const grid = document.getElementById('character-grid');
+            grid.innerHTML = '';
+
+            const filteredData = filter === 'all'
+                ? charactersData
+                : charactersData.filter(char => char.category === filter);
+
+            filteredData.forEach((char, index) => {
+                const style = getHouseStyle(char.house);
+
+                const cardHTML = `
+                    <div class="group relative bg-[#0B101B]/60 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 ${style.border} ${style.glow} reveal-item" style="animation-delay: ${index * 50}ms">
+                        
+                        <!-- Image Container (Vertical 3:4 Ratio) -->
+                        <div class="relative w-full aspect-[3/4] overflow-hidden">
+                            <img src="${char.img}" alt="${char.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter grayscale group-hover:grayscale-0">
+                            
+                            <!-- Gradient Overlay for Text Readability -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0B101B] via-transparent to-transparent opacity-90"></div>
+                            
+                            <!-- House Badge (Top Right) -->
+                            <div class="absolute top-3 right-3 px-2 py-1 rounded border backdrop-blur-md text-[10px] font-cinzel tracking-wider uppercase flex items-center gap-1 ${style.badge}">
+                                <span><img src="${style.icon}" alt="${char.name}" class="h-[20px] w-full object-cover transition-transform duration-700 group-hover:scale-110 filter grayscale group-hover:grayscale-0">
+                         </span> ${char.house}
+                            </div>
+
+                            <!-- Content Overlay (Bottom) -->
+                            <div class="absolute bottom-0 left-0 w-full p-5">
+                                <h3 class="text-xl font-cinzel font-bold text-white mb-1 ${style.text} transition-colors leading-tight drop-shadow-md">${char.name}</h3>
+                                
+                                <!-- Patronus Info -->
+                                <div class="flex items-center gap-2 text-magic-ice text-xs font-noto tracking-widest uppercase mb-3 opacity-80">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                                    <span>${char.patronus}</span>
+                                </div>
+
+                                <!-- Description (Hover Reveal or Static) -->
+                                <p class="text-gray-300 font-noto  text-xs leading-relaxed line-clamp-3 group-hover:text-white transition-colors">
+                                    "${char.desc}"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+
+            // Update Active Button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.getAttribute('onclick').includes(filter)) {
+                    btn.classList.add('bg-magic-ice', 'text-[#0B101B]', 'border-magic-ice');
+                    btn.classList.remove('text-gray-300');
+                } else {
+                    btn.classList.remove('bg-magic-ice', 'text-[#0B101B]', 'border-magic-ice');
+                    btn.classList.add('text-gray-300');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCharacters('all');
+        });
+        window.filterCharacters = renderCharacters;
+    </script>
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal-item {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+    </style>
+
+    <!-- JavaScript Included Directly -->
+
+    <script src="javascript/navbar.js"></script>
+</body>
+
+</html>
