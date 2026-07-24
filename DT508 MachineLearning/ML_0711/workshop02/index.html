@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>WE674 Machine Learning</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous"
+    >
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-semibold" href="#">
+                Machine Learning
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container flex-grow-1 py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 col-xl-7">
+
+                <section class="card border-0 shadow-sm overflow-hidden">
+                    <div class="card-header bg-white border-0 text-center pt-4">
+                        <h1 class="h3 mb-1">Teachable Machine Pose Model</h1>
+
+                        <p class="text-body-secondary mb-0">
+                            ตรวจจับท่าทางผ่านกล้อง Webcam
+                        </p>
+                    </div>
+
+                    <div class="card-body p-4">
+
+                        <!-- Camera Buttons -->
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                            <button
+                                id="start-button"
+                                type="button"
+                                class="btn btn-primary btn-lg px-4"
+                            >
+                                เปิดกล้อง
+                            </button>
+
+                            <button
+                                id="stop-button"
+                                type="button"
+                                class="btn btn-outline-danger btn-lg px-4"
+                                disabled
+                            >
+                                ปิดกล้อง
+                            </button>
+                        </div>
+
+                        <!-- Status -->
+                        <div
+                            id="status-message"
+                            class="alert alert-secondary text-center"
+                            role="alert"
+                        >
+                            กรุณากดปุ่ม “เปิดกล้อง”
+                        </div>
+
+                        <!-- Camera Canvas -->
+                        <div class="camera-container mb-4">
+                            <canvas id="canvas" width="400" height="400"></canvas>
+                        </div>
+
+                        <!-- Predictions -->
+                        <div>
+                            <h2 class="h5 mb-3">ผลการตรวจจับ</h2>
+
+                            <div
+                                id="label-container"
+                                class="d-grid gap-2"
+                            ></div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section
+                    id="about"
+                    class="text-center text-body-secondary mt-4"
+                >
+                    <small>WE674 Machine Learning</small>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- TensorFlow.js -->
+    <!-- ใช้เวอร์ชันที่เข้ากันได้กับ Teachable Machine Pose -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+
+    <!-- Teachable Machine Pose -->
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"
+    ></script>
+
+    <!-- Custom JavaScript -->
+    <script src="app.js"></script>
+
+</body>
+</html>

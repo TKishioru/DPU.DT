@@ -1,0 +1,67 @@
+body {
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+.card {
+    border-radius: 18px;
+}
+
+.camera-container {
+    width: 100%;
+    max-width: 500px;
+    margin-inline: auto;
+    padding: 12px;
+    background-color: #111827;
+    border-radius: 16px;
+}
+
+#canvas {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    margin-inline: auto;
+    background-color: #000;
+    border-radius: 12px;
+}
+
+.prediction-item {
+    padding: 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+}
+
+.prediction-text {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.progress {
+    height: 24px;
+}
+
+.progress-bar {
+    min-width: 0;
+    transition: width 0.15s ease;
+}
+
+@media (max-width: 576px) {
+    main.container {
+        padding-top: 24px !important;
+        padding-bottom: 24px !important;
+    }
+
+    .card-body {
+        padding: 20px !important;
+    }
+
+    .camera-container {
+        padding: 8px;
+    }
+}

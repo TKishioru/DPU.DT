@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Chest X-Ray AI Analyzer</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: [
+              "Inter",
+              "Noto Sans Thai",
+              "system-ui",
+              "sans-serif"
+            ]
+          },
+          boxShadow: {
+            glow: "0 12px 40px rgba(6, 182, 212, 0.20)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body
+  class="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-white"
+>
+  <!-- Header -->
+  <header
+    class="sticky top-0 z-30 border-b border-slate-800 bg-slate-900/95 text-white shadow-md backdrop-blur-xl"
+  >
+    <div
+      class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5"
+    >
+      <div
+        class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white shadow-glow"
+          >
+            <svg
+              class="w-7 h-7"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+          </div>
+
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <h1
+                class="text-xl sm:text-2xl font-bold tracking-tight text-white"
+              >
+                Chest X-Ray AI Analyzer
+              </h1>
+
+              <span
+                class="inline-flex items-center gap-1 rounded-full border border-cyan-800/70 bg-cyan-950 px-3 py-1 text-xs font-semibold text-cyan-300"
+              >
+                ✨ TensorFlow.js
+              </span>
+            </div>
+
+            <p class="mt-1 text-xs sm:text-sm text-slate-400">
+              ระบบวิเคราะห์ภาพเอกซเรย์ปอดด้วย AI รองรับสูงสุด 100 ภาพ
+              พร้อมแสดงเปอร์เซ็นต์ความมั่นใจใต้รูปภาพ
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 lg:justify-end">
+          <button
+            type="button"
+            id="btn-clear-all"
+            class="hidden rounded-lg border border-transparent px-3 py-2 text-xs sm:text-sm font-medium text-slate-400 cursor-pointer transition hover:border-rose-900/60 hover:bg-rose-950/40 hover:text-rose-400"
+          >
+            ล้างทั้งหมด
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main
+    class="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-7 space-y-7"
+  >
+    <input
+      type="file"
+      id="xray-file-input"
+      accept="image/png,image/jpeg,image/webp"
+      multiple
+      class="hidden"
+    >
+
+    <!-- Upload section -->
+    <section id="upload-container" class="w-full">
+      <!-- Empty state -->
+      <div
+        id="upload-empty-state"
+        class="upload-drop-zone min-h-[470px] rounded-[28px] border-2 border-dashed border-slate-700 px-6 py-14 flex flex-col items-center justify-center text-center transition hover:border-cyan-700"
+      >
+        <div
+          class="w-24 h-24 rounded-3xl border border-slate-600 bg-slate-800 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-950/20"
+        >
+          <svg
+            class="w-12 h-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.7"
+              d="M7 16a4 4 0 01-.88-7.903A5.5 5.5 0 0116.9 6.5 4.5 4.5 0 0117.5 15H15m-3-5v10m0-10l-3 3m3-3l3 3"
+            />
+          </svg>
+        </div>
+
+        <h2
+          class="mt-7 text-2xl sm:text-4xl font-bold tracking-tight text-white"
+        >
+          ลากและวางไฟล์เอกซเรย์ปอดลงที่นี่
+        </h2>
+
+        <p
+          class="max-w-3xl mt-4 text-sm sm:text-lg leading-8 text-slate-400"
+        >
+          รองรับการอัปโหลดไฟล์ภาพ X-Ray (CXR) ได้สูงสุด
+          <span class="font-bold text-cyan-400">100 ภาพ</span>
+          พร้อมกัน ระบบ AI จะวิเคราะห์และแสดงผลความมั่นใจของแต่ละภาพทันที
+        </p>
+
+        <div
+          class="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+        >
+          <label
+            for="xray-file-input"
+            class="min-w-[270px] rounded-2xl bg-gradient-to-r from-cyan-600 to-sky-500 px-7 py-4 text-base font-bold text-white shadow-lg shadow-cyan-950/40 cursor-pointer transition hover:from-cyan-500 hover:to-sky-400 hover:-translate-y-0.5"
+          >
+            ➕ เลือกไฟล์ภาพจากเครื่อง
+          </label>
+        </div>
+
+        <p class="mt-7 text-sm text-slate-500">
+          ℹ️ รองรับไฟล์ PNG, JPG, JPEG และ WEBP | สูงสุด 100 ภาพ
+        </p>
+      </div>
+
+      <!-- Compact state -->
+      <div
+        id="upload-compact-state"
+        class="hidden rounded-2xl border border-dashed border-slate-700 bg-slate-900/50 px-5 py-5"
+      >
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 shrink-0 rounded-xl bg-slate-800 flex items-center justify-center text-2xl"
+            >
+              🖼️
+            </div>
+
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-white">
+                  อัปโหลดแล้ว
+                  <span id="selected-count">0</span>
+                  / 100 ภาพ
+                </h2>
+
+                <span
+                  class="rounded-md bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300"
+                >
+                  เหลืออีก
+                  <span id="remaining-count">100</span>
+                  ภาพ
+                </span>
+              </div>
+
+              <p class="mt-1 text-xs sm:text-sm text-slate-400">
+                ลากไฟล์มาวางเพิ่ม หรือคลิกปุ่มเพิ่มไฟล์เอกซเรย์
+              </p>
+            </div>
+          </div>
+
+          <label
+            for="xray-file-input"
+            id="btn-add-images"
+            class="rounded-xl border border-slate-600 bg-slate-800 px-5 py-3 text-sm font-semibold text-slate-100 cursor-pointer transition hover:border-cyan-700 hover:bg-slate-700"
+          >
+            ➕ เพิ่มภาพเอกซเรย์
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section
+      id="progress-container"
+      class="hidden rounded-3xl border border-slate-800 bg-slate-900 p-5 sm:p-7 shadow-xl"
+    >
+      <div
+        class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-xl border border-cyan-800 bg-cyan-950 flex items-center justify-center text-2xl"
+          >
+            ✅
+          </div>
+
+          <div>
+            <div class="flex flex-wrap items-center gap-3">
+              <h2
+                id="progress-title"
+                class="text-lg sm:text-xl font-bold text-white"
+              >
+                ความคืบหน้าการวิเคราะห์ AI
+                (<span id="processed-count">0</span>
+                /
+                <span id="total-analysis-count">0</span>
+                ภาพ)
+              </h2>
+
+              <span
+                id="progress-percent"
+                class="rounded-md border border-cyan-800 bg-cyan-950 px-2.5 py-1 text-sm font-bold text-cyan-300"
+              >
+                0%
+              </span>
+            </div>
+
+            <p
+              id="progress-description"
+              class="mt-1 text-sm text-slate-400"
+            >
+              กำลังเตรียมระบบวิเคราะห์ภาพ
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-5 h-3 overflow-hidden rounded-full border border-slate-700 bg-slate-950 p-0.5"
+      >
+        <div
+          id="progress-bar"
+          class="progress-shine h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-emerald-400 transition-all duration-300"
+          style="width: 0%"
+        ></div>
+      </div>
+
+      <div
+        class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+      >
+        <div
+          class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-emerald-950 flex items-center justify-center text-emerald-400"
+            >
+              ✓
+            </div>
+
+            <div>
+              <p class="text-xs text-slate-400">
+                ปอดปกติ (Normal)
+              </p>
+
+              <p class="mt-1 text-lg font-bold text-emerald-400">
+                <span id="normal-count">0</span>
+                ภาพ
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-amber-950 flex items-center justify-center text-amber-400"
+            >
+              ⚠
+            </div>
+
+            <div>
+              <p class="text-xs text-slate-400">
+                พบข้อสังเกต (Abnormal)
+              </p>
+
+              <p class="mt-1 text-lg font-bold text-amber-400">
+                <span id="abnormal-count">0</span>
+                ภาพ
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-sky-950 flex items-center justify-center text-sky-400"
+            >
+              ◷
+            </div>
+
+            <div>
+              <p class="text-xs text-slate-400">
+                รอดำเนินการ (Queued)
+              </p>
+
+              <p class="mt-1 text-lg font-bold text-slate-100">
+                <span id="queued-count">0</span>
+                ภาพ
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-xl"
+            >
+              📊
+            </div>
+
+            <div>
+              <p class="text-xs text-slate-400">
+                ภาพทั้งหมดในคิว
+              </p>
+
+              <p class="mt-1 text-lg font-bold text-white">
+                <span id="queue-total-count">0</span>
+                / 100
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolbar -->
+    <section
+      id="toolbar-container"
+      class="hidden rounded-3xl border border-slate-800 bg-slate-900 p-4"
+    >
+      <div
+        class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"
+      >
+        <div class="relative flex-1">
+          <span
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+          >
+            🔍
+          </span>
+
+          <input
+            type="search"
+            id="search-input"
+            placeholder="ค้นหาชื่อไฟล์ หรือผลการวิเคราะห์..."
+            class="w-full rounded-xl border border-slate-700 bg-slate-950 py-3 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-cyan-600 focus:ring-2 focus:ring-cyan-900/50"
+          >
+        </div>
+
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div
+            id="filter-buttons"
+            class="flex flex-wrap items-center gap-1 rounded-xl border border-slate-700 bg-slate-950 p-1"
+          >
+            <button
+              type="button"
+              data-filter="all"
+              class="filter-button rounded-lg bg-cyan-700 px-4 py-2 text-xs sm:text-sm font-bold text-white"
+            >
+              ทั้งหมด
+            </button>
+
+            <button
+              type="button"
+              data-filter="normal"
+              class="filter-button rounded-lg px-4 py-2 text-xs sm:text-sm font-semibold text-slate-400 hover:bg-slate-800 hover:text-white"
+            >
+              ปอดปกติ
+            </button>
+
+            <button
+              type="button"
+              data-filter="abnormal"
+              class="filter-button rounded-lg px-4 py-2 text-xs sm:text-sm font-semibold text-slate-400 hover:bg-slate-800 hover:text-white"
+            >
+              พบข้อสังเกต
+            </button>
+
+            <button
+              type="button"
+              data-filter="high-risk"
+              class="filter-button rounded-lg px-4 py-2 text-xs sm:text-sm font-semibold text-slate-400 hover:bg-slate-800 hover:text-white"
+            >
+              ความเสี่ยงสูง
+            </button>
+          </div>
+
+          <select
+            id="sort-select"
+            class="min-w-[190px] rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm font-semibold text-slate-200 outline-none focus:border-cyan-600"
+          >
+            <option value="upload-order">
+              ลำดับอัปโหลด
+            </option>
+
+            <option value="confidence-desc">
+              ความมั่นใจมากไปน้อย
+            </option>
+
+            <option value="confidence-asc">
+              ความมั่นใจน้อยไปมาก
+            </option>
+
+            <option value="filename">
+              ชื่อไฟล์
+            </option>
+          </select>
+
+          <div
+            id="grid-switcher"
+            class="hidden xl:flex items-center gap-1 rounded-xl border border-slate-700 bg-slate-950 p-1"
+          >
+            <span class="px-2 text-xs font-mono text-slate-500">
+              Grid:
+            </span>
+
+            <button
+              type="button"
+              data-columns="2"
+              class="grid-button w-9 h-9 rounded-lg text-sm font-bold text-slate-400 hover:bg-slate-800"
+            >
+              2
+            </button>
+
+            <button
+              type="button"
+              data-columns="3"
+              class="grid-button w-9 h-9 rounded-lg text-sm font-bold text-slate-400 hover:bg-slate-800"
+            >
+              3
+            </button>
+
+            <button
+              type="button"
+              data-columns="4"
+              class="grid-button w-9 h-9 rounded-lg bg-cyan-600 text-sm font-bold text-white"
+            >
+              4
+            </button>
+
+            <button
+              type="button"
+              data-columns="5"
+              class="grid-button w-9 h-9 rounded-lg text-sm font-bold text-slate-400 hover:bg-slate-800"
+            >
+              5
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid -->
+    <section
+      id="grid-container"
+      class="xray-grid w-full"
+      data-columns="4"
+      aria-live="polite"
+    ></section>
+
+    <!-- No result -->
+    <section
+      id="no-results"
+      class="hidden rounded-3xl border border-slate-800 bg-slate-900 px-6 py-14 text-center"
+    >
+      <div class="text-4xl">🔍</div>
+
+      <h2 class="mt-4 text-xl font-bold text-white">
+        ไม่พบภาพที่ตรงกับเงื่อนไข
+      </h2>
+
+      <p class="mt-2 text-sm text-slate-400">
+        ลองเปลี่ยนคำค้นหาหรือตัวกรอง
+      </p>
+    </section>
+
+    <aside
+      class="rounded-2xl border border-amber-900/60 bg-amber-950/20 px-5 py-4 text-sm leading-7 text-amber-200/80"
+    >
+      <strong class="text-amber-300">
+        ข้อควรทราบ:
+      </strong>
+
+      ระบบนี้เป็นต้นแบบเพื่อการศึกษา ผลลัพธ์ไม่ใช่การวินิจฉัยทางการแพทย์
+      และไม่ควรใช้แทนการตรวจโดยแพทย์หรือรังสีแพทย์
+    </aside>
+  </main>
+
+  <!-- Card template -->
+  <template id="xray-card-template">
+    <article
+      class="xray-card overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-xl transition duration-200"
+    >
+      <div class="relative aspect-[4/3] overflow-hidden bg-black">
+        <img
+          data-field="image"
+          class="xray-image"
+          alt="ภาพเอกซเรย์ปอด"
+        >
+
+        <span
+          data-field="image-number"
+          class="absolute left-3 top-3 rounded-lg border border-slate-700 bg-slate-950/90 px-3 py-1.5 text-xs font-bold text-slate-200 shadow-lg backdrop-blur"
+        >
+          #001
+        </span>
+
+        <span
+          data-field="risk-badge"
+          class="absolute right-3 top-3 rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-slate-300 shadow-lg backdrop-blur"
+        >
+          ◷ รอคิว
+        </span>
+      </div>
+
+      <div
+        class="flex items-center justify-between gap-3 border-y border-slate-800 bg-slate-950 px-4 py-3"
+      >
+        <p
+          data-field="filename"
+          class="min-w-0 truncate text-sm font-bold text-slate-200"
+        >
+          xray-image.jpg
+        </p>
+
+        <span
+          data-field="filesize"
+          class="shrink-0 text-xs font-mono text-slate-500"
+        >
+          0.0 MB
+        </span>
+      </div>
+
+      <div class="p-4">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-xs font-semibold text-slate-500">
+            ผลการวิเคราะห์หลัก
+          </p>
+
+          <span
+            data-field="status-text"
+            class="text-xs font-bold text-slate-400"
+          >
+            รอดำเนินการ
+          </span>
+        </div>
+
+        <h3
+          data-field="diagnosis"
+          class="mt-2 text-lg font-bold leading-7 text-white"
+        >
+          รอการวิเคราะห์...
+        </h3>
+
+        <div
+          class="mt-4 rounded-2xl border border-slate-800 bg-slate-950 p-3"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-sm font-semibold text-slate-400">
+              🎯 ความมั่นใจ
+            </span>
+
+            <strong
+              data-field="confidence"
+              class="text-lg text-cyan-400"
+            >
+              0%
+            </strong>
+          </div>
+
+          <div
+            class="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-800"
+          >
+            <div
+              data-field="confidence-bar"
+              class="h-full rounded-full bg-slate-700 transition-all duration-300"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <div
+          data-field="prediction-list"
+          class="mt-4 grid gap-2"
+        ></div>
+      </div>
+    </article>
+  </template>
+
+  <!-- Footer -->
+  <footer
+    class="mt-auto border-t border-slate-900 bg-slate-950/90 px-4 py-5 text-center text-xs text-slate-500"
+  >
+    <div
+      class="max-w-[1600px] mx-auto flex flex-col items-center justify-between gap-2 sm:flex-row"
+    >
+      <div class="flex items-center gap-1.5 text-slate-400">
+        <span>
+          🛡️ Chest X-Ray AI Medical Assistant —
+          ระบบวิเคราะห์ภาพเอกซเรย์ปอดด้วย TensorFlow.js
+        </span>
+      </div>
+
+      <div class="text-[11px] font-mono text-slate-500">
+        รองรับสูงสุด 100 ภาพ • ประเมินค่าความมั่นใจ %
+      </div>
+    </div>
+  </footer>
+
+  <!-- Machine Learning libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
