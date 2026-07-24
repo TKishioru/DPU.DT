@@ -1,3 +1,9 @@
 echo ".DS_Store" >> ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global
 DT508 MachineLearning/ML_0711/.DS_Store
+DT508 MachineLearning/ML_0711/workshop02/.DS_Store
+DT508 MachineLearning/ML_0711/homework02/test/NORMAL/.DS_Store
+DT508 MachineLearning/ML_0711/homework02/test/.DS_Store
+DT508 MachineLearning/ML_0711/homework02/.DS_Store
+DT508 MachineLearning/.DS_Store
+.DS_Store
