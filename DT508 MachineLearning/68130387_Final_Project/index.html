@@ -1,590 +1,327 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Pose Dino Runner</title>
+    <meta
+      name="description"
+      content="เกมไดโนเสาร์ควบคุมด้วยท่าทางร่างกายผ่าน MediaPipe Pose"
+    />
 
-  <link
-    rel="stylesheet"
-    href="./style.css"
-  >
-</head>
+    <title>Pose Dino Runner</title>
 
-<body>
-  <main class="app-shell">
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-    <!-- =========================================
-         HEADER
-    ========================================== -->
-    <header class="app-header">
-      <div class="brand">
-
-        <div>
-          <p class="eyebrow">MediaPipe Pose Game</p>
-          <h1>Pose Dino Runner</h1>
-
-          <p>
-            ยืน กระโดด และย่อตัวเพื่อควบคุมตัวละคร
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="gameStatusBadge"
-        class="status-badge status-waiting"
-      >
-        รอเปิดกล้อง
-      </div>
-    </header>
-
-    <!-- =========================================
-         NEXT STEP
-    ========================================== -->
-    <section class="next-step-card">
-      <div class="next-step-number">
-        <span id="currentStepNumber">
-          1
-        </span>
-      </div>
-
-      <div class="next-step-content">
-        <span class="next-step-label">
-          ขั้นตอนถัดไป
-        </span>
-
-        <h2 id="nextStepTitle">
-          เปิดกล้อง
-        </h2>
-
-        <p id="calibrationStatus">
-          กดปุ่มเปิดกล้องเพื่อเริ่มตรวจจับร่างกาย
-        </p>
-      </div>
-
-      <div class="next-step-indicator">
-        <span class="indicator-dot"></span>
-        <span id="nextStepStatus">
-          กำลังรอ
-        </span>
-      </div>
-    </section>
-
-    <!-- =========================================
-         GAME INFORMATION
-    ========================================== -->
-    <section class="stats-grid">
-
-      <article class="stat-card">
-        <span class="stat-label">
-          คะแนนปัจจุบัน
-        </span>
-
-        <strong
-          id="scoreValue"
-          class="stat-value"
-        >
-          0
-        </strong>
-      </article>
-
-      <article class="stat-card">
-        <span class="stat-label">
-          คะแนนสูงสุด
-        </span>
-
-        <strong
-          id="highScoreValue"
-          class="stat-value"
-        >
-          0
-        </strong>
-      </article>
-
-      <article class="stat-card">
-        <span class="stat-label">
-          ความเร็ว
-        </span>
-
-        <strong class="stat-value">
-          <span id="speedValue">
-            1.0
-          </span>
-
-          <small>x</small>
-        </strong>
-      </article>
-
-      <article class="stat-card pose-stat-card">
-        <span class="stat-label">
-          ท่าที่ตรวจพบ
-        </span>
-
-        <strong
-          id="poseValue"
-          class="stat-value pose-stand"
-        >
-          ยืน
-        </strong>
-      </article>
-
-    </section>
-
-    <!-- =========================================
-         MAIN CONTENT
-    ========================================== -->
-    <section class="main-layout">
-
-      <!-- =====================================
-           CAMERA
-      ====================================== -->
-      <aside class="control-column">
-
-        <section class="panel camera-panel">
-
-          <div class="panel-header">
-            <div>
-              <span class="panel-eyebrow">
-                CAMERA
-              </span>
-
-              <h2>
-                กล้องและการตรวจจับ
-              </h2>
-            </div>
-
-            <div
-              id="cameraStatus"
-              class="status-badge status-offline"
-            >
-              กล้องยังไม่เปิด
-            </div>
-          </div>
-
-          <div class="camera-view">
-
-            <video
-              id="inputVideo"
-              autoplay
-              muted
-              playsinline
-            ></video>
-
-            <canvas
-              id="poseCanvas"
-            ></canvas>
-
-            <div
-              id="cameraPlaceholder"
-              class="camera-placeholder"
-            >
-              <div class="camera-placeholder-icon">
-                📷
-              </div>
-
-              <strong>
-                ยังไม่ได้เปิดกล้อง
-              </strong>
-
-              <span>
-                ให้กล้องเห็นใบหน้าและไหล่ทั้งสองข้าง
-              </span>
-            </div>
-
-            <div class="camera-status-overlay">
-              <span
-                id="poseDetectionStatus"
-                class="detection-badge"
-              >
-                ไม่พบช่วงบนของร่างกาย
-              </span>
-            </div>
-
-          </div>
-
-          <div class="camera-actions">
-
-            <button
-              id="startCameraButton"
-              class="button button-primary"
-              type="button"
-            >
-              <span class="button-icon">
-                ▶
-              </span>
-
-              เปิดกล้อง
-            </button>
-
-            <button
-              id="stopCameraButton"
-              class="button button-secondary"
-              type="button"
-              disabled
-            >
-              <span class="button-icon">
-                ■
-              </span>
-
-              ปิดกล้อง
-            </button>
-
-          </div>
-
-        </section>
-
-        <!-- =====================================
-             CALIBRATION
-        ====================================== -->
-        <section class="panel calibration-panel">
-
-          <div class="panel-header">
-            <div>
-              <span class="panel-eyebrow">
-                CALIBRATION
-              </span>
-
-              <h2>
-                ปรับเส้นอ้างอิง
-              </h2>
-            </div>
-          </div>
-
-          <div class="sensitivity-control">
-
-            <div class="slider-header">
-              <label for="jumpSensitivity">
-                เส้นกระโดด
-              </label>
-
-              <span id="jumpSensitivityValue">
-                0.075
-              </span>
-            </div>
-
-            <input
-              id="jumpSensitivity"
-              type="range"
-              min="0.03"
-              max="0.18"
-              step="0.005"
-              value="0.075"
-            >
-
-            <div class="slider-description">
-              เลื่อนซ้ายเพื่อให้กระโดดง่ายขึ้น
-            </div>
-
-          </div>
-
-          <div class="sensitivity-control">
-
-            <div class="slider-header">
-              <label for="crouchSensitivity">
-                เส้นย่อตัว
-              </label>
-
-              <span id="crouchSensitivityValue">
-                0.085
-              </span>
-            </div>
-
-            <input
-              id="crouchSensitivity"
-              type="range"
-              min="0.03"
-              max="0.20"
-              step="0.005"
-              value="0.085"
-            >
-
-            <div class="slider-description">
-              เลื่อนซ้ายเพื่อให้ตรวจพบท่าย่อได้ง่ายขึ้น
-            </div>
-
-          </div>
-
-          <div
-            id="calibrationProgressContainer"
-            class="calibration-progress hidden"
-          >
-            <div class="progress-header">
-              <span>
-                กำลังบันทึกท่ายืน
-              </span>
-
-              <span id="calibrationProgressText">
-                0%
-              </span>
-            </div>
-
-            <div class="progress-track">
-              <div
-                id="calibrationProgressBar"
-                class="progress-bar"
-              ></div>
-            </div>
-          </div>
-
-          <div class="calibration-actions">
-
-            <button
-              id="calibrateButton"
-              class="button button-primary"
-              type="button"
-              disabled
-            >
-              ปรับเส้นอ้างอิง
-            </button>
-
-            <button
-              id="resetCalibrationButton"
-              class="button button-secondary"
-              type="button"
-              disabled
-            >
-              ตั้งค่าใหม่
-            </button>
-
-          </div>
-
-          <!-- ค่าที่ JavaScript ใช้งาน
-               ซ่อนไว้เพราะ UI ใหม่ไม่จำเป็นต้องแสดง -->
-          <div class="system-values" aria-hidden="true">
-            <span id="baselineShoulderValue">-</span>
-            <span id="baselineHipValue">-</span>
-            <span id="jumpLineValue">-</span>
-            <span id="crouchLineValue">-</span>
-            <span id="currentShoulderValue">-</span>
-            <span id="currentHipValue">-</span>
-            <span id="hipVelocityValue">-</span>
-            <span id="fpsValue">-</span>
-          </div>
-
-        </section>
-
-      </aside>
-
-      <!-- =====================================
-           GAME FIELD
-      ====================================== -->
-      <section class="panel game-panel">
-
-        <div class="panel-header game-panel-header">
-
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-content">
           <div>
-            <span class="panel-eyebrow">
-              RUNNING FIELD
+            <p class="eyebrow">MediaPipe Pose Game</p>
+            <h1>Pose Dino Runner</h1>
+
+            <p class="header-description">
+              ควบคุมไดโนเสาร์ด้วยการกระโดด ยืน และย่อตัว
+            </p>
+          </div>
+
+          <div class="header-status">
+            <span id="cameraStatus" class="status-badge status-offline">
+              กล้องยังไม่เปิด
             </span>
 
-            <h2>
-              สนามวิ่ง
-            </h2>
+            <span id="gameStatusBadge" class="status-badge status-waiting">
+              รอเริ่มเกม
+            </span>
           </div>
-
-          <div class="pose-instructions">
-
-            <div class="pose-instruction">
-              <span class="pose-symbol">
-                ↑
-              </span>
-
-              <span>
-                กระโดด
-              </span>
-            </div>
-
-            <div class="pose-instruction">
-              <span class="pose-symbol">
-                ↓
-              </span>
-
-              <span>
-                ย่อตัว
-              </span>
-            </div>
-
-          </div>
-
         </div>
+      </header>
 
-        <div class="game-stage">
+      <main class="main-content">
+        <!-- Score Board -->
+        <section class="score-board">
+          <article class="score-card">
+            <span class="score-label">คะแนน</span>
+            <strong id="scoreValue" class="score-value">0</strong>
+          </article>
 
-          <canvas
-            id="gameCanvas"
-            width="1000"
-            height="420"
-          ></canvas>
+          <article class="score-card">
+            <span class="score-label">คะแนนสูงสุด</span>
+            <strong id="highScoreValue" class="score-value">0</strong>
+          </article>
 
-          <!-- หน้าก่อนเริ่มเกม -->
-          <div
-            id="startOverlay"
-            class="game-overlay"
-          >
-            <div class="overlay-content">
+          <article class="score-card">
+            <span class="score-label">ความเร็ว</span>
+            <strong id="speedValue" class="score-value">1.0x</strong>
+          </article>
 
-              <div class="overlay-icon">
-                🦖
+          <article class="score-card">
+            <span class="score-label">ท่าที่ตรวจพบ</span>
+            <strong id="poseValue" class="score-value pose-stand"> ยืน </strong>
+          </article>
+        </section>
+
+        <section class="workspace">
+          <!-- Camera and Calibration -->
+          <aside class="control-panel">
+            <section class="panel-section">
+              <div class="section-heading">
+                <div>
+                  <p class="section-number">01 CAMERA</p>
+                  <h2>กล้องและการตรวจจับ</h2>
+                </div>
+
+                <div id="cameraStatus" class="status-badge status-offline">
+                  กล้องยังไม่เปิด
+                </div>
               </div>
 
-              <h3>
-                เตรียมพร้อม
-              </h3>
+              <div class="camera-wrapper">
+                <video id="inputVideo" autoplay muted playsinline></video>
 
-              <p>
-                เปิดกล้อง ปรับเส้นอ้างอิง
-                และยืนตรงเป็นเวลา 5 วินาที
-              </p>
+                <canvas id="poseCanvas"></canvas>
 
-            </div>
-          </div>
+                <div id="cameraPlaceholder" class="camera-placeholder">
+                  <div class="camera-icon" aria-hidden="true">📷</div>
 
-          <!-- Countdown -->
-          <div
-            id="countdownOverlay"
-            class="game-overlay countdown-overlay hidden"
-          >
-            <div class="countdown-content">
+                  <p>กดปุ่มเปิดกล้องเพื่อเริ่มต้น</p>
+                </div>
 
-              <span class="countdown-label">
-                เกมจะเริ่มใน
-              </span>
-
-              <strong id="countdownValue">
-                5
-              </strong>
-
-              <span>
-                เตรียมกระโดด
-              </span>
-
-            </div>
-          </div>
-
-          <!-- Pause -->
-          <div
-            id="pauseOverlay"
-            class="game-overlay hidden"
-          >
-            <div class="overlay-content">
-
-              <div class="overlay-icon">
-                ⏸
+                <div class="camera-status-overlay">
+                  <span id="poseDetectionStatus" class="detection-badge">
+                    ไม่พบช่วงบนของร่างกาย
+                  </span>
+                </div>
               </div>
 
-              <h3>
-                หยุดชั่วคราว
-              </h3>
+              <div class="button-row">
+                <button
+                  id="startCameraButton"
+                  type="button"
+                  class="button button-primary"
+                >
+                  เปิดกล้อง
+                </button>
 
-              <p>
-                กลับมายืนในกล้องเพื่อเล่นต่อ
-              </p>
+                <button
+                  id="stopCameraButton"
+                  type="button"
+                  class="button button-secondary"
+                  disabled
+                >
+                  ปิดกล้อง
+                </button>
+              </div>
+            </section>
 
-            </div>
-          </div>
+            <!-- Calibration -->
+            <section class="panel-section">
+              <div class="section-heading">
+                <div>
+                  <p class="section-number">02 CALIBRATION</p>
+                  <h2>ปรับเส้นอ้างอิง</h2>
+                </div>
 
-          <!-- Game Over -->
-          <div
-            id="gameOverOverlay"
-            class="game-overlay hidden"
-          >
-            <div class="overlay-content">
-
-              <div class="overlay-icon">
-                🏁
+                <span id="calibrationStatus" class="small-status">
+                  ยังไม่ปรับ
+                </span>
               </div>
 
-              <h3>
-                จบเกม
-              </h3>
+              <div class="slider-group">
+                <label for="jumpSensitivity">
+                  <span>
+                    เส้นกระโดด
+                    <strong id="jumpSensitivityValue">0.060</strong>
+                  </span>
 
-              <p>
-                คะแนนของคุณ
-              </p>
+                  <input
+                    id="jumpSensitivity"
+                    type="range"
+                    min="0.020"
+                    max="0.150"
+                    step="0.005"
+                    value="0.060"
+                  />
+                </label>
 
-              <strong
-                id="finalScoreValue"
-                class="final-score"
+                <label for="crouchSensitivity">
+                  <span>
+                    เส้นย่อตัว
+                    <strong id="crouchSensitivityValue">0.080</strong>
+                  </span>
+
+                  <input
+                    id="crouchSensitivity"
+                    type="range"
+                    min="0.030"
+                    max="0.200"
+                    step="0.005"
+                    value="0.080"
+                  />
+                </label>
+              </div>
+              <br>
+              <div
+                id="calibrationProgressContainer"
+                class="progress-container hidden"
               >
-                0
-              </strong>
+                <div class="progress-header">
+                  <span>กำลังเก็บตำแหน่งร่างกาย</span>
+                  <span id="calibrationProgressText">0%</span>
+                </div>
 
+                <div class="progress-track">
+                  <div id="calibrationProgressBar" class="progress-bar"></div>
+                </div>
+              </div>
+
+              <div class="button-row">
+                <button
+                  id="calibrateButton"
+                  type="button"
+                  class="button button-calibrate"
+                  disabled
+                >
+                  ปรับเส้นอัตโนมัติ
+                </button>
+
+                <button
+                  id="resetCalibrationButton"
+                  type="button"
+                  class="button button-secondary"
+                  disabled
+                >
+                  ล้างค่าการปรับเส้น
+                </button>
+              </div>
+            </section>
+          </aside>
+
+          <!-- Game Area -->
+          <section class="game-panel">
+            <div class="game-panel-header">
+              <div>
+                <p class="section-number">03 RUNNING FIELD</p>
+                <h2>สนามวิ่ง</h2>
+              </div>
+
+              <div class="pose-instructions">
+                <div class="pose-instruction">
+                  <span class="pose-symbol"> ↑ </span>
+
+                  <span> กระโดด </span>
+                </div>
+
+                <div class="pose-instruction">
+                  <span class="pose-symbol"> ↓ </span>
+
+                  <span> ย่อตัว </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="game-canvas-wrapper">
+              <canvas
+                id="gameCanvas"
+                width="1000"
+                height="500"
+                aria-label="พื้นที่เกมไดโนเสาร์"
+              ></canvas>
+
+              <!-- Start Screen -->
+              <div id="startOverlay" class="game-overlay">
+                <div class="overlay-content">
+                  <h3>เตรียมพร้อมวิ่ง</h3>
+                  <p>เปิดกล้องและปรับเส้นอ้างอิงก่อนเริ่มเกม</p>
+
+                  <button
+                    id="startGameButton"
+                    type="button"
+                    class="button button-game-start"
+                    disabled
+                  >
+                    เริ่มเกม
+                  </button>
+                </div>
+              </div>
+
+              <!-- Countdown -->
+              <div id="countdownOverlay" class="countdown-overlay hidden">
+                <span id="countdownValue">3</span>
+              </div>
+
+              <!-- Pause -->
+              <div id="pauseOverlay" class="game-overlay hidden">
+                <div class="overlay-content">
+                  <h3>หยุดเกมชั่วคราว</h3>
+                  <p>กดเล่นต่อเพื่อกลับเข้าสู่เกม</p>
+
+                  <button
+                    id="resumeGameButton"
+                    type="button"
+                    class="button button-game-start"
+                  >
+                    เล่นต่อ
+                  </button>
+                </div>
+              </div>
+
+              <!-- Game Over -->
+              <div id="gameOverOverlay" class="game-overlay hidden">
+                <div class="overlay-content">
+                  <div class="game-over-icon" aria-hidden="true">💥</div>
+
+                  <h3>จบเกม</h3>
+
+                  <p>
+                    คะแนนของคุณ
+                    <strong id="finalScoreValue">0</strong>
+                  </p>
+
+                  <button
+                    id="restartGameButton"
+                    type="button"
+                    class="button button-game-start"
+                  >
+                    เล่นอีกครั้ง
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="game-actions">
               <button
-                id="restartGameButton"
-                class="button button-primary"
+                id="pauseGameButton"
                 type="button"
+                class="button button-secondary"
+                disabled
               >
-                เล่นอีกครั้ง
+                หยุดเกม
               </button>
 
+              <button
+                id="endGameButton"
+                type="button"
+                class="button button-danger"
+                disabled
+              >
+                จบเกม
+              </button>
             </div>
-          </div>
+          </section>
+        </section>
+      </main>
 
-        </div>
+      <footer class="app-footer">
+        <p>Pose Dino Runner — 68130387 นางสาวคัมภีรดา ภู่ทอง</p>
+      </footer>
+    </div>
 
-        <div class="game-footer">
-
-          <div class="game-tip">
-            <span class="tip-icon">
-              💡
-            </span>
-
-            <span id="gameInstructionText">
-              ขั้นแรกให้เปิดกล้อง
-            </span>
-          </div>
-
-          <div class="game-controls">
-
-            <!-- ซ่อนไว้เพื่อให้ canvas-game.js
-                 อ้างอิง Element ได้ตามเดิม -->
-            <button
-              id="startGameButton"
-              class="hidden-control"
-              type="button"
-              disabled
-              tabindex="-1"
-              aria-hidden="true"
-            >
-              เริ่มเกม
-            </button>
-
-            <button
-              id="pauseGameButton"
-              class="button button-secondary button-small"
-              type="button"
-              disabled
-            >
-              หยุดชั่วคราว
-            </button>
-
-            <button
-              id="endGameButton"
-              class="button button-danger button-small"
-              type="button"
-              disabled
-            >
-              จบเกม
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </section>
-
-  </main>
-
-  <script
-    type="module"
-    src="./pose-ml.js"
-  ></script>
-</body>
+    <script type="module" src="canvas-game.js"></script>
+    <script type="module" src="pose-ml.js"></script>
+  </body>
 </html>
