@@ -1153,27 +1153,58 @@ function resetCalibration() {
 ========================================================= */
 
 function updateCalibrationLines() {
-  if (calibration.baselineShoulderY === null) {
+  if (
+    calibration.baselineShoulderY ===
+    null
+  ) {
     return;
   }
 
-  const jumpOffset = getNumberInputValue(jumpSensitivityInput, 0.075);
+  const jumpOffset =
+    getNumberInputValue(
+      jumpSensitivityInput,
+      0.075,
+    );
 
-  const crouchOffset = getNumberInputValue(crouchSensitivityInput, 0.085);
+  const crouchOffset =
+    getNumberInputValue(
+      crouchSensitivityInput,
+      0.085,
+    );
 
   /*
-    แกน Y:
-    ด้านบน = ค่าน้อย
-    ด้านล่าง = ค่ามาก
+    กระโดด:
+    ค่า Y ลดลง เส้นขยับขึ้น
   */
+  calibration.jumpLineY =
+    clamp(
+      calibration.baselineShoulderY -
+        jumpOffset,
+      0.02,
+      0.95,
+    );
 
-  calibration.jumpLineY = calibration.baselineShoulderY - jumpOffset;
+  /*
+    ย่อตัว:
+    ค่า Y เพิ่มขึ้น เส้นขยับลง
+  */
+  calibration.crouchLineY =
+    clamp(
+      calibration.baselineShoulderY +
+        crouchOffset,
+      0.02,
+      0.98,
+    );
 
-  calibration.crouchLineY = calibration.baselineShoulderY + crouchOffset;
+  setText(
+    jumpLineValue,
+    calibration.jumpLineY.toFixed(3),
+  );
 
-  setText(jumpLineValue, calibration.jumpLineY.toFixed(3));
-
-  setText(crouchLineValue, calibration.crouchLineY.toFixed(3));
+  setText(
+    crouchLineValue,
+    calibration.crouchLineY.toFixed(3),
+  );
 }
 
 function drawReferenceLines() {
@@ -1186,33 +1217,86 @@ function drawReferenceLines() {
   drawReferenceLine(calibration.crouchLineY, "#f59e0b", "CROUCH");
 }
 
-function drawReferenceLine(normalizedY, color, label) {
+function drawReferenceLine(
+  normalizedY,
+  color,
+  label,
+) {
   if (!Number.isFinite(normalizedY)) {
     return;
   }
 
-  const y = normalizedY * poseCanvas.height;
+  const y =
+    normalizedY *
+    poseCanvas.height;
 
   poseCtx.save();
 
+  /*
+    เพิ่มเงาดำใต้เส้น
+    ทำให้มองเห็นได้ชัดบนพื้นหลังทุกสี
+  */
   poseCtx.beginPath();
   poseCtx.moveTo(0, y);
-  poseCtx.lineTo(poseCanvas.width, y);
+  poseCtx.lineTo(
+    poseCanvas.width,
+    y,
+  );
+
+  poseCtx.strokeStyle =
+    "rgba(0, 0, 0, 0.65)";
+
+  poseCtx.lineWidth = 15;
+
+  poseCtx.setLineDash([
+    30,
+    16,
+  ]);
+
+  poseCtx.stroke();
+
+  /*
+    วาดเส้นสีจริงทับด้านบน
+  */
+  poseCtx.beginPath();
+  poseCtx.moveTo(0, y);
+  poseCtx.lineTo(
+    poseCanvas.width,
+    y,
+  );
 
   poseCtx.strokeStyle = color;
-  poseCtx.lineWidth = 5;
+  poseCtx.lineWidth = 9;
 
-  poseCtx.setLineDash([20, 14]);
+  poseCtx.setLineDash([
+    30,
+    16,
+  ]);
 
   poseCtx.stroke();
 
   poseCtx.setLineDash([]);
 
-  poseCtx.font = "bold 28px sans-serif";
+  poseCtx.font =
+    "bold 30px sans-serif";
+
+  poseCtx.lineWidth = 5;
+  poseCtx.strokeStyle =
+    "rgba(0, 0, 0, 0.8)";
+
+  poseCtx.strokeText(
+    label,
+    22,
+    Math.max(38, y - 15),
+  );
 
   poseCtx.fillStyle = color;
 
-  poseCtx.fillText(label, 20, Math.max(34, y - 12));
+  poseCtx.fillText(
+    label,
+    22,
+    Math.max(38, y - 15),
+  );
 
   poseCtx.restore();
 }
@@ -1553,6 +1637,17 @@ function wait(milliseconds) {
       milliseconds,
     );
   });
+}
+
+function clamp(
+  value,
+  minimum,
+  maximum,
+) {
+  return Math.min(
+    maximum,
+    Math.max(minimum, value),
+  );
 }
 
 function average(...values) {

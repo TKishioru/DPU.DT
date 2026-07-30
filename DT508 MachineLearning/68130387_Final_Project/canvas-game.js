@@ -705,7 +705,7 @@ function drawClouds() {
 
 function drawGround() {
   gameCtx.strokeStyle = "#795548";
-  gameCtx.lineWidth = 5;
+  gameCtx.lineWidth = 10;
 
   gameCtx.beginPath();
   gameCtx.moveTo(0, game.groundY);
