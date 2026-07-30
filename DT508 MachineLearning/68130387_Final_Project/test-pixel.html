@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-Rex & Bird Pixel Art Viewer</title>
+  <style>
+    :root {
+      --bg-color: #1e1e2e;
+      --card-bg: #2b2b3d;
+      --accent: #5865f2;
+      --accent-hover: #4752c4;
+      --text-color: #ffffff;
+      --subtext: #a6adc8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    p.subtitle {
+      color: var(--subtext);
+      margin-bottom: 2rem;
+    }
+
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    /* Screen Preview Card */
+    .preview-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      flex: 1;
+      min-width: 320px;
+    }
+
+    .canvas-wrapper {
+      background-color: #f7f7f7;
+      border: 3px solid #444;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Grid Pattern background */
+      background-image: linear-gradient(45deg, #e0e0e0 25%, transparent 25%), 
+                        linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #e0e0e0 75%), 
+                        linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    }
+
+    canvas {
+      image-rendering: pixelated; /* ป้องกันไม่ให้พิกเซลเบลอ */
+      image-rendering: crisp-edges;
+    }
+
+    /* Controls Section */
+    .controls {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.5rem;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.7rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background-color: var(--accent-hover);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    button.active {
+      background-color: #22c55e;
+    }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+    }
+
+    .slider-group label {
+      font-size: 0.9rem;
+      color: var(--subtext);
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    .gallery-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--card-bg);
+      padding-bottom: 0.5rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+
+    .frame-card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .frame-card canvas {
+      background: #fff;
+      border-radius: 4px;
+      padding: 4px;
+    }
+
+    .frame-card span {
+      font-size: 0.85rem;
+      color: var(--subtext);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🦖 T-Rex & Bird Pixel Art Tester</h1>
+  <p class="subtitle">ทดสอบพรีวิวและแอนิเมชันสำหรับเกมแนว Chrome Dino Runner</p>
+
+  <div class="main-container">
+    <!-- Main Display Card -->
+    <div class="preview-card">
+      <div class="canvas-wrapper">
+        <canvas id="mainCanvas"></canvas>
+      </div>
+
+      <div class="controls">
+        <div class="btn-group">
+          <button id="btnRun" class="active">วิ่ง (Run)</button>
+          <button id="btnCrouch">ก้มวิ่ง (Crouch)</button>
+          <button id="btnStand">ยืน (Stand)</button>
+          <button id="btnDead">ชน (Dead)</button>
+          <button id="btnBird">บิน (Bird)</button>
+        </div>
+
+        <div class="slider-group">
+          <label for="speedSlider">ความเร็ว (Speed): <span id="speedVal">10</span> FPS</label>
+          <input type="range" id="speedSlider" min="2" max="30" value="10">
+        </div>
+
+        <div class="slider-group">
+          <label for="scaleSlider">ขนาดขยาย (Scale): <span id="scaleVal">12</span>x</label>
+          <input type="range" id="scaleSlider" min="4" max="20" value="12">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Individual Frames Gallery -->
+  <div class="gallery-section">
+    <h2 class="gallery-title">🖼️ เฟรมรูปภาพทั้งหมด (All Sprites)</h2>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+
+  <script>
+    // --- 1. ข้อมูลบิตแมปพิกเซล (Pixel Data) ---
+    const DINO_FRAMES = {
+  /* =========================================================
+     1. ท่ายืน / กระโดด (Idle / Jump Stand)
+     ========================================================= */
+  stand: [
+    "000000000000011111111000",
+    "000000000000011011111000",
+    "000000000000011111111000",
+    "000000000000011111111000",
+    "000000000000011111111000",
+    "000000000000011111000000",
+    "000000000000011111111000",
+    "000000000011111111000000",
+    "000010000111111111000000",
+    "000011001111111111000000",
+    "000011111111111100000000",
+    "000001111111111100000000",
+    "000000111111111100000000",
+    "000000011111111000000000",
+    "000000001111111000000000",
+    "000000000111110000000000",
+    "000000000011011000000000",
+    "000000000011001100000000",
+    "000000000011000000000000",
+    "000000000010000000000000",
+    "000000000011000000000000"
+  ],
+
+  /* =========================================================
+     2. ท่าชน / พ่ายแพ้ (Game Over / Dead Eye)
+     ========================================================= */
+  dead: [
+    "000000000000011111111000",
+    "000000000000010001111000",
+    "000000000000010101111000",
+    "000000000000010001111000",
+    "000000000000011111111000",
+    "000000000000011111000000",
+    "000000000000011111111000",
+    "000000000011111111000000",
+    "000010000111111111000000",
+    "000011001111111111000000",
+    "000011111111111100000000",
+    "000001111111111100000000",
+    "000000111111111100000000",
+    "000000011111111000000000",
+    "000000001111111000000000",
+    "000000000111110000000000",
+    "000000000011011000000000",
+    "000000000011001100000000",
+    "000000000011000000000000",
+    "000000000010000000000000",
+    "000000000011000000000000"
+  ],
+
+  /* =========================================================
+     3. วิ่งเฟรม 1 - ขาซ้ายลงก้าว (Run Frame 1)
+     ========================================================= */
+  run1: [
+    "000000000000011111111000",
+    "000000000000011011111000",
+    "000000000000011111111000",
+    "000000000000011111111000",
+    "000000000000011111111000",
+    "000000000000011111000000",
+    "000000000000011111111000",
+    "000000000011111111000000",
+    "000010000111111111000000",
+    "000011001111111111000000",
+    "000011111111111100000000",
+    "000001111111111100000000",
+    "000000111111111100000000",
+    "000000011111111000000000",
+    "000000001111111000000000",
+    "000000000111110000000000",
+    "000000000011011000000000",
+    "000000000011000111000000",
+    "000000000011000000000000",
+    "000000000001100000000000",
+    "000000000000111000000000"
+  ],
+
+  /* =========================================================
+     4. วิ่งเฟรม 2 - ขาขวาลงก้าว (Run Frame 2)
+     ========================================================= */
+  run2: [
+    "000000000000011111111000",
+    "000000000000011011111000",
+    "000000000000011111111000",
+    "000000000000011111111000",
+    "000000000000011111111000",
+    "000000000000011111000000",
+    "000000000000011111111000",
+    "000000000011111111000000",
+    "000010000111111111000000",
+    "000011001111111111000000",
+    "000011111111111100000000",
+    "000001111111111100000000",
+    "000000111111111100000000",
+    "000000011111111000000000",
+    "000000001111111000000000",
+    "000000000111110000000000",
+    "000000000110011000000000",
+    "000000000110001100000000",
+    "000000001110001100000000",
+    "000000000000001100000000",
+    "000000000000001110000000"
+  ],
+
+  /* =========================================================
+     5. ย่อตัววิ่ง เฟรม 1 (Crouch / Duck Run Frame 1)
+     ========================================================= */
+  crouch1: [
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "100000000000111111111000",
+    "110000111111110111111000",
+    "011111111111111111111000",
+    "001111111111111111111000",
+    "000111111111111111100000",
+    "000011111111111111111000",
+    "000000111111111100000000",
+    "000000001111110000000000",
+    "000000000111110000000000",
+    "000000000011011000000000",
+    "000000000011000110000000",
+    "000000000011000000000000",
+    "000000000001100000000000",
+    "000000000000110000000000"
+  ],
+
+  /* =========================================================
+     6. ย่อตัววิ่ง เฟรม 2 (Crouch / Duck Run Frame 2)
+     ========================================================= */
+  crouch2: [
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "000000000000000000000000",
+    "100000000000111111111000",
+    "110000111111110111111000",
+    "011111111111111111111000",
+    "001111111111111111111000",
+    "000111111111111111100000",
+    "000011111111111111111000",
+    "000000111111111100000000",
+    "000000001111110000000000",
+    "000000000111110000000000",
+    "000000000011011000000000",
+    "000000000110001100000000",
+    "000000000000001100000000",
+    "000000000000000100000000",
+    "000000000000001100000000"
+  ]
+};
+    
+    const BIRD_FRAMES = {
+      wingUp: [
+        "000010000000",
+        "000011000000",
+        "000011100000",
+        "001011110000",
+        "011011111000",
+        "011111111100",
+        "001111111111",
+        "000111111100",
+        "000011111111",
+        "000001110000",
+        "000000110000"
+      ],
+      wingDown: [
+        "000100000000",
+        "001100000000",
+        "011100000000",
+        "111100000000",
+        "011111110000",
+        "001111111100",
+        "000111111111",
+        "000011111100",
+        "000011111111",
+        "000011000000",
+        "000010000000"
+      ]
+    };
+
+    // --- 2. ฟังก์ชั่นวาดรูปพิกเซลลง Canvas ---
+    function drawPixelBitmap(ctx, bitmap, pixelSize = 10, color = "#535353") {
+      const rows = bitmap.length;
+      const cols = bitmap[0].length;
+
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.fillStyle = color;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (bitmap[r][c] === '1') {
+            ctx.fillRect(c * pixelSize, r * pixelSize, pixelSize, pixelSize);
+          }
+        }
+      }
+    }
+
+    // --- 3. การจัดการการเล่น Animation & State ---
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentMode = 'run'; // run, crouch, stand, dead, bird
+    let frameIndex = 0;
+    let pixelScale = 12;
+    let fps = 10;
+    let lastAnimTime = 0;
+
+    const animations = {
+      run: [DINO_FRAMES.run1, DINO_FRAMES.run2],
+      crouch: [DINO_FRAMES.crouch1, DINO_FRAMES.crouch2],
+      stand: [DINO_FRAMES.stand],
+      dead: [DINO_FRAMES.dead],
+      bird: [BIRD_FRAMES.wingUp, BIRD_FRAMES.wingDown]
+    };
+
+    function updateCanvasSize(bitmap) {
+      const rows = bitmap.length;
+      const cols = bitmap[0].length;
+      canvas.width = cols * pixelScale;
+      canvas.height = rows * pixelScale;
+    }
+
+    function renderLoop(timestamp) {
+      const frameList = animations[currentMode];
+      const interval = 1000 / fps;
+
+      if (timestamp - lastAnimTime >= interval) {
+        frameIndex = (frameIndex + 1) % frameList.length;
+        lastAnimTime = timestamp;
+      }
+
+      const activeFrame = frameList[frameIndex % frameList.length];
+      updateCanvasSize(activeFrame);
+      drawPixelBitmap(ctx, activeFrame, pixelScale);
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    // --- 4. Event Controls (ปุ่มควบคุม) ---
+    const buttons = {
+      run: document.getElementById('btnRun'),
+      crouch: document.getElementById('btnCrouch'),
+      stand: document.getElementById('btnStand'),
+      dead: document.getElementById('btnDead'),
+      bird: document.getElementById('btnBird')
+    };
+
+    function setMode(mode) {
+      currentMode = mode;
+      frameIndex = 0;
+      Object.keys(buttons).forEach(key => {
+        buttons[key].classList.toggle('active', key === mode);
+      });
+    }
+
+    Object.keys(buttons).forEach(key => {
+      buttons[key].addEventListener('click', () => setMode(key));
+    });
+
+    // Slider Controls
+    const speedSlider = document.getElementById('speedSlider');
+    const speedVal = document.getElementById('speedVal');
+    speedSlider.addEventListener('input', (e) => {
+      fps = parseInt(e.target.value);
+      speedVal.textContent = fps;
+    });
+
+    const scaleSlider = document.getElementById('scaleSlider');
+    const scaleVal = document.getElementById('scaleVal');
+    scaleSlider.addEventListener('input', (e) => {
+      pixelScale = parseInt(e.target.value);
+      scaleVal.textContent = pixelScale;
+    });
+
+    // --- 5. สร้างแกลเลอรีแสดงภาพแยกรายเฟรม ---
+    function generateGallery() {
+      const galleryGrid = document.getElementById('galleryGrid');
+      const allSprites = { ...DINO_FRAMES, ...BIRD_FRAMES };
+
+      Object.keys(allSprites).forEach(name => {
+        const frameData = allSprites[name];
+        const rows = frameData.length;
+        const cols = frameData[0].length;
+        const miniScale = 5;
+
+        const card = document.createElement('div');
+        card.className = 'frame-card';
+
+        const miniCanvas = document.createElement('canvas');
+        miniCanvas.width = cols * miniScale;
+        miniCanvas.height = rows * miniScale;
+        const miniCtx = miniCanvas.getContext('2d');
+
+        drawPixelBitmap(miniCtx, frameData, miniScale);
+
+        const label = document.createElement('span');
+        label.textContent = `${name} (${cols}x${rows})`;
+
+        card.appendChild(miniCanvas);
+        card.appendChild(label);
+        galleryGrid.appendChild(card);
+      });
+    }
+
+    // เริ่มการทำงาน
+    generateGallery();
+    requestAnimationFrame(renderLoop);
+  </script>
+</body>
+</html>
