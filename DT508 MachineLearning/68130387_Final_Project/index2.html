@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="เกมไดโนเสาร์ควบคุมด้วยท่าทางร่างกายผ่าน MediaPipe Pose"
+    />
+
+    <title>Pose Dino Runner</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-content">
+          <div>
+            <p class="eyebrow">MediaPipe Pose Game</p>
+            <h1>Pose Dino Runner</h1>
+
+            <p class="header-description">
+              ควบคุมไดโนเสาร์ด้วยการกระโดด ยืน และย่อตัว
+            </p>
+          </div>
+
+          <div class="header-status">
+            <span id="cameraStatus" class="status-badge status-offline">
+              กล้องยังไม่เปิด
+            </span>
+
+            <span id="gameStatusBadge" class="status-badge status-waiting">
+              รอเริ่มเกม
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <!-- Score Board -->
+        <section class="score-board">
+          <article class="score-card">
+            <span class="score-label">คะแนน</span>
+            <strong id="scoreValue" class="score-value">0</strong>
+          </article>
+
+          <article class="score-card">
+            <span class="score-label">คะแนนสูงสุด</span>
+            <strong id="highScoreValue" class="score-value">0</strong>
+          </article>
+
+          <article class="score-card">
+            <span class="score-label">ความเร็ว</span>
+            <strong id="speedValue" class="score-value">1.0x</strong>
+          </article>
+
+          <article class="score-card">
+            <span class="score-label">ท่าที่ตรวจพบ</span>
+            <strong id="poseValue" class="score-value pose-stand"> ยืน </strong>
+          </article>
+        </section>
+
+        <section class="workspace">
+          <!-- Camera and Calibration -->
+          <aside class="control-panel">
+            <section class="panel-section">
+              <div class="section-heading">
+                <div>
+                  <p class="section-number">01</p>
+                  <h2>กล้องและการตรวจจับ</h2>
+                </div>
+
+                <span id="poseDetectionStatus" class="small-status">
+                  ไม่พบร่างกาย
+                </span>
+              </div>
+
+              <div class="camera-wrapper">
+                <video id="inputVideo" autoplay muted playsinline></video>
+
+                <canvas id="poseCanvas"></canvas>
+
+                <div id="cameraPlaceholder" class="camera-placeholder">
+                  <div class="camera-icon" aria-hidden="true">📷</div>
+
+                  <p>กดปุ่มเปิดกล้องเพื่อเริ่มต้น</p>
+                </div>
+
+                <div class="camera-guide">
+                  <div class="body-guide">
+                    <span class="guide-head"></span>
+                    <span class="guide-body"></span>
+                    <span class="guide-arm guide-arm-left"></span>
+                    <span class="guide-arm guide-arm-right"></span>
+                    <span class="guide-leg guide-leg-left"></span>
+                    <span class="guide-leg guide-leg-right"></span>
+                  </div>
+
+                  <p>ยืนให้เห็นร่างกายตั้งแต่ศีรษะถึงเท้า</p>
+                </div>
+              </div>
+
+              <div class="button-row">
+                <button
+                  id="startCameraButton"
+                  type="button"
+                  class="button button-primary"
+                >
+                  เปิดกล้อง
+                </button>
+
+                <button
+                  id="stopCameraButton"
+                  type="button"
+                  class="button button-secondary"
+                  disabled
+                >
+                  ปิดกล้อง
+                </button>
+              </div>
+            </section>
+
+            <!-- Calibration -->
+            <section class="panel-section">
+              <div class="section-heading">
+                <div>
+                  <p class="section-number">02</p>
+                  <h2>ปรับเส้นอ้างอิง</h2>
+                </div>
+
+                <span id="calibrationStatus" class="small-status">
+                  ยังไม่ปรับ
+                </span>
+              </div>
+
+              <p class="section-description">
+                ยืนตรงในตำแหน่งปกติ แล้วกดปรับเส้นอัตโนมัติ
+                ระบบจะบันทึกระดับไหล่และสะโพกเป็นค่าพื้นฐาน
+              </p>
+
+              <div class="calibration-values">
+                <div class="value-item">
+                  <span>ระดับไหล่พื้นฐาน</span>
+                  <strong id="baselineShoulderValue">-</strong>
+                </div>
+
+                <div class="value-item">
+                  <span>ระดับสะโพกพื้นฐาน</span>
+                  <strong id="baselineHipValue">-</strong>
+                </div>
+
+                <div class="value-item jump-value">
+                  <span>เส้นกระโดด</span>
+                  <strong id="jumpLineValue">-</strong>
+                </div>
+
+                <div class="value-item crouch-value">
+                  <span>เส้นย่อตัว</span>
+                  <strong id="crouchLineValue">-</strong>
+                </div>
+              </div>
+
+              <div class="slider-group">
+                <label for="jumpSensitivity">
+                  <span>
+                    ความไวในการกระโดด
+                    <strong id="jumpSensitivityValue">0.060</strong>
+                  </span>
+
+                  <input
+                    id="jumpSensitivity"
+                    type="range"
+                    min="0.020"
+                    max="0.150"
+                    step="0.005"
+                    value="0.060"
+                  />
+                </label>
+
+                <label for="crouchSensitivity">
+                  <span>
+                    ความไวในการย่อตัว
+                    <strong id="crouchSensitivityValue">0.080</strong>
+                  </span>
+
+                  <input
+                    id="crouchSensitivity"
+                    type="range"
+                    min="0.030"
+                    max="0.200"
+                    step="0.005"
+                    value="0.080"
+                  />
+                </label>
+              </div>
+
+              <div
+                id="calibrationProgressContainer"
+                class="progress-container hidden"
+              >
+                <div class="progress-header">
+                  <span>กำลังเก็บตำแหน่งร่างกาย</span>
+                  <span id="calibrationProgressText">0%</span>
+                </div>
+
+                <div class="progress-track">
+                  <div id="calibrationProgressBar" class="progress-bar"></div>
+                </div>
+              </div>
+
+              <div class="button-column">
+                <button
+                  id="calibrateButton"
+                  type="button"
+                  class="button button-calibrate"
+                  disabled
+                >
+                  ปรับเส้นอัตโนมัติ
+                </button>
+
+                <button
+                  id="resetCalibrationButton"
+                  type="button"
+                  class="button button-secondary"
+                  disabled
+                >
+                  ล้างค่าการปรับเส้น
+                </button>
+              </div>
+            </section>
+          </aside>
+
+          <!-- Game Area -->
+          <section class="game-panel">
+            <div class="game-panel-header">
+              <div>
+                <p class="section-number">03</p>
+                <h2>สนามวิ่ง</h2>
+              </div>
+
+              <div class="control-hints">
+                <span>
+                  <i class="hint-dot jump-dot"></i>
+                  กระโดดข้ามกระบองเพชร
+                </span>
+
+                <span>
+                  <i class="hint-dot crouch-dot"></i>
+                  ย่อตัวหลบนก
+                </span>
+              </div>
+            </div>
+
+            <div class="game-canvas-wrapper">
+              <canvas
+                id="gameCanvas"
+                width="1000"
+                height="500"
+                aria-label="พื้นที่เกมไดโนเสาร์"
+              ></canvas>
+
+              <!-- Start Screen -->
+              <div id="startOverlay" class="game-overlay">
+                <div class="overlay-content">
+                  <div class="dino-preview" aria-hidden="true">🦖</div>
+
+                  <h3>เตรียมพร้อมวิ่ง</h3>
+
+                  <p>เปิดกล้องและปรับเส้นอ้างอิงก่อนเริ่มเกม</p>
+
+                  <button
+                    id="startGameButton"
+                    type="button"
+                    class="button button-game-start"
+                    disabled
+                  >
+                    เริ่มเกม
+                  </button>
+                </div>
+              </div>
+
+              <!-- Countdown -->
+              <div id="countdownOverlay" class="countdown-overlay hidden">
+                <span id="countdownValue">3</span>
+              </div>
+
+              <!-- Pause -->
+              <div id="pauseOverlay" class="game-overlay hidden">
+                <div class="overlay-content">
+                  <h3>หยุดเกมชั่วคราว</h3>
+                  <p>กดเล่นต่อเพื่อกลับเข้าสู่เกม</p>
+
+                  <button
+                    id="resumeGameButton"
+                    type="button"
+                    class="button button-game-start"
+                  >
+                    เล่นต่อ
+                  </button>
+                </div>
+              </div>
+
+              <!-- Game Over -->
+              <div id="gameOverOverlay" class="game-overlay hidden">
+                <div class="overlay-content">
+                  <div class="game-over-icon" aria-hidden="true">💥</div>
+
+                  <h3>จบเกม</h3>
+
+                  <p>
+                    คะแนนของคุณ
+                    <strong id="finalScoreValue">0</strong>
+                  </p>
+
+                  <button
+                    id="restartGameButton"
+                    type="button"
+                    class="button button-game-start"
+                  >
+                    เล่นอีกครั้ง
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="game-actions">
+              <button
+                id="pauseGameButton"
+                type="button"
+                class="button button-secondary"
+                disabled
+              >
+                หยุดเกม
+              </button>
+
+              <button
+                id="endGameButton"
+                type="button"
+                class="button button-danger"
+                disabled
+              >
+                จบเกม
+              </button>
+            </div>
+
+            <!-- Pose Information -->
+            <section class="pose-information">
+              <div class="pose-card">
+                <div class="pose-icon stand-icon">🧍</div>
+
+                <div>
+                  <strong>ยืน</strong>
+                  <p>ไดโนเสาร์วิ่งตามปกติ</p>
+                </div>
+              </div>
+
+              <div class="pose-card">
+                <div class="pose-icon jump-icon">⬆</div>
+
+                <div>
+                  <strong>กระโดด</strong>
+                  <p>ไหล่และสะโพกสูงกว่าเส้นอ้างอิง</p>
+                </div>
+              </div>
+
+              <div class="pose-card">
+                <div class="pose-icon crouch-icon">⬇</div>
+
+                <div>
+                  <strong>ย่อตัว</strong>
+                  <p>สะโพกอยู่ต่ำกว่าเส้นย่อตัว</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Debug Information -->
+            <details class="debug-panel">
+              <summary>ข้อมูลการตรวจจับ</summary>
+
+              <div class="debug-grid">
+                <div>
+                  <span>ค่าไหล่ปัจจุบัน</span>
+                  <strong id="currentShoulderValue">-</strong>
+                </div>
+
+                <div>
+                  <span>ค่าสะโพกปัจจุบัน</span>
+                  <strong id="currentHipValue">-</strong>
+                </div>
+
+                <div>
+                  <span>ความเร็วสะโพก</span>
+                  <strong id="hipVelocityValue">-</strong>
+                </div>
+
+                <div>
+                  <span>FPS</span>
+                  <strong id="fpsValue">0</strong>
+                </div>
+              </div>
+            </details>
+          </section>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <p>Pose Dino Runner — HTML, CSS, JavaScript และ MediaPipe Pose</p>
+      </footer>
+    </div>
+
+    <script type="module" src="canvas-game.js"></script>
+    <script type="module" src="pose-ml.js"></script>
+  </body>
+</html>
