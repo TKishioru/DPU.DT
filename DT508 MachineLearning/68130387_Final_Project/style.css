@@ -745,6 +745,11 @@ input[type="range"]::-moz-range-thumb {
   background: var(--primary);
 }
 
+input[type="range"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
 .progress-container {
   margin-top: 17px;
 }

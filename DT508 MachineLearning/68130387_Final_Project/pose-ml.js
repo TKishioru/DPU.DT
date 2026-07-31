@@ -1,16 +1,3 @@
-/* =========================================================
-   POSE ML — UPPER BODY VERSION
-
-   รับผิดชอบ:
-   - โหลด MediaPipe Pose Landmarker
-   - เปิดและปิดกล้อง
-   - ตรวจจับช่วงบนของร่างกาย
-   - ใช้จมูกและไหล่ทั้งสองข้าง
-   - Calibration ระดับไหล่
-   - จำแนก Stand / Jump / Crouch
-   - ส่งคำสั่งไปยัง canvas-game.js
-========================================================= */
-
 import {
   FilesetResolver,
   PoseLandmarker,
@@ -23,65 +10,12 @@ import {
   applyPoseToGame,
   pauseGameBecausePoseLost,
   getGameState,
-  startGame,
   GAME_STATE,
 } from "./canvas-game.js";
 
 /* =========================================================
    SETTINGS
 ========================================================= */
-
-/*
-  ต้องยืนท่า Stand ต่อเนื่องกี่วินาที
-*/
-const STAND_READY_DURATION = 5000;
-
-/*
-  จำนวนวินาทีในการนับถอยหลังก่อนเริ่มเกม
-*/
-const AUTO_COUNTDOWN_SECONDS = 5;
-
-/*
-  หากหลุดจากท่า Stand เกินเวลานี้
-  จะรีเซ็ตการยืนเตรียมพร้อม
-*/
-const STAND_LOST_TOLERANCE = 350;
-
-/* =========================================================
-   AUTO START STATE
-========================================================= */
-
-const autoStartState = {
-  /*
-    เริ่มจับเวลายืนเมื่อใด
-  */
-  standStartedAt: null,
-
-  /*
-    เวลาล่าสุดที่ตรวจพบท่า Stand
-  */
-  lastStandDetectedAt: null,
-
-  /*
-    ป้องกันเริ่มนับถอยหลังซ้ำ
-  */
-  isCountingDown: false,
-
-  /*
-    ป้องกันสั่งเริ่มเกมซ้ำ
-  */
-  hasStartedGame: false,
-
-  /*
-    ID ของ setInterval
-  */
-  countdownIntervalId: null,
-
-  /*
-    เวลาที่เหลือในการนับถอยหลัง
-  */
-  countdownRemaining: AUTO_COUNTDOWN_SECONDS,
-};
 
 /*
   true  = ทดสอบเกมด้วยคีย์บอร์ดโดยไม่เปิดกล้อง
@@ -296,36 +230,45 @@ async function createPoseLandmarker() {
     return;
   }
 
-  setCameraStatus("กำลังโหลด MediaPipe...", "waiting");
+  setCameraStatus("กล้องเปิดแล้ว กำลังโหลด AI...", "waiting");
 
   const vision = await FilesetResolver.forVisionTasks(
     `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_VERSION}/wasm`,
   );
 
-  poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+  const createOptions = (delegate) => ({
     baseOptions: {
       modelAssetPath:
         "https://storage.googleapis.com/" +
         "mediapipe-models/pose_landmarker/" +
         "pose_landmarker_lite/float16/1/" +
         "pose_landmarker_lite.task",
-
-      delegate: "GPU",
+      delegate,
     },
-
     runningMode: "VIDEO",
-
-    /*
-          ตรวจจับเพียง 1 คน
-        */
     numPoses: 1,
-
     minPoseDetectionConfidence: 0.5,
     minPosePresenceConfidence: 0.5,
     minTrackingConfidence: 0.5,
-
     outputSegmentationMasks: false,
   });
+
+  try {
+    poseLandmarker = await PoseLandmarker.createFromOptions(
+      vision,
+      createOptions("GPU"),
+    );
+  } catch (gpuError) {
+    console.warn(
+      "ไม่สามารถเปิด MediaPipe ด้วย GPU ได้ กำลังลองใช้ CPU แทน:",
+      gpuError,
+    );
+
+    poseLandmarker = await PoseLandmarker.createFromOptions(
+      vision,
+      createOptions("CPU"),
+    );
+  }
 
   drawingUtils = new DrawingUtils(poseCtx);
 }
@@ -339,111 +282,247 @@ async function startCamera() {
     return;
   }
 
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+  if (!window.isSecureContext) {
+    const message =
+      "กล้องใช้งานได้เฉพาะ localhost หรือ HTTPS\n\n" +
+      "ห้ามเปิดไฟล์ index.html ด้วยการดับเบิลคลิกโดยตรง";
+
+    setCameraStatus("ต้องเปิดผ่าน localhost", "offline");
+    alert(message);
+    return;
+  }
+
+  if (!navigator.mediaDevices?.getUserMedia) {
     alert(
       "เบราว์เซอร์ไม่รองรับการใช้งานกล้อง\n\n" +
         "กรุณาเปิดผ่าน Chrome, Edge หรือ Safari รุ่นใหม่",
     );
-
     return;
   }
 
+  startCameraButton.disabled = true;
+  stopCameraButton.disabled = true;
+  calibrateButton.disabled = true;
+
+  setCameraStatus("กำลังขอสิทธิ์กล้อง...", "waiting");
+
+  /*
+    ขั้นที่ 1: เปิดภาพจากกล้องให้สำเร็จก่อน
+    เพื่อไม่ให้การโหลด MediaPipe ขัดขวางหน้าต่างขอสิทธิ์กล้อง
+  */
   try {
-    startCameraButton.disabled = true;
+    mediaStream = await requestCameraStream();
 
-    setCameraStatus("กำลังเปิดกล้อง...", "waiting");
-
-    await createPoseLandmarker();
-
-    mediaStream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        width: {
-          ideal: 1280,
-        },
-
-        height: {
-          ideal: 720,
-        },
-
-        /*
-            ใช้กล้องหน้า
-          */
-        facingMode: "user",
-      },
-
-      audio: false,
-    });
-
+    videoElement.muted = true;
+    videoElement.playsInline = true;
     videoElement.srcObject = mediaStream;
 
-    await waitForVideoMetadata();
-
+    await waitForVideoReady();
     await videoElement.play();
 
     resizePoseCanvas();
+    cameraPlaceholder?.classList.add("hidden");
 
     isCameraRunning = true;
     lastVideoTime = -1;
 
-    cameraPlaceholder?.classList.add("hidden");
-
     startCameraButton.disabled = true;
     stopCameraButton.disabled = false;
-    calibrateButton.disabled = false;
 
-    setCameraStatus("กล้องทำงาน", "online");
-
-    cameraAnimationId = requestAnimationFrame(predictWebcam);
+    setCameraStatus("กล้องเปิดแล้ว กำลังโหลด AI...", "waiting");
   } catch (error) {
-    console.error("Start camera error:", error);
+    console.error("Camera access error:", error);
 
     stopMediaStream();
+    videoElement.srcObject = null;
+    cameraPlaceholder?.classList.remove("hidden");
 
     isCameraRunning = false;
-
     startCameraButton.disabled = false;
     stopCameraButton.disabled = true;
     calibrateButton.disabled = true;
 
-    setCameraStatus("เปิดกล้องไม่สำเร็จ", "offline");
+    const cameraError = getCameraErrorMessage(error);
+    setCameraStatus(cameraError.status, "offline");
+    alert(cameraError.message);
+    return;
+  }
+
+  /*
+    ขั้นที่ 2: โหลดระบบตรวจจับท่าหลังจากภาพกล้องแสดงแล้ว
+    หากโหลด AI ไม่สำเร็จ ภาพกล้องจะยังเปิดอยู่เพื่อให้เห็นสาเหตุชัดเจน
+  */
+  try {
+    await createPoseLandmarker();
+
+    if (!isCameraRunning) {
+      return;
+    }
+
+    calibrateButton.disabled = false;
+    setCameraStatus("กล้องทำงาน", "online");
+
+    if (!calibration.complete) {
+      setText(calibrationStatus, "กดปรับเส้นอัตโนมัติ");
+      setGameStatus("รอปรับเส้นอ้างอิง", "waiting");
+    } else {
+      setText(calibrationStatus, "รอตรวจพบร่างกายเพื่อเริ่มเกม");
+      setGameStatus("รอตรวจพบร่างกาย", "waiting");
+    }
+
+    syncCalibrationControls();
+    cameraAnimationId = requestAnimationFrame(predictWebcam);
+  } catch (error) {
+    console.error("MediaPipe loading error:", error);
+
+    if (poseLandmarker !== null) {
+      poseLandmarker.close();
+      poseLandmarker = null;
+    }
+
+    calibrateButton.disabled = true;
+    setCameraStatus("กล้องเปิด แต่โหลด AI ไม่สำเร็จ", "waiting");
+    setGameStatus("ระบบตรวจจับยังไม่พร้อม", "offline");
+    setText(calibrationStatus, "ตรวจสอบอินเทอร์เน็ตแล้วเปิดกล้องใหม่");
 
     alert(
-      "ไม่สามารถเปิดกล้องได้\n\n" +
-        "1. ตรวจสอบสิทธิ์การใช้กล้อง\n" +
-        "2. เปิดเว็บไซต์ผ่าน localhost หรือ HTTPS\n" +
-        "3. ตรวจสอบว่ากล้องไม่ได้ถูกโปรแกรมอื่นใช้งาน",
+      "เปิดภาพกล้องสำเร็จ แต่โหลด MediaPipe ไม่สำเร็จ\n\n" +
+        "กรุณาตรวจสอบอินเทอร์เน็ต แล้วกดปิดกล้องและเปิดใหม่\n\n" +
+        `รายละเอียด: ${error?.name ?? "Error"}${
+          error?.message ? ` — ${error.message}` : ""
+        }`,
     );
   }
 }
 
-function waitForVideoMetadata() {
+async function requestCameraStream() {
+  const preferredConstraints = {
+    video: {
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+      facingMode: { ideal: "user" },
+    },
+    audio: false,
+  };
+
+  try {
+    return await navigator.mediaDevices.getUserMedia(preferredConstraints);
+  } catch (error) {
+    /*
+      บางเครื่องไม่รองรับ constraint ที่ระบุไว้
+      ให้ลองเปิดกล้องแบบพื้นฐานอีกครั้ง
+    */
+    if (
+      error?.name === "OverconstrainedError" ||
+      error?.name === "ConstraintNotSatisfiedError"
+    ) {
+      return navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+    }
+
+    throw error;
+  }
+}
+
+function waitForVideoReady(timeoutMs = 10000) {
   return new Promise((resolve, reject) => {
-    if (videoElement.readyState >= HTMLMediaElement.HAVE_METADATA) {
+    if (
+      videoElement.readyState >= HTMLMediaElement.HAVE_METADATA &&
+      videoElement.videoWidth > 0
+    ) {
       resolve();
       return;
     }
 
-    const handleLoadedMetadata = () => {
+    const timeoutId = window.setTimeout(() => {
+      cleanup();
+      reject(new Error("VideoReadyTimeout"));
+    }, timeoutMs);
+
+    const handleReady = () => {
+      if (videoElement.videoWidth <= 0) {
+        return;
+      }
+
       cleanup();
       resolve();
     };
 
     const handleError = () => {
       cleanup();
-
-      reject(new Error("ไม่สามารถโหลดข้อมูลวิดีโอได้"));
+      reject(new Error("VideoElementError"));
     };
 
     const cleanup = () => {
-      videoElement.removeEventListener("loadedmetadata", handleLoadedMetadata);
-
+      window.clearTimeout(timeoutId);
+      videoElement.removeEventListener("loadedmetadata", handleReady);
+      videoElement.removeEventListener("loadeddata", handleReady);
+      videoElement.removeEventListener("canplay", handleReady);
       videoElement.removeEventListener("error", handleError);
     };
 
-    videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
-
+    videoElement.addEventListener("loadedmetadata", handleReady);
+    videoElement.addEventListener("loadeddata", handleReady);
+    videoElement.addEventListener("canplay", handleReady);
     videoElement.addEventListener("error", handleError);
   });
+}
+
+function getCameraErrorMessage(error) {
+  const errorName = error?.name ?? "UnknownError";
+
+  if (errorName === "NotAllowedError" || errorName === "PermissionDeniedError") {
+    return {
+      status: "ไม่ได้รับอนุญาตใช้กล้อง",
+      message:
+        "เบราว์เซอร์ไม่ได้รับอนุญาตให้ใช้กล้อง\n\n" +
+        "กดไอคอนรูปกล้องหรือแม่กุญแจข้างช่อง URL แล้วเลือก Allow/อนุญาต จากนั้นรีเฟรชหน้าเว็บ",
+    };
+  }
+
+  if (errorName === "NotFoundError" || errorName === "DevicesNotFoundError") {
+    return {
+      status: "ไม่พบอุปกรณ์กล้อง",
+      message:
+        "ไม่พบกล้องในเครื่อง\n\n" +
+        "ตรวจสอบว่ากล้องเชื่อมต่ออยู่และระบบปฏิบัติการมองเห็นกล้อง",
+    };
+  }
+
+  if (errorName === "NotReadableError" || errorName === "TrackStartError") {
+    return {
+      status: "กล้องถูกใช้งานอยู่",
+      message:
+        "ไม่สามารถอ่านภาพจากกล้องได้\n\n" +
+        "กรุณาปิด Zoom, Teams, Meet หรือโปรแกรมอื่นที่กำลังใช้กล้อง แล้วลองใหม่",
+    };
+  }
+
+  if (errorName === "AbortError") {
+    return {
+      status: "การเปิดกล้องถูกยกเลิก",
+      message: "การเปิดกล้องถูกยกเลิก กรุณากดเปิดกล้องอีกครั้ง",
+    };
+  }
+
+  if (error?.message === "VideoReadyTimeout") {
+    return {
+      status: "กล้องตอบสนองช้าเกินไป",
+      message:
+        "เปิดอุปกรณ์กล้องได้ แต่ไม่ได้รับภาพภายในเวลาที่กำหนด\n\n" +
+        "ลองปิดโปรแกรมที่ใช้กล้อง รีเฟรชหน้าเว็บ แล้วเปิดใหม่",
+    };
+  }
+
+  return {
+    status: "เปิดกล้องหรือ AI ไม่สำเร็จ",
+    message:
+      "ไม่สามารถเริ่มระบบกล้องได้\n\n" +
+      `รายละเอียด: ${errorName}${error?.message ? ` — ${error.message}` : ""}\n\n` +
+      "ตรวจสอบอินเทอร์เน็ต สิทธิ์กล้อง และเปิดเว็บไซต์ผ่าน localhost หรือ HTTPS",
+  };
 }
 
 /* =========================================================
@@ -453,8 +532,6 @@ function waitForVideoMetadata() {
 function stopCamera() {
   isCameraRunning = false;
   isDetecting = false;
-
-  resetAutoStartState();
 
   if (cameraAnimationId !== null) {
     cancelAnimationFrame(cameraAnimationId);
@@ -477,6 +554,7 @@ function stopCamera() {
   calibrateButton.disabled = true;
 
   enableStartGame(KEYBOARD_TEST_MODE);
+  syncCalibrationControls();
 
   setCameraStatus("กล้องยังไม่เปิด", "offline");
 
@@ -578,6 +656,10 @@ function processPoseResult(result, timestamp) {
 
   setPoseDetectionStatus(true);
 
+  if (calibration.complete && getGameState() === GAME_STATE.IDLE) {
+    enableStartGame(true);
+  }
+
   drawUpperBodyPose(landmarks);
 
   /*
@@ -617,12 +699,6 @@ function processPoseResult(result, timestamp) {
 
     updatePoseDisplay(confirmedPose);
 
-    /*
-    ตรวจการยืนเตรียมพร้อม
-    เฉพาะตอนเกมยังไม่เริ่ม
-  */
-    updateAutoStart(confirmedPose, timestamp);
-
     applyPoseToGame(confirmedPose);
   }
 
@@ -634,6 +710,10 @@ function processBodyNotFound(timestamp) {
   poseState.bodyFound = false;
 
   setPoseDetectionStatus(false);
+
+  if (calibration.complete && getGameState() === GAME_STATE.IDLE) {
+    enableStartGame(false);
+  }
 
   drawReferenceLines();
 
@@ -765,214 +845,6 @@ function updateShoulderVelocity(shoulderY) {
 }
 
 /* =========================================================
-   AUTO START BY STANDING
-========================================================= */
-
-function updateAutoStart(currentPose, timestamp) {
-  /*
-    โหมดคีย์บอร์ดไม่ใช้ระบบนี้
-  */
-  if (KEYBOARD_TEST_MODE) {
-    return;
-  }
-
-  /*
-    ต้องเปิดกล้องและ Calibration สำเร็จ
-  */
-  if (!isCameraRunning || !poseState.bodyFound || !calibration.complete) {
-    resetStandReadyTimer();
-    return;
-  }
-
-  const currentGameState = getGameState();
-
-  /*
-    ไม่ต้องตรวจเมื่อเกมกำลังเล่น
-    หยุดชั่วคราว หรือนับถอยหลังอยู่
-  */
-  if (
-    currentGameState === GAME_STATE.PLAYING ||
-    currentGameState === GAME_STATE.PAUSED ||
-    currentGameState === GAME_STATE.COUNTDOWN ||
-    autoStartState.isCountingDown
-  ) {
-    return;
-  }
-
-  /*
-    หากเกมเคยเริ่มอัตโนมัติแล้ว
-    ไม่เริ่มซ้ำจนกว่าจะ Reset
-  */
-  if (autoStartState.hasStartedGame) {
-    return;
-  }
-
-  if (currentPose === "stand") {
-    autoStartState.lastStandDetectedAt = timestamp;
-
-    /*
-      เฟรมแรกที่ตรวจพบ Stand
-    */
-    if (autoStartState.standStartedAt === null) {
-      autoStartState.standStartedAt = timestamp;
-    }
-
-    const standingDuration = timestamp - autoStartState.standStartedAt;
-
-    const remainingMilliseconds = Math.max(
-      0,
-      STAND_READY_DURATION - standingDuration,
-    );
-
-    const remainingSeconds = Math.ceil(remainingMilliseconds / 1000);
-
-    setText(
-      calibrationStatus,
-      remainingSeconds > 0
-        ? `ยืนเตรียมพร้อมอีก ${remainingSeconds} วินาที`
-        : "เตรียมนับถอยหลัง",
-    );
-
-    setGameStatus(
-      `ยืนเตรียมพร้อม ${Math.min(
-        5,
-        Math.floor(standingDuration / 1000) + 1,
-      )}/5`,
-      "waiting",
-    );
-
-    if (standingDuration >= STAND_READY_DURATION) {
-      beginAutoCountdown();
-    }
-
-    return;
-  }
-
-  /*
-    กรณี Landmark สั่นชั่วคราว
-    ให้เผื่อเวลาเล็กน้อยก่อนรีเซ็ต
-  */
-  const timeSinceLastStand =
-    autoStartState.lastStandDetectedAt === null
-      ? Infinity
-      : timestamp - autoStartState.lastStandDetectedAt;
-
-  if (timeSinceLastStand > STAND_LOST_TOLERANCE) {
-    resetStandReadyTimer();
-
-    setText(calibrationStatus, "กรุณายืนตรงเพื่อเตรียมเริ่มเกม");
-
-    setGameStatus(
-      currentPose === "jump" ? "ตรวจพบท่ากระโดด" : "ตรวจพบท่าย่อตัว",
-      "waiting",
-    );
-  }
-}
-
-async function beginAutoCountdown() {
-  if (autoStartState.isCountingDown || autoStartState.hasStartedGame) {
-    return;
-  }
-
-  autoStartState.isCountingDown = true;
-  autoStartState.countdownRemaining = AUTO_COUNTDOWN_SECONDS;
-
-  countdownOverlay?.classList.remove("hidden");
-
-  setGameStatus("กำลังนับถอยหลัง", "waiting");
-
-  setText(calibrationStatus, "เตรียมพร้อมเริ่มเกม");
-
-  for (let count = AUTO_COUNTDOWN_SECONDS; count >= 1; count -= 1) {
-    /*
-      ตรวจว่าระหว่างนับถอยหลัง
-      ยังพบร่างกายอยู่หรือไม่
-    */
-    if (!isCameraRunning || !poseState.bodyFound || !calibration.complete) {
-      cancelAutoCountdown("ไม่พบร่างกาย ยกเลิกการเริ่มเกม");
-
-      return;
-    }
-
-    autoStartState.countdownRemaining = count;
-
-    setText(countdownValue, String(count));
-
-    setText(calibrationStatus, `เริ่มเกมใน ${count} วินาที`);
-
-    await wait(1000);
-  }
-
-  /*
-    ตรวจอีกครั้งก่อนเริ่มเกม
-  */
-  if (!isCameraRunning || !poseState.bodyFound || !calibration.complete) {
-    cancelAutoCountdown("ไม่พบร่างกาย ยกเลิกการเริ่มเกม");
-
-    return;
-  }
-
-  setText(countdownValue, "GO!");
-
-  setText(calibrationStatus, "เริ่มเกม");
-
-  await wait(500);
-
-  countdownOverlay?.classList.add("hidden");
-
-  autoStartState.isCountingDown = false;
-  autoStartState.hasStartedGame = true;
-
-  enableStartGame(true);
-
-  await startGame();
-}
-
-function cancelAutoCountdown(message = "ยกเลิกการเริ่มเกม") {
-  autoStartState.isCountingDown = false;
-
-  autoStartState.countdownRemaining = AUTO_COUNTDOWN_SECONDS;
-
-  countdownOverlay?.classList.add("hidden");
-
-  setText(countdownValue, String(AUTO_COUNTDOWN_SECONDS));
-
-  setText(calibrationStatus, message);
-
-  resetStandReadyTimer();
-
-  setGameStatus("รอยืนเตรียมพร้อม", "waiting");
-}
-
-function resetStandReadyTimer() {
-  autoStartState.standStartedAt = null;
-
-  autoStartState.lastStandDetectedAt = null;
-}
-
-function resetAutoStartState() {
-  if (autoStartState.countdownIntervalId !== null) {
-    clearInterval(autoStartState.countdownIntervalId);
-
-    autoStartState.countdownIntervalId = null;
-  }
-
-  autoStartState.standStartedAt = null;
-
-  autoStartState.lastStandDetectedAt = null;
-
-  autoStartState.isCountingDown = false;
-
-  autoStartState.hasStartedGame = false;
-
-  autoStartState.countdownRemaining = AUTO_COUNTDOWN_SECONDS;
-
-  countdownOverlay?.classList.add("hidden");
-
-  setText(countdownValue, String(AUTO_COUNTDOWN_SECONDS));
-}
-
-/* =========================================================
    CALIBRATION
 ========================================================= */
 
@@ -1026,6 +898,7 @@ function startCalibration() {
   }
 
   enableStartGame(false);
+  syncCalibrationControls();
 
   setGameStatus("กำลังปรับเส้น", "waiting");
 }
@@ -1062,13 +935,11 @@ function finishCalibration() {
 
   calibration.complete = true;
 
-  resetAutoStartState();
-
   poseAppState = POSE_APP_STATE.READY;
 
   calibrationProgressContainer?.classList.add("hidden");
 
-  setText(calibrationStatus, "กรุณายืนตรง 5 วินาที");
+  setText(calibrationStatus, "ปรับเส้นแล้ว ปรับละเอียดได้ก่อนกดเริ่มเกม");
 
   calibrateButton.disabled = false;
 
@@ -1081,8 +952,9 @@ function finishCalibration() {
   setText(baselineHipValue, calibration.baselineNoseY.toFixed(3));
 
   enableStartGame(true);
+  syncCalibrationControls();
 
-  setGameStatus("รอยืนเตรียมพร้อม", "waiting");
+  setGameStatus("พร้อมเริ่มเกม", "waiting");
 }
 
 function resetCalibration() {
@@ -1094,8 +966,6 @@ function resetCalibration() {
   ) {
     return;
   }
-
-  resetAutoStartState();
 
   calibration.complete = false;
 
@@ -1139,6 +1009,7 @@ function resetCalibration() {
   }
 
   enableStartGame(KEYBOARD_TEST_MODE);
+  syncCalibrationControls();
 
   updatePoseDisplay("-");
 
@@ -1153,48 +1024,39 @@ function resetCalibration() {
 ========================================================= */
 
 function updateCalibrationLines() {
-  if (
-    calibration.baselineShoulderY ===
-    null
-  ) {
+  if (calibration.baselineShoulderY === null) {
     return;
   }
 
-  const jumpOffset =
-    getNumberInputValue(
-      jumpSensitivityInput,
-      0.075,
-    );
+  const jumpOffset = getNumberInputValue(
+    jumpSensitivityInput,
+    0.075,
+  );
 
-  const crouchOffset =
-    getNumberInputValue(
-      crouchSensitivityInput,
-      0.085,
-    );
+  const crouchOffset = getNumberInputValue(
+    crouchSensitivityInput,
+    0.085,
+  );
 
   /*
     กระโดด:
     ค่า Y ลดลง เส้นขยับขึ้น
   */
-  calibration.jumpLineY =
-    clamp(
-      calibration.baselineShoulderY -
-        jumpOffset,
-      0.02,
-      0.95,
-    );
+  calibration.jumpLineY = clamp(
+    calibration.baselineShoulderY - jumpOffset,
+    0.02,
+    0.95,
+  );
 
   /*
     ย่อตัว:
     ค่า Y เพิ่มขึ้น เส้นขยับลง
   */
-  calibration.crouchLineY =
-    clamp(
-      calibration.baselineShoulderY +
-        crouchOffset,
-      0.02,
-      0.98,
-    );
+  calibration.crouchLineY = clamp(
+    calibration.baselineShoulderY + crouchOffset,
+    0.02,
+    0.98,
+  );
 
   setText(
     jumpLineValue,
@@ -1217,18 +1079,12 @@ function drawReferenceLines() {
   drawReferenceLine(calibration.crouchLineY, "#f59e0b", "CROUCH");
 }
 
-function drawReferenceLine(
-  normalizedY,
-  color,
-  label,
-) {
+function drawReferenceLine(normalizedY, color, label) {
   if (!Number.isFinite(normalizedY)) {
     return;
   }
 
-  const y =
-    normalizedY *
-    poseCanvas.height;
+  const y = normalizedY * poseCanvas.height;
 
   poseCtx.save();
 
@@ -1238,20 +1094,13 @@ function drawReferenceLine(
   */
   poseCtx.beginPath();
   poseCtx.moveTo(0, y);
-  poseCtx.lineTo(
-    poseCanvas.width,
-    y,
-  );
+  poseCtx.lineTo(poseCanvas.width, y);
 
-  poseCtx.strokeStyle =
-    "rgba(0, 0, 0, 0.65)";
+  poseCtx.strokeStyle = "rgba(0, 0, 0, 0.65)";
 
   poseCtx.lineWidth = 15;
 
-  poseCtx.setLineDash([
-    30,
-    16,
-  ]);
+  poseCtx.setLineDash([30, 16]);
 
   poseCtx.stroke();
 
@@ -1260,29 +1109,21 @@ function drawReferenceLine(
   */
   poseCtx.beginPath();
   poseCtx.moveTo(0, y);
-  poseCtx.lineTo(
-    poseCanvas.width,
-    y,
-  );
+  poseCtx.lineTo(poseCanvas.width, y);
 
   poseCtx.strokeStyle = color;
   poseCtx.lineWidth = 9;
 
-  poseCtx.setLineDash([
-    30,
-    16,
-  ]);
+  poseCtx.setLineDash([30, 16]);
 
   poseCtx.stroke();
 
   poseCtx.setLineDash([]);
 
-  poseCtx.font =
-    "bold 30px sans-serif";
+  poseCtx.font = "bold 30px sans-serif";
 
   poseCtx.lineWidth = 5;
-  poseCtx.strokeStyle =
-    "rgba(0, 0, 0, 0.8)";
+  poseCtx.strokeStyle = "rgba(0, 0, 0, 0.8)";
 
   poseCtx.strokeText(
     label,
@@ -1310,25 +1151,19 @@ function classifyPose(shoulderY) {
     return "stand";
   }
 
-  const jumpEntryLine =
-    calibration.jumpLineY;
+  const jumpEntryLine = calibration.jumpLineY;
 
-  const crouchEntryLine =
-    calibration.crouchLineY;
+  const crouchEntryLine = calibration.crouchLineY;
 
   /*
     เส้นกลับสู่ Stand
     ทำให้มีพื้นที่กลางกว้างขึ้น
   */
-  const jumpExitLine =
-    jumpEntryLine + 0.035;
+  const jumpExitLine = jumpEntryLine + 0.035;
 
-  const crouchExitLine =
-    crouchEntryLine - 0.035;
+  const crouchExitLine = crouchEntryLine - 0.035;
 
-  const isMovingUp =
-    poseState.shoulderVelocityY >
-    0.0012;
+  const isMovingUp = poseState.shoulderVelocityY > 0.0012;
 
   if (
     shoulderY < jumpEntryLine &&
@@ -1345,16 +1180,13 @@ function classifyPose(shoulderY) {
   }
 
   if (
-    poseState.currentPose ===
-      "crouch" &&
+    poseState.currentPose === "crouch" &&
     shoulderY > crouchExitLine
   ) {
     return "crouch";
   }
 
-  if (
-    shoulderY > crouchEntryLine
-  ) {
+  if (shoulderY > crouchEntryLine) {
     return "crouch";
   }
 
@@ -1529,8 +1361,7 @@ function updatePoseDisplay(pose) {
     return;
   }
 
-  poseValue.textContent =
-    getPoseThai(pose);
+  poseValue.textContent = getPoseThai(pose);
 
   if (pose === "jump") {
     poseValue.classList.add("pose-jump");
@@ -1565,11 +1396,13 @@ function setupSensitivityControls() {
   jumpSensitivityInput?.addEventListener("input", () => {
     updateSensitivityText();
     updateCalibrationLines();
+    showManualCalibrationReadyMessage();
   });
 
   crouchSensitivityInput?.addEventListener("input", () => {
     updateSensitivityText();
     updateCalibrationLines();
+    showManualCalibrationReadyMessage();
   });
 }
 
@@ -1581,6 +1414,47 @@ function updateSensitivityText() {
   setText(jumpSensitivityValue, jumpValue.toFixed(3));
 
   setText(crouchSensitivityValue, crouchValue.toFixed(3));
+}
+
+function showManualCalibrationReadyMessage() {
+  if (!calibration.complete) {
+    return;
+  }
+
+  setText(calibrationStatus, "ปรับตำแหน่งเส้นแล้ว กดเริ่มเกมได้");
+  setGameStatus("พร้อมเริ่มเกม", "waiting");
+}
+
+function syncCalibrationControls() {
+  const currentGameState = getGameState();
+
+  const gameLocksCalibration =
+    currentGameState === GAME_STATE.COUNTDOWN ||
+    currentGameState === GAME_STATE.PLAYING ||
+    currentGameState === GAME_STATE.PAUSED;
+
+  const calibrationControlsLocked =
+    !isCameraRunning ||
+    !calibration.complete ||
+    poseAppState === POSE_APP_STATE.CALIBRATING ||
+    gameLocksCalibration;
+
+  if (jumpSensitivityInput) {
+    jumpSensitivityInput.disabled = calibrationControlsLocked;
+  }
+
+  if (crouchSensitivityInput) {
+    crouchSensitivityInput.disabled = calibrationControlsLocked;
+  }
+
+  if (calibrateButton) {
+    calibrateButton.disabled = !isCameraRunning || gameLocksCalibration;
+  }
+
+  if (resetCalibrationButton) {
+    resetCalibrationButton.disabled =
+      !calibration.complete || gameLocksCalibration;
+  }
 }
 
 /* =========================================================
@@ -1642,20 +1516,8 @@ function closeResources() {
 /* =========================================================
    HELPER FUNCTIONS
 ========================================================= */
-function wait(milliseconds) {
-  return new Promise((resolve) => {
-    window.setTimeout(
-      resolve,
-      milliseconds,
-    );
-  });
-}
 
-function clamp(
-  value,
-  minimum,
-  maximum,
-) {
+function clamp(value, minimum, maximum) {
   return Math.min(
     maximum,
     Math.max(minimum, value),
@@ -1670,7 +1532,8 @@ function average(...values) {
   }
 
   return (
-    validValues.reduce((sum, value) => sum + value, 0) / validValues.length
+    validValues.reduce((sum, value) => sum + value, 0) /
+    validValues.length
   );
 }
 
@@ -1780,6 +1643,30 @@ function initialize() {
     */
     onStatusChange: (text, type) => {
       setGameStatus(text, type);
+      syncCalibrationControls();
+
+      if (!calibration.complete) {
+        return;
+      }
+
+      if (text.startsWith("เริ่มเกมใน ")) {
+        setText(calibrationStatus, text);
+        return;
+      }
+
+      if (text === "กำลังเล่น") {
+        setText(calibrationStatus, "กำลังใช้เส้นอ้างอิง");
+        return;
+      }
+
+      if (text === "จบเกม") {
+        setText(calibrationStatus, "พร้อมปรับเส้นหรือเล่นอีกครั้ง");
+        return;
+      }
+
+      if (text.startsWith("ไม่พบร่างกาย")) {
+        setText(calibrationStatus, "ยืนในเฟรม แล้วกดเริ่มเกมอีกครั้ง");
+      }
     },
 
     /*
@@ -1793,6 +1680,8 @@ function initialize() {
       return getPoseThai(poseState.currentPose);
     },
   });
+
+  syncCalibrationControls();
 
   if (KEYBOARD_TEST_MODE) {
     enableStartGame(true);

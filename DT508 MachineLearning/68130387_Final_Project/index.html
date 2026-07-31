@@ -130,15 +130,15 @@
               <div class="slider-group" style="margin-bottom: 28px">
                 <label for="jumpSensitivity">
                   <span>
-                    เส้นกระโดด
-                    <strong id="jumpSensitivityValue">0.060</strong>
+                    เส้นกระโดด (ยิ่งสูง เส้นจะยิ่งสูงขึ้น)
+                    <strong id="jumpSensitivityValue">0.075</strong>
                   </span>
 
                   <input
                     id="jumpSensitivity"
                     type="range"
-                    min="0.01"
-                    max="0.35"
+                    min="0.005"
+                    max="0.50"
                     step="0.005"
                     value="0.075"
                   />
@@ -146,15 +146,15 @@
 
                 <label for="crouchSensitivity">
                   <span>
-                    เส้นย่อตัว
-                    <strong id="crouchSensitivityValue">0.080</strong>
+                    เส้นย่อตัว (ยิ่งสูง เส้นจะยิ่งต่ำลง)
+                    <strong id="crouchSensitivityValue">0.085</strong>
                   </span>
 
                   <input
                     id="crouchSensitivity"
                     type="range"
-                    min="0.01"
-                    max="0.35"
+                    min="0.005"
+                    max="0.50"
                     step="0.005"
                     value="0.085"
                   />
@@ -232,7 +232,10 @@
               <div id="startOverlay" class="game-overlay">
                 <div class="overlay-content">
                   <h3>เตรียมพร้อมวิ่ง</h3>
-                  <p>เปิดกล้องและปรับเส้นอ้างอิงก่อนเริ่มเกม</p>
+                  <p>
+                    เปิดกล้อง → ปรับเส้นอ้างอิง → กดเริ่มเกม
+                    ระบบจะนับถอยหลัง 5 วินาที
+                  </p>
 
                   <button
                     id="startGameButton"
@@ -240,14 +243,14 @@
                     class="button button-game-start"
                     disabled
                   >
-                    เริ่มเกม
+                    เริ่มเกม (นับถอยหลัง 5 วิ)
                   </button>
                 </div>
               </div>
 
               <!-- Countdown -->
               <div id="countdownOverlay" class="countdown-overlay hidden">
-                <span id="countdownValue">3</span>
+                <span id="countdownValue">5</span>
               </div>
 
               <!-- Pause -->
@@ -317,7 +320,29 @@
       </footer>
     </div>
 
-    <script type="module" src="canvas-game.js"></script>
+    <script>
+      if (window.location.protocol === "file:") {
+        window.addEventListener("DOMContentLoaded", () => {
+          const cameraStatus = document.getElementById("cameraStatus");
+          const startCameraButton = document.getElementById("startCameraButton");
+
+          if (cameraStatus) {
+            cameraStatus.textContent = "ต้องเปิดผ่าน localhost";
+            cameraStatus.className = "status-badge status-offline";
+          }
+
+          startCameraButton?.addEventListener("click", () => {
+            alert(
+              "ไม่สามารถเปิดกล้องจากไฟล์โดยตรงได้\n\n" +
+                "กรุณาเปิดโฟลเดอร์ด้วย Live Server หรือรันคำสั่ง: python -m http.server 5500\n\n" +
+                "จากนั้นเข้า http://localhost:5500",
+            );
+          });
+        });
+      }
+    </script>
+
+    <!-- pose-ml.js จะ import canvas-game.js ให้อัตโนมัติ -->
     <script type="module" src="pose-ml.js"></script>
   </body>
 </html>
