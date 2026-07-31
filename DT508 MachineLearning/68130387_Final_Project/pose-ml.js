@@ -1140,7 +1140,7 @@ function resetCalibration() {
 
   enableStartGame(KEYBOARD_TEST_MODE);
 
-  updatePoseDisplay("stand");
+  updatePoseDisplay("-");
 
   setGameStatus(
     KEYBOARD_TEST_MODE ? "พร้อมทดสอบเกม" : "รอเริ่มเกม",
@@ -1514,19 +1514,31 @@ function updatePoseDisplay(pose) {
     return;
   }
 
-  poseValue.textContent = getPoseThai(pose);
+  poseValue.className = "stat-value";
 
-  poseValue.className = "score-value";
+  /*
+    ก่อนตั้งค่าเส้นอ้างอิง
+    ให้แสดงเป็นเครื่องหมาย -
+  */
+  if (
+    pose === "-" ||
+    !calibration.complete
+  ) {
+    poseValue.textContent = "-";
+    poseValue.classList.add("pose-unset");
+    return;
+  }
+
+  poseValue.textContent =
+    getPoseThai(pose);
 
   if (pose === "jump") {
     poseValue.classList.add("pose-jump");
-
     return;
   }
 
   if (pose === "crouch") {
     poseValue.classList.add("pose-crouch");
-
     return;
   }
 
@@ -1738,7 +1750,7 @@ function initialize() {
   setCameraStatus("กล้องยังไม่เปิด", "offline");
 
   setPoseDetectionStatus(false);
-  updatePoseDisplay("stand");
+  updatePoseDisplay("-");
 
   initializeCanvasGame({
     /*
