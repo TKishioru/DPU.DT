@@ -219,7 +219,23 @@
                 </div>
               </div>
             </div>
+            <div class="player-profile">
+              <label for="playerNameInput">
+                ชื่อผู้เล่น
+                <span class="required-mark">*</span>
+              </label>
 
+              <input
+                id="playerNameInput"
+                type="text"
+                maxlength="20"
+                placeholder="กรอกชื่อก่อนเริ่มเกม"
+                autocomplete="nickname"
+                required
+              />
+
+              <p id="playerNameError" class="player-name-error hidden"></p>
+            </div>
             <div class="game-canvas-wrapper">
               <canvas
                 id="gameCanvas"
@@ -233,8 +249,8 @@
                 <div class="overlay-content">
                   <h3>เตรียมพร้อมวิ่ง</h3>
                   <p>
-                    เปิดกล้อง → ปรับเส้นอ้างอิง → กดเริ่มเกม
-                    ระบบจะนับถอยหลัง 5 วินาที
+                    เปิดกล้อง → ปรับเส้นอ้างอิง → กดเริ่มเกม ระบบจะนับถอยหลัง 5
+                    วินาที
                   </p>
 
                   <button
@@ -281,6 +297,12 @@
                     <strong id="finalScoreValue">0</strong>
                   </p>
 
+                  <p
+                    id="scoreSaveStatus"
+                    class="score-save-status"
+                    aria-live="polite"
+                  ></p>
+
                   <button
                     id="restartGameButton"
                     type="button"
@@ -311,6 +333,31 @@
                 จบเกม
               </button>
             </div>
+
+            <section class="leaderboard-panel">
+              <div class="leaderboard-header">
+                <div>
+                  <p class="section-number">ONLINE SCORE</p>
+
+                  <h2>10 อันดับคะแนนสูงสุด</h2>
+                </div>
+
+                <span id="leaderboardStatus" class="small-status">
+                  กำลังเชื่อมต่อ
+                </span>
+              </div>
+
+              <div class="leaderboard-column-header">
+                <span>อันดับ</span>
+                <span>ชื่อผู้เล่น</span>
+                <span>วันที่และเวลา</span>
+                <span>คะแนน</span>
+              </div>
+
+              <ol id="leaderboardList" class="leaderboard-list">
+                <li class="leaderboard-empty">กำลังโหลดคะแนน...</li>
+              </ol>
+            </section>
           </section>
         </section>
       </main>
@@ -324,7 +371,8 @@
       if (window.location.protocol === "file:") {
         window.addEventListener("DOMContentLoaded", () => {
           const cameraStatus = document.getElementById("cameraStatus");
-          const startCameraButton = document.getElementById("startCameraButton");
+          const startCameraButton =
+            document.getElementById("startCameraButton");
 
           if (cameraStatus) {
             cameraStatus.textContent = "ต้องเปิดผ่าน localhost";

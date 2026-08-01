@@ -1,5 +1,18 @@
 import { drawDinosaur } from "./draw-dinosaur.js";
 import { drawBird } from "./draw-bird.js";
+import {
+  clearPlayerName,
+  getPlayerName,
+  isPlayerNameValid,
+  renderLeaderboard,
+  saveScore,
+} from "./firebase-score.js";
+
+const playerNameInput = document.getElementById("playerNameInput");
+
+const playerNameError = document.getElementById("playerNameError");
+
+const scoreSaveStatus = document.getElementById("scoreSaveStatus");
 
 const gameCanvas = document.getElementById("gameCanvas");
 const gameCtx = gameCanvas.getContext("2d");
@@ -38,6 +51,12 @@ export const GAME_STATE = Object.freeze({
   ก่อนเริ่มการเคลื่อนไหวของเกมจริง
 */
 const COUNTDOWN_SECONDS = 5;
+
+/*
+  สถานะความพร้อมจากกล้องและ Calibration
+  จะถูกอัปเดตจาก pose-ml.js
+*/
+let poseAllowsGameStart = false;
 
 let gameState = GAME_STATE.IDLE;
 
@@ -115,12 +134,30 @@ export function initializeCanvasGame(options = {}) {
   poseNameCallback = options.getCurrentPoseName ?? poseNameCallback;
 
   startGameButton.addEventListener("click", startGame);
+
   pauseGameButton.addEventListener("click", pauseGame);
+
   resumeGameButton.addEventListener("click", resumeGame);
+
   endGameButton.addEventListener("click", endGame);
+
   restartGameButton.addEventListener("click", restartGame);
 
   setupKeyboardControls();
+
+  playerNameInput?.addEventListener("input", () => {
+    const hasName = playerNameInput.value.trim().length > 0;
+
+    if (hasName) {
+      setPlayerNameError("");
+    }
+
+    syncStartGameButton();
+  });
+
+  renderLeaderboard().catch((error) => {
+    console.error("Cannot initialize leaderboard:", error);
+  });
 
   resetDinosaur();
   drawGame();
@@ -136,12 +173,49 @@ export function initializeCanvasGame(options = {}) {
 ========================================================= */
 
 export function enableStartGame(enabled) {
+  poseAllowsGameStart = Boolean(enabled);
+
+  syncStartGameButton();
+}
+
+function syncStartGameButton() {
   const gameIsBusy =
     gameState === GAME_STATE.COUNTDOWN ||
     gameState === GAME_STATE.PLAYING ||
     gameState === GAME_STATE.PAUSED;
 
-  startGameButton.disabled = gameIsBusy || !enabled;
+  const hasPlayerName = Boolean(playerNameInput?.value.trim());
+
+  startGameButton.disabled =
+    gameIsBusy || !poseAllowsGameStart || !hasPlayerName;
+}
+
+function validatePlayerNameBeforeStart() {
+  const playerName = getPlayerName();
+
+  if (playerName.length > 0) {
+    setPlayerNameError("");
+
+    return true;
+  }
+
+  setPlayerNameError("กรุณากรอกชื่อผู้เล่นก่อนเริ่มเกม");
+
+  playerNameInput?.focus();
+
+  syncStartGameButton();
+
+  return false;
+}
+
+function setPlayerNameError(message) {
+  if (!playerNameError) {
+    return;
+  }
+
+  playerNameError.textContent = message;
+
+  playerNameError.classList.toggle("hidden", message.length === 0);
 }
 
 export function getGameState() {
@@ -185,10 +259,15 @@ export function pauseGameBecausePoseLost() {
 ========================================================= */
 
 export async function startGame() {
-  if (
-    gameState === GAME_STATE.PLAYING ||
-    gameState === GAME_STATE.COUNTDOWN
-  ) {
+  if (gameState === GAME_STATE.PLAYING || gameState === GAME_STATE.COUNTDOWN) {
+    return;
+  }
+
+  if (!isPlayerNameValid()) {
+    setPlayerNameError("กรุณากรอกชื่อผู้เล่นก่อนเริ่มเกม");
+
+    playerNameInput?.focus();
+
     return;
   }
 
@@ -200,6 +279,12 @@ export async function startGame() {
     );
 
     return;
+  }
+
+  setPlayerNameError("");
+
+  if (playerNameInput) {
+    playerNameInput.disabled = true;
   }
 
   resetGame();
@@ -284,6 +369,12 @@ function cancelCountdownBecauseBodyLost() {
   );
 
   drawGame();
+
+  if (playerNameInput) {
+    playerNameInput.disabled = false;
+  }
+
+  syncStartGameButton();
 }
 
 export function pauseGame() {
@@ -392,10 +483,7 @@ function gameLoop(timestamp) {
     return;
   }
 
-  const deltaSeconds = Math.min(
-    (timestamp - game.lastFrameTime) / 1000,
-    0.034,
-  );
+  const deltaSeconds = Math.min((timestamp - game.lastFrameTime) / 1000, 0.034);
 
   game.lastFrameTime = timestamp;
 
@@ -434,8 +522,7 @@ function updateGame(deltaSeconds) {
 
   scoreValue.textContent = String(Math.floor(game.score));
 
-  speedValue.textContent =
-    `${(game.speed / game.baseSpeed).toFixed(1)}x`;
+  speedValue.textContent = `${(game.speed / game.baseSpeed).toFixed(1)}x`;
 }
 
 /* =========================================================
@@ -530,10 +617,7 @@ function updateObstacleSpawner(deltaSeconds) {
 
   const maximumDelay = Math.max(1400, 2200 / speedRatio);
 
-  game.nextObstacleDelay = randomBetween(
-    minimumDelay,
-    maximumDelay,
-  );
+  game.nextObstacleDelay = randomBetween(minimumDelay, maximumDelay);
 }
 
 function createRandomObstacle() {
@@ -545,9 +629,7 @@ function createRandomObstacle() {
     birdProbability = 0.28;
   }
 
-  return Math.random() < birdProbability
-    ? createBird()
-    : createCactus();
+  return Math.random() < birdProbability ? createBird() : createCactus();
 }
 
 function createCactus() {
@@ -575,8 +657,7 @@ function createBird() {
     ตำแหน่งนี้ทำให้ชนไดโนเสาร์ตอนยืน
     และย่อตัวหลบได้
   */
-  const y =
-    game.groundY - dinosaur.standingHeight + 7;
+  const y = game.groundY - dinosaur.standingHeight + 7;
 
   return {
     type: "bird",
@@ -606,10 +687,7 @@ function updateObstacles(deltaSeconds) {
       obstacle.animationTime += deltaSeconds;
     }
 
-    if (
-      !obstacle.passed &&
-      obstacle.x + obstacle.width < dinosaur.x
-    ) {
+    if (!obstacle.passed && obstacle.x + obstacle.width < dinosaur.x) {
       obstacle.passed = true;
       game.score += 10;
     }
@@ -621,8 +699,7 @@ function updateObstacles(deltaSeconds) {
   }
 
   game.obstacles = game.obstacles.filter(
-    (obstacle) =>
-      obstacle.x + obstacle.width > -80,
+    (obstacle) => obstacle.x + obstacle.width > -80,
   );
 }
 
@@ -636,13 +713,9 @@ function checkCollision(player, obstacle) {
 
     y: player.y + (player.isCrouching ? 5 : 7),
 
-    width:
-      player.width -
-      (player.isCrouching ? 16 : 36),
+    width: player.width - (player.isCrouching ? 16 : 36),
 
-    height:
-      player.height -
-      (player.isCrouching ? 10 : 12),
+    height: player.height - (player.isCrouching ? 10 : 12),
   };
 
   const obstacleBox =
@@ -661,15 +734,47 @@ function checkCollision(player, obstacle) {
         };
 
   return (
-    playerBox.x <
-      obstacleBox.x + obstacleBox.width &&
-    playerBox.x + playerBox.width >
-      obstacleBox.x &&
-    playerBox.y <
-      obstacleBox.y + obstacleBox.height &&
-    playerBox.y + playerBox.height >
-      obstacleBox.y
+    playerBox.x < obstacleBox.x + obstacleBox.width &&
+    playerBox.x + playerBox.width > obstacleBox.x &&
+    playerBox.y < obstacleBox.y + obstacleBox.height &&
+    playerBox.y + playerBox.height > obstacleBox.y
   );
+}
+
+async function saveGameResult(finalScore, playerName) {
+  setText(scoreSaveStatus, "กำลังบันทึกคะแนน...");
+
+  statusCallback("กำลังบันทึกคะแนน...", "waiting");
+
+  try {
+    /*
+      saveScore() จะสร้าง Document ใหม่ทุกครั้ง
+    */
+    await saveScore(finalScore, playerName);
+
+    setText(scoreSaveStatus, `บันทึก ${finalScore} คะแนนเรียบร้อย`);
+
+    statusCallback("บันทึกคะแนนเรียบร้อย", "playing");
+
+    /*
+      โหลด Top 10 ใหม่หลังบันทึก
+    */
+    await renderLeaderboard();
+  } catch (error) {
+    console.error("Cannot save score:", error);
+
+    setText(scoreSaveStatus, "บันทึกคะแนนออนไลน์ไม่สำเร็จ");
+
+    statusCallback("จบเกม แต่บันทึกคะแนนไม่สำเร็จ", "offline");
+  } finally {
+    /*
+      ล้างชื่อเพื่อให้ผู้เล่นคนถัดไป
+      ต้องกรอกชื่อใหม่
+    */
+    clearPlayerName();
+
+    syncStartGameButton();
+  }
 }
 
 /* =========================================================
@@ -677,41 +782,62 @@ function checkCollision(player, obstacle) {
 ========================================================= */
 
 function showGameOver() {
+  /*
+    ป้องกันการชนหนึ่งครั้ง
+    แต่เรียกบันทึกคะแนนซ้ำหลายรอบ
+  */
+  if (gameState === GAME_STATE.GAME_OVER) {
+    return;
+  }
+
+  /*
+    ต้องอ่านชื่อก่อนล้างช่องชื่อ
+  */
+  const playerName = getPlayerName();
+
   gameState = GAME_STATE.GAME_OVER;
 
   if (game.frameId !== null) {
     cancelAnimationFrame(game.frameId);
+
     game.frameId = null;
   }
 
   const finalScore = Math.floor(game.score);
 
-  game.highScore = Math.max(
-    game.highScore,
-    finalScore,
-  );
+  game.highScore = Math.max(game.highScore, finalScore);
+
+  localStorage.setItem("poseDinoLocalHighScore", String(game.highScore));
 
   scoreValue.textContent = String(finalScore);
+
   finalScoreValue.textContent = String(finalScore);
+
   highScoreValue.textContent = String(game.highScore);
 
-  countdownOverlay.classList.add("hidden");
-  countdownValue.textContent =
-    String(COUNTDOWN_SECONDS);
+  countdownOverlay?.classList.add("hidden");
 
-  pauseOverlay.classList.add("hidden");
-  startOverlay.classList.add("hidden");
-  gameOverOverlay.classList.remove("hidden");
+  countdownValue.textContent = String(COUNTDOWN_SECONDS);
+
+  pauseOverlay?.classList.add("hidden");
+
+  startOverlay?.classList.add("hidden");
+
+  gameOverOverlay?.classList.remove("hidden");
 
   pauseGameButton.disabled = true;
+
   endGameButton.disabled = true;
-  startGameButton.disabled = false;
 
   setCrouch(false);
 
-  statusCallback("จบเกม", "offline");
-
   drawGame();
+
+  /*
+    ไม่ใช้ await เพื่อให้หน้า Game Over
+    แสดงทันทีโดยไม่ต้องรอ Firebase
+  */
+  void saveGameResult(finalScore, playerName);
 }
 
 /* =========================================================
@@ -719,8 +845,7 @@ function showGameOver() {
 ========================================================= */
 
 function updateGround(deltaSeconds) {
-  game.groundOffset -=
-    game.speed * 60 * deltaSeconds;
+  game.groundOffset -= game.speed * 60 * deltaSeconds;
 
   if (game.groundOffset <= -50) {
     game.groundOffset += 50;
@@ -732,12 +857,7 @@ function updateGround(deltaSeconds) {
 ========================================================= */
 
 function drawGame() {
-  gameCtx.clearRect(
-    0,
-    0,
-    game.width,
-    game.height,
-  );
+  gameCtx.clearRect(0, 0, game.width, game.height);
 
   drawSky();
   drawClouds();
@@ -756,12 +876,7 @@ function drawGame() {
 }
 
 function drawSky() {
-  const gradient = gameCtx.createLinearGradient(
-    0,
-    0,
-    0,
-    game.height,
-  );
+  const gradient = gameCtx.createLinearGradient(0, 0, 0, game.height);
 
   gradient.addColorStop(0, "#dff6ff");
   gradient.addColorStop(0.72, "#f4fbff");
@@ -770,25 +885,13 @@ function drawSky() {
 
   gameCtx.fillStyle = gradient;
 
-  gameCtx.fillRect(
-    0,
-    0,
-    game.width,
-    game.height,
-  );
+  gameCtx.fillRect(0, 0, game.width, game.height);
 
-  gameCtx.fillStyle =
-    "rgba(255, 211, 90, 0.8)";
+  gameCtx.fillStyle = "rgba(255, 211, 90, 0.8)";
 
   gameCtx.beginPath();
 
-  gameCtx.arc(
-    860,
-    80,
-    34,
-    0,
-    Math.PI * 2,
-  );
+  gameCtx.arc(860, 80, 34, 0, Math.PI * 2);
 
   gameCtx.fill();
 }
@@ -812,28 +915,18 @@ function drawClouds() {
     },
   ];
 
-  gameCtx.fillStyle =
-    "rgba(255, 255, 255, 0.82)";
+  gameCtx.fillStyle = "rgba(255, 255, 255, 0.82)";
 
   for (const cloud of clouds) {
     const wrappedX =
-      ((cloud.x -
-        game.groundOffset * 0.12) %
-        (game.width + 180)) -
-      80;
+      ((cloud.x - game.groundOffset * 0.12) % (game.width + 180)) - 80;
 
     const y = cloud.y;
     const scale = cloud.scale;
 
     gameCtx.beginPath();
 
-    gameCtx.arc(
-      wrappedX,
-      y,
-      28 * scale,
-      0,
-      Math.PI * 2,
-    );
+    gameCtx.arc(wrappedX, y, 28 * scale, 0, Math.PI * 2);
 
     gameCtx.arc(
       wrappedX + 34 * scale,
@@ -843,13 +936,7 @@ function drawClouds() {
       Math.PI * 2,
     );
 
-    gameCtx.arc(
-      wrappedX + 70 * scale,
-      y,
-      27 * scale,
-      0,
-      Math.PI * 2,
-    );
+    gameCtx.arc(wrappedX + 70 * scale, y, 27 * scale, 0, Math.PI * 2);
 
     gameCtx.fill();
   }
@@ -866,27 +953,16 @@ function drawGround() {
 }
 
 function drawGroundMarks() {
-  gameCtx.strokeStyle =
-    "rgba(121, 85, 72, 0.55)";
+  gameCtx.strokeStyle = "rgba(121, 85, 72, 0.55)";
 
   gameCtx.lineWidth = 3;
 
-  for (
-    let x = game.groundOffset;
-    x < game.width + 50;
-    x += 50
-  ) {
+  for (let x = game.groundOffset; x < game.width + 50; x += 50) {
     gameCtx.beginPath();
 
-    gameCtx.moveTo(
-      x,
-      game.groundY + 18,
-    );
+    gameCtx.moveTo(x, game.groundY + 18);
 
-    gameCtx.lineTo(
-      x + 25,
-      game.groundY + 18,
-    );
+    gameCtx.lineTo(x + 25, game.groundY + 18);
 
     gameCtx.stroke();
   }
@@ -916,12 +992,7 @@ function drawObstacles() {
 ========================================================= */
 
 function drawCactus(obstacle) {
-  const {
-    x,
-    y,
-    width,
-    height,
-  } = obstacle;
+  const { x, y, width, height } = obstacle;
 
   gameCtx.save();
 
@@ -931,39 +1002,21 @@ function drawCactus(obstacle) {
 
   gameCtx.beginPath();
 
-  gameCtx.roundRect(
-    x + width * 0.3,
-    y,
-    width * 0.4,
-    height,
-    8,
-  );
+  gameCtx.roundRect(x + width * 0.3, y, width * 0.4, height, 8);
 
   gameCtx.fill();
   gameCtx.stroke();
 
   gameCtx.beginPath();
 
-  gameCtx.roundRect(
-    x,
-    y + height * 0.38,
-    width * 0.38,
-    height * 0.18,
-    6,
-  );
+  gameCtx.roundRect(x, y + height * 0.38, width * 0.38, height * 0.18, 6);
 
   gameCtx.fill();
   gameCtx.stroke();
 
   gameCtx.beginPath();
 
-  gameCtx.roundRect(
-    x,
-    y + height * 0.22,
-    width * 0.18,
-    height * 0.33,
-    6,
-  );
+  gameCtx.roundRect(x, y + height * 0.22, width * 0.18, height * 0.33, 6);
 
   gameCtx.fill();
   gameCtx.stroke();
@@ -1004,25 +1057,15 @@ function drawCactus(obstacle) {
 function drawGameText() {
   gameCtx.save();
 
-  gameCtx.fillStyle =
-    "rgba(15, 23, 42, 0.78)";
+  gameCtx.fillStyle = "rgba(15, 23, 42, 0.78)";
 
-  gameCtx.font =
-    "bold 22px sans-serif";
+  gameCtx.font = "bold 22px sans-serif";
 
-  gameCtx.fillText(
-    `Score: ${Math.floor(game.score)}`,
-    24,
-    36,
-  );
+  gameCtx.fillText(`Score: ${Math.floor(game.score)}`, 24, 36);
 
   gameCtx.font = "16px sans-serif";
 
-  gameCtx.fillText(
-    `Pose: ${poseNameCallback()}`,
-    24,
-    62,
-  );
+  gameCtx.fillText(`Pose: ${poseNameCallback()}`, 24, 62);
 
   gameCtx.restore();
 }
@@ -1032,52 +1075,42 @@ function drawGameText() {
 ========================================================= */
 
 function setupKeyboardControls() {
-  window.addEventListener(
-    "keydown",
-    (event) => {
-      if (
-        event.code === "Space" ||
-        event.code === "ArrowUp"
-      ) {
-        event.preventDefault();
-        triggerJump();
-      }
+  window.addEventListener("keydown", (event) => {
+    if (event.code === "Space" || event.code === "ArrowUp") {
+      event.preventDefault();
+      triggerJump();
+    }
 
-      if (
-        event.code === "ArrowDown" &&
-        gameState === GAME_STATE.PLAYING
-      ) {
-        event.preventDefault();
-        setCrouch(true);
-      }
+    if (event.code === "ArrowDown" && gameState === GAME_STATE.PLAYING) {
+      event.preventDefault();
+      setCrouch(true);
+    }
 
-      if (event.code === "KeyP") {
-        if (
-          gameState === GAME_STATE.PLAYING
-        ) {
-          pauseGame();
-        } else if (
-          gameState === GAME_STATE.PAUSED
-        ) {
-          resumeGame();
-        }
+    if (event.code === "KeyP") {
+      if (gameState === GAME_STATE.PLAYING) {
+        pauseGame();
+      } else if (gameState === GAME_STATE.PAUSED) {
+        resumeGame();
       }
-    },
-  );
+    }
+  });
 
-  window.addEventListener(
-    "keyup",
-    (event) => {
-      if (event.code === "ArrowDown") {
-        setCrouch(false);
-      }
-    },
-  );
+  window.addEventListener("keyup", (event) => {
+    if (event.code === "ArrowDown") {
+      setCrouch(false);
+    }
+  });
 }
 
 /* =========================================================
    HELPERS
 ========================================================= */
+
+function setText(element, text) {
+  if (element) {
+    element.textContent = text;
+  }
+}
 
 function randomBetween(min, max) {
   return Math.random() * (max - min) + min;
@@ -1085,9 +1118,6 @@ function randomBetween(min, max) {
 
 function wait(milliseconds) {
   return new Promise((resolve) => {
-    window.setTimeout(
-      resolve,
-      milliseconds,
-    );
+    window.setTimeout(resolve, milliseconds);
   });
 }
